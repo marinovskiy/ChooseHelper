@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <!--SIGN IN ACTIVITY-->
+    <color name="colorSignInBackground">#00796B</color>
+    <color name="colorSignInText">#FFFFFF</color>
+    <color name="colorSignInBtnGoogle">#D34836</color>
+    <color name="colorSignInBtnVk">#36638E</color>
+    <color name="colorSignInBtnText">#FFFFFF</color>
+    <color name="colorSignInBtn">#03A9F4</color>
+    <color name="colorSignInEditTextHint">#9E9E9E</color>
+    <color name="colorSignInEditTextBackground">#FFFFFF</color>
+    <color name="colorSignInLine">#FFFFFF</color>
+</resources>

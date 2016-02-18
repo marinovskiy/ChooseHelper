@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorSignInBackground"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context=".screens.activities.SignInActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
+        android:text="Sign Up"
+        android:textColor="@color/colorSignInText"
+        android:textSize="30sp" />
+
+    <EditText
+        android:id="@+id/sign_up_et_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_left_right_edit_text_login"
+        android:layout_marginRight="@dimen/margin_left_right_edit_text_login"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/edit_box"
+        android:elevation="2dp"
+        android:hint="Login"
+        android:padding="12dp"
+        android:textColorHint="@color/colorSignInEditTextHint" />
+
+    <EditText
+        android:id="@+id/sign_up_et_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_left_right_edit_text_login"
+        android:layout_marginRight="@dimen/margin_left_right_edit_text_login"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/edit_box"
+        android:elevation="2dp"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:padding="12dp"
+        android:textColorHint="@color/colorSignInEditTextHint" />
+
+    <Button
+        android:id="@+id/sign_up_btn"
+        style="@style/AppTheme.Button.SignIn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_left_right_edit_text_login"
+        android:layout_marginRight="@dimen/margin_left_right_edit_text_login"
+        android:layout_marginTop="12dp"
+        android:elevation="2dp"
+        android:text="Sign Up" />
+
+    <TextView
+        android:id="@+id/sign_up_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:clickable="true"
+        android:text="Alredy registred? Login me"
+        android:textColor="@color/colorSignInText"
+        android:textSize="18sp" />
+
+</LinearLayout>
