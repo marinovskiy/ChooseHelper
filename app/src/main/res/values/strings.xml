@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Choose Helper</string>
     <string name="action_settings">Settings</string>
+    <string name="api_key_google_plus">AIzaSyClVNCQmD4G3IQaK4fWpjLj9hFXKaptPUw</string>
+
+    <!-- Tips -->
+    <string name="tip_incorrect_r_code">Incorrect request code.</string>
+
 </resources>

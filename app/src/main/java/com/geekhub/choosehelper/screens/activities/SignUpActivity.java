@@ -16,7 +16,7 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
     }
 
-    @OnClick(R.id.sign_up_tv)
+    @OnClick(R.id.sign_in_tv)
     public void onClick() {
         startActivity(new Intent(SignUpActivity.this, SignInActivity.class));
     }

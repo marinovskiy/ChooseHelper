@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.geekhub.choosehelper">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -18,7 +23,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".screens.activities.SignUpActivity"></activity>
+
+        <!-- Sign Up -->
+        <activity android:name=".screens.activities.SignUpActivity" />
+
+        <!-- MainActivity -->
+        <activity android:name=".screens.activities.MainActivity" />
+
+        <!-- ProfileActivity -->
+        <activity android:name=".screens.activities.ProfileActivity" />
     </application>
 
 </manifest>
