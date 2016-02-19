@@ -41,6 +41,7 @@
 
         <Button
             style="@style/AppTheme.Button.Vk"
+            android:id="@+id/sign_in_btn_vk"
             android:layout_width="@dimen/width_button_social_networks"
             android:layout_height="wrap_content"
             android:layout_marginLeft="6dp"
