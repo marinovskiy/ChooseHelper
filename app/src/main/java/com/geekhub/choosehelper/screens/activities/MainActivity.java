@@ -1,14 +1,15 @@
 package com.geekhub.choosehelper.screens.activities;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.utils.Prefs;
@@ -28,11 +29,25 @@ public class MainActivity extends BaseActivity
     @Bind(R.id.toolbar_main)
     Toolbar mToolbar;
 
+    @Bind(R.id.toolbar_shadow_main)
+    View mToolbarShadow;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setSupportActionBar(mToolbar);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mToolbarShadow.setVisibility(View.INVISIBLE);
+        }
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this,
+                mDrawerLayout,
+                mToolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close);
+        mDrawerLayout.setDrawerListener(toggle);
+        toggle.syncState();
         mNavigationView.setNavigationItemSelectedListener(this);
     }
 
@@ -60,7 +75,6 @@ public class MainActivity extends BaseActivity
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            //super.onBackPressed();
             finish();
         }
     }

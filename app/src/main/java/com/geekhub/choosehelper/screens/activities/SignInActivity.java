@@ -41,11 +41,6 @@ public class SignInActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         if (Prefs.isExpired()) {
             startMainActivity();
         }
@@ -131,9 +126,7 @@ public class SignInActivity extends BaseActivity {
     private void startMainActivity() {
         AuthorizationUtil.setVkUserProfileInfo();
         Intent intent = new Intent(SignInActivity.this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
     }
 

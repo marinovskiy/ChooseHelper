@@ -9,6 +9,11 @@
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+    </style>
+
+    <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="color">@android:color/white</item>
     </style>
 
     <style name="AppTheme.Button" parent="Base.Widget.AppCompat.Button">
@@ -29,11 +34,6 @@
     <style name="AppTheme.Button.SignIn" parent="AppTheme.Button">
         <item name="android:background">@drawable/sign_in_button</item>
         <item name="android:textSize">18sp</item>
-    </style>
-
-    <style name="AppTheme.TextView.Profile.Username" parent="Base.V7.Widget.AppCompat.AutoCompleteTextView">
-        <item name="android:textSize">@dimen/text_size_normal</item>
-        <item name="android:layout_marginBottom">@dimen/activity_vertical_margin</item>
     </style>
 
 </resources>
