@@ -5,7 +5,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.geekhub.choosehelper.R;
@@ -40,10 +39,13 @@ public class ProfileActivity extends BaseActivity {
 
     private void setupToolbar() {
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle(Prefs.getUserName());
-        getSupportActionBar().setHomeAsUpIndicator(ContextCompat
-                .getDrawable(getApplicationContext(), R.drawable.icon_arrow_back));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(Prefs.getUserName());
+            getSupportActionBar().setHomeAsUpIndicator(ContextCompat
+                    .getDrawable(getApplicationContext(), R.drawable.icon_arrow_back));
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @Override

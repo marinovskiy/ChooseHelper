@@ -8,11 +8,16 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.geekhub.choosehelper.R;
+import com.geekhub.choosehelper.keys.Key;
 import com.geekhub.choosehelper.utils.Prefs;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.vk.sdk.VKSdk;
 
 import butterknife.Bind;
@@ -59,7 +64,22 @@ public class MainActivity extends BaseActivity
                 startActivity(new Intent(MainActivity.this, ProfileActivity.class));
                 return true;
             case R.id.action_nav_logout:
-                VKSdk.logout();
+
+                if (Prefs.getLoggedType() == Prefs.PREFS_VK)
+                    VKSdk.logout();
+
+                if (Prefs.getLoggedType() == Prefs.PREFS_GOOGLE_PLUS) {
+                    Auth.GoogleSignInApi.signOut(SignInActivity.getGoogleApiClient())
+                            .setResultCallback(
+                                    new ResultCallback<Status>() {
+                                        @Override
+                                        public void onResult(Status status) {
+                                            Log.d(Key.LT_MESSAGE, "You are logout");
+                                        }
+                                    });
+
+                }
+
                 Prefs.setExpired(false);
                 Intent intent = new Intent(MainActivity.this, SignInActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);

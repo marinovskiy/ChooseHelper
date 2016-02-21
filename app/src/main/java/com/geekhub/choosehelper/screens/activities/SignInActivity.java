@@ -1,30 +1,36 @@
 package com.geekhub.choosehelper.screens.activities;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.geekhub.choosehelper.R;
-import com.geekhub.choosehelper.screens.authentication.GooglePlusProfile;
-import com.geekhub.choosehelper.screens.entities.UserProfile;
-import com.geekhub.choosehelper.screens.keys.Key;
+import com.geekhub.choosehelper.keys.Key;
 import com.geekhub.choosehelper.utils.AuthorizationUtil;
 import com.geekhub.choosehelper.utils.Prefs;
-import com.google.android.gms.common.AccountPicker;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKError;
 
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SignInActivity extends BaseActivity {
+public class SignInActivity extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener {
+
+    private static final int RC_SIGN_IN_GOOGLE = 9001;
+    private static final int RC_SIGN_IN_VK = 9002;
+
+    private GoogleSignInOptions mGoogleSignInOptions;
+    private static GoogleApiClient mGoogleApiClient;
 
     private String[] mScope = {
             VKScope.FRIENDS,
@@ -33,17 +39,24 @@ public class SignInActivity extends BaseActivity {
             VKScope.OFFLINE
     };
 
-    private static final int REQUEST_CODE_PICK_ACCOUNT = 1000;
-    private static final String[] ACCOUNT_TYPES = new String[]{"com.google"};
-    private static final String GOOGLE_ACCOUNT_TYPE = "com.google";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
         if (Prefs.isExpired()) {
-            startMainActivity();
+            startMainActivity(Prefs.getLoggedType());
         }
+
+        ButterKnife.bind(this);
+
+        // Google+ sign in
+        mGoogleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, mGoogleSignInOptions)
+                .build();
     }
 
     @OnClick(R.id.sign_up_tv)
@@ -53,8 +66,8 @@ public class SignInActivity extends BaseActivity {
 
     @OnClick(R.id.sign_in_btn_google_plus)
     public void signInGooglePlus() {
-        pickUserAccount();
         Prefs.setLoggedType(Prefs.PREFS_GOOGLE_PLUS);
+        googlePlusSignIn();
     }
 
     @OnClick(R.id.sign_in_btn_vk)
@@ -63,46 +76,34 @@ public class SignInActivity extends BaseActivity {
         Prefs.setLoggedType(Prefs.PREFS_VK);
     }
 
-    private void pickUserAccount() {
-        Intent intent = AccountPicker.newChooseAccountIntent(null, null,
-                ACCOUNT_TYPES, false, null, null, null, null);
-        startActivityForResult(intent, REQUEST_CODE_PICK_ACCOUNT);
-
-        //  LOG
-        Log.d(Key.LOG_TAG, "Started activity for result");
+    private void googlePlusSignIn() {
+        Intent signInIntent = new Intent(Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient));
+        startActivityForResult(signInIntent, RC_SIGN_IN_GOOGLE);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (Prefs.getLoggedType()) {
-            case Prefs.PREFS_GOOGLE_PLUS:
-                // u need to use these two methods before start main activity
-//                Prefs.setExpired(true);
-//                Prefs.setUserId(res.userId);
-                if (requestCode == REQUEST_CODE_PICK_ACCOUNT) {
-                    if (resultCode == RESULT_OK) {
-                        String userEmail = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-                        getUserProfile(new Account(userEmail, GOOGLE_ACCOUNT_TYPE));
 
-                        //  LOG
-                        Log.d(Key.LOG_TAG, "Done");
-                    }
-                } else {
-                    Toast.makeText(getApplicationContext(), R.string.tip_incorrect_r_code,
-                            Toast.LENGTH_SHORT).show();
-                }
-//        Intent intent = new Intent(this, ProfileActivity.class);
-//        intent.putExtras(data);
-//        startActivity(intent);
+            //  Google Plus
+            case Prefs.PREFS_GOOGLE_PLUS:
                 super.onActivityResult(requestCode, resultCode, data);
+
+                if (requestCode == RC_SIGN_IN_GOOGLE) {
+                    GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+                    handleSignInResult(result);
+                    startMainActivity(Prefs.PREFS_GOOGLE_PLUS);
+                }
                 break;
+
+            //  Vk.com
             case Prefs.PREFS_VK:
                 VKCallback<VKAccessToken> callback = new VKCallback<VKAccessToken>() {
                     @Override
                     public void onResult(VKAccessToken res) {
                         Prefs.setExpired(true);
                         Prefs.setUserId(res.userId);
-                        startMainActivity();
+                        startMainActivity(Prefs.PREFS_VK);
                     }
 
                     @Override
@@ -116,26 +117,45 @@ public class SignInActivity extends BaseActivity {
                 }
                 break;
             case Prefs.PREFS_APP_ACCOUNT:
-
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
-    private void startMainActivity() {
-        AuthorizationUtil.setVkUserProfileInfo();
+    private void handleSignInResult(GoogleSignInResult result) {
+        Log.d(Key.LT_MESSAGE, "handleSignInResult: " + result.isSuccess());
+
+        if (result.isSuccess()) {
+            GoogleSignInAccount acct = result.getSignInAccount();
+            Prefs.setUserId(acct.getId());
+            Prefs.setUserName(acct.getDisplayName());
+            Prefs.setUserAvatarUrl(acct.getPhotoUrl().toString());
+        }
+    }
+
+    private void startMainActivity(int logType) {
+
+        if (logType == Prefs.getLoggedType())
+            AuthorizationUtil.setVkUserProfileInfo();
+
         Intent intent = new Intent(SignInActivity.this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
     }
 
-    private UserProfile getUserProfile(Account account) {
-        UserProfile userProfile = null;
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
+    }
 
-        new GooglePlusProfile(this, account).execute();
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.d(Key.LT_MESSAGE, "on ConnectionFailed");
+    }
 
-        //  Return new user profile
-        return userProfile;
+    public static GoogleApiClient getGoogleApiClient() {
+        return mGoogleApiClient;
     }
 }
