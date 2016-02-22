@@ -72,8 +72,8 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
 
     @OnClick(R.id.sign_in_btn_vk)
     public void signInVk() {
-        VKSdk.login(SignInActivity.this, mScope);
         Prefs.setLoggedType(Prefs.PREFS_VK);
+        VKSdk.login(SignInActivity.this, mScope);
     }
 
     private void googlePlusSignIn() {
@@ -140,8 +140,9 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
             AuthorizationUtil.setVkUserProfileInfo();
 
         Intent intent = new Intent(SignInActivity.this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        intent.setFlags(/*Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | */Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
+        finish();
     }
 
     @Override
