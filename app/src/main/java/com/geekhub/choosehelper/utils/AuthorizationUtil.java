@@ -12,7 +12,7 @@ import org.json.JSONException;
 
 public class AuthorizationUtil {
 
-    public static void setVkUserProfileInfo() {
+    public static void setVkUserInfo() {
         VKRequest vkRequest = VKApi.users().get(VKParameters.from(VKApiConst.USER_IDS, Prefs.getUserId(), VKApiConst.FIELDS, "photo_200"));
         vkRequest.executeWithListener(new VKRequest.VKRequestListener() {
             @Override

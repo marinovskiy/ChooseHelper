@@ -21,7 +21,6 @@ import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKError;
 
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class SignInActivity extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener {
@@ -44,10 +43,8 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
         if (Prefs.isExpired()) {
-            startMainActivity(Prefs.getLoggedType());
+            startMainActivity();
         }
-
-        ButterKnife.bind(this);
 
         // Google+ sign in
         mGoogleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -92,7 +89,7 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
                 if (requestCode == RC_SIGN_IN_GOOGLE) {
                     GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
                     handleSignInResult(result);
-                    startMainActivity(Prefs.PREFS_GOOGLE_PLUS);
+                    startMainActivity();
                 }
                 break;
 
@@ -103,7 +100,7 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
                     public void onResult(VKAccessToken res) {
                         Prefs.setExpired(true);
                         Prefs.setUserId(res.userId);
-                        startMainActivity(Prefs.PREFS_VK);
+                        startMainActivity();
                     }
 
                     @Override
@@ -134,21 +131,16 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
         }
     }
 
-    private void startMainActivity(int logType) {
+    private void startMainActivity() {
 
-        if (logType == Prefs.getLoggedType())
-            AuthorizationUtil.setVkUserProfileInfo();
+        if (Prefs.getLoggedType() == Prefs.PREFS_VK) {
+            AuthorizationUtil.setVkUserInfo();
+        }
 
         Intent intent = new Intent(SignInActivity.this, MainActivity.class);
-        intent.setFlags(/*Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | */Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
         finish();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ButterKnife.unbind(this);
     }
 
     @Override
