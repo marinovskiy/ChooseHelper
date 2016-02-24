@@ -11,4 +11,8 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <!-- Toasts -->
+    <string name="toast_sign_in_error">Error. Maybe wrong pass or login</string>
+    <string name="toast_sign_out_already">You are sign out already</string>
+
 </resources>

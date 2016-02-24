@@ -4,7 +4,7 @@ import android.app.Application;
 import android.content.Intent;
 
 import com.geekhub.choosehelper.screens.activities.SignInActivity;
-import com.geekhub.choosehelper.utils.Prefs;
+import com.geekhub.choosehelper.utils.AppPreferences;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKAccessTokenTracker;
 import com.vk.sdk.VKSdk;
@@ -25,7 +25,7 @@ public class ChooseHelperApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Prefs.init(this);
+        AppPreferences.init(this);
         vkAccessTokenTracker.startTracking();
         VKSdk.initialize(this);
     }
