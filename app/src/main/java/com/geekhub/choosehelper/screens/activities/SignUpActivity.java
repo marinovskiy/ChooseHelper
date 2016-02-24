@@ -1,14 +1,14 @@
 package com.geekhub.choosehelper.screens.activities;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.geekhub.choosehelper.R;
+import com.geekhub.choosehelper.utils.BaseSignInActivity;
 
 import butterknife.OnClick;
 
-public class SignUpActivity extends BaseActivity {
+public class SignUpActivity extends BaseSignInActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
