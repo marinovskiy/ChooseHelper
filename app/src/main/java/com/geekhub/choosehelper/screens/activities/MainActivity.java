@@ -83,8 +83,9 @@ public class MainActivity extends BaseSignInActivity
         super.doAfterSignOut();
 
         Intent intent = new Intent(MainActivity.this, SignInActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         Log.d(LT_MESS, "doAfterSignOut() method done");
+        finish();
     }
 }
