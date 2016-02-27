@@ -3,8 +3,9 @@ package com.geekhub.choosehelper;
 import android.app.Application;
 import android.content.Intent;
 
+import com.firebase.client.Firebase;
 import com.geekhub.choosehelper.screens.activities.SignInActivity;
-import com.geekhub.choosehelper.utils.AppPreferences;
+import com.geekhub.choosehelper.utils.Prefs;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKAccessTokenTracker;
 import com.vk.sdk.VKSdk;
@@ -14,7 +15,7 @@ public class ChooseHelperApplication extends Application {
     VKAccessTokenTracker vkAccessTokenTracker = new VKAccessTokenTracker() {
         @Override
         public void onVKAccessTokenChanged(VKAccessToken oldToken, VKAccessToken newToken) {
-            if (newToken == null) {
+            if (newToken == null && Prefs.getLoggedType() == Prefs.ACCOUNT_VK) {
                 Intent intent = new Intent(ChooseHelperApplication.this, SignInActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
@@ -25,7 +26,8 @@ public class ChooseHelperApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        AppPreferences.init(this);
+        Prefs.init(this);
+        Firebase.setAndroidContext(this);
         vkAccessTokenTracker.startTracking();
         VKSdk.initialize(this);
     }

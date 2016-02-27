@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">Choose Helper</string>
     <string name="action_settings">Settings</string>
+
+    <!-- Api -->
     <string name="api_key_google_plus">AIzaSyClVNCQmD4G3IQaK4fWpjLj9hFXKaptPUw</string>
     <integer name="com_vk_sdk_AppId">5304588</integer>
+    <string name="vk_api_photo_200">photo_200</string>
 
     <!-- Tips -->
     <string name="tip_incorrect_r_code">Incorrect request code.</string>
@@ -14,5 +17,7 @@
     <!-- Toasts -->
     <string name="toast_sign_in_error">Error. Maybe wrong pass or login</string>
     <string name="toast_sign_out_already">You are sign out already</string>
+    <string name="toast_sign_up_error">Error. Try to register later</string>
+    <string name="toast_empty_fields">You did not fill all fields</string>
 
 </resources>

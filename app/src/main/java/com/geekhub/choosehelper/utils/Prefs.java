@@ -3,24 +3,24 @@ package com.geekhub.choosehelper.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-public class AppPreferences {
+public class Prefs {
 
     //  Application preferences keys
     public static final String LOGGED_TYPE = "logged_type";
     public static final String USER_ID = "user_id";
     public static final String USER_NAME = "user_name";
     public static final String USER_AVATAR_URL = "user_avatar_url";
+    public static final String USER_EMAIL = "user_email";
 
     //  Account logged type key
-    public static final int ACCOUNT_NONE = 0;   //  Means that user sign out
+    public static final int ACCOUNT_NONE = 0;   //  Means that user is not logged in
     public static final int ACCOUNT_GOOGLE_PLUS = 1;
     public static final int ACCOUNT_VK = 2;
     public static final int ACCOUNT_APP = 3;
 
-
     private static SharedPreferences sPrefs;
 
-    private AppPreferences() {
+    private Prefs() {
     }
 
     public static void init(Context context) {
@@ -53,6 +53,14 @@ public class AppPreferences {
         setString(USER_NAME, userName);
     }
 
+    public static String getUserEmail() {
+        return getString(USER_EMAIL);
+    }
+
+    public static void setUserEmail(String userEmail) {
+        setString(USER_EMAIL, userEmail);
+    }
+
     public static String getUserAvatarUrl() {
         return getString(USER_AVATAR_URL);
     }
@@ -83,24 +91,3 @@ public class AppPreferences {
                 .apply();
     }
 }
-
-//    public static boolean isExpired() {
-//        return getBoolean(IS_EXIST);
-//    }
-//
-//    public static void setExpired(boolean isExpired) {
-//        setBoolean(IS_EXIST, isExpired);
-//    }
-
-//    private static boolean getBoolean(String key) {
-//        return sPrefs.getBoolean(key, false);
-//    }
-//
-//
-//    private static void setInt(String key, int value) {
-//        sPrefs
-//                .edit()
-//                .putInt(key, value)
-//                .apply();
-//    }
-//}

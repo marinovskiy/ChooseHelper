@@ -8,8 +8,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.geekhub.choosehelper.R;
-import com.geekhub.choosehelper.utils.BaseSignInActivity;
-import com.geekhub.choosehelper.utils.AppPreferences;
+import com.geekhub.choosehelper.utils.Prefs;
 
 import butterknife.Bind;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
@@ -29,7 +28,7 @@ public class ProfileActivity extends BaseSignInActivity {
         setupToolbar();
         Glide
                 .with(this)
-                .load(AppPreferences.getUserAvatarUrl())
+                .load(Prefs.getUserAvatarUrl())
                 .bitmapTransform(new CropCircleTransformation(getApplicationContext()))
                 .into(mIvUserAvatar);
     }
@@ -38,7 +37,7 @@ public class ProfileActivity extends BaseSignInActivity {
         setSupportActionBar(mToolbar);
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(AppPreferences.getUserName());
+            getSupportActionBar().setTitle(Prefs.getUserName());
             getSupportActionBar().setHomeAsUpIndicator(ContextCompat
                     .getDrawable(getApplicationContext(), R.drawable.icon_arrow_back));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);

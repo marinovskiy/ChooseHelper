@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.geekhub.choosehelper.R;
-import com.geekhub.choosehelper.utils.BaseSignInActivity;
 
 import butterknife.Bind;
 
@@ -21,7 +20,7 @@ public class MainActivity extends BaseSignInActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     //  Logs
-    private static final String LT_MESS = MainActivity.class.getName();
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     @Bind(R.id.drawer_main)
     DrawerLayout mDrawerLayout;
@@ -81,11 +80,10 @@ public class MainActivity extends BaseSignInActivity
     @Override
     public void doAfterSignOut() {
         super.doAfterSignOut();
-
         Intent intent = new Intent(MainActivity.this, SignInActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-        Log.d(LT_MESS, "doAfterSignOut() method done");
+        Log.d(LOG_TAG, "doAfterSignOut() method done");
         finish();
     }
 }
