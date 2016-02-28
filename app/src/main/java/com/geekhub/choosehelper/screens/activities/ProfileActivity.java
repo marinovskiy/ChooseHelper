@@ -15,16 +15,21 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 public class ProfileActivity extends BaseSignInActivity {
 
+    private static final String TAG = "ProfileActivity";
+
     @Bind(R.id.toolbar_profile)
     Toolbar mToolbar;
 
     @Bind(R.id.profile_iv_user_avatar)
     ImageView mIvUserAvatar;
 
+    private String email;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        //AuthorizationUtil.getUser(Prefs.getUserId());
         setupToolbar();
         Glide
                 .with(this)
@@ -35,7 +40,6 @@ public class ProfileActivity extends BaseSignInActivity {
 
     private void setupToolbar() {
         setSupportActionBar(mToolbar);
-
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(Prefs.getUserName());
             getSupportActionBar().setHomeAsUpIndicator(ContextCompat

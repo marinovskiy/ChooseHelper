@@ -10,6 +10,9 @@ import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKAccessTokenTracker;
 import com.vk.sdk.VKSdk;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+
 public class ChooseHelperApplication extends Application {
 
     VKAccessTokenTracker vkAccessTokenTracker = new VKAccessTokenTracker() {
@@ -30,5 +33,11 @@ public class ChooseHelperApplication extends Application {
         Firebase.setAndroidContext(this);
         vkAccessTokenTracker.startTracking();
         VKSdk.initialize(this);
+        RealmConfiguration configuration = new RealmConfiguration.Builder(this)
+                .name("choose_helper_db.realm")
+                .schemaVersion(1)
+                .deleteRealmIfMigrationNeeded()
+                .build();
+        Realm.setDefaultConfiguration(configuration);
     }
 }

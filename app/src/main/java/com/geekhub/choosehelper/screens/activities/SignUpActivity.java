@@ -9,9 +9,9 @@ import android.widget.Toast;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.geekhub.choosehelper.R;
+import com.geekhub.choosehelper.utils.AuthorizationUtil;
 import com.geekhub.choosehelper.utils.Prefs;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.Bind;
@@ -72,12 +72,9 @@ public class SignUpActivity extends BaseSignInActivity {
             @Override
             public void onSuccess(Map<String, Object> result) {
                 String uId = String.valueOf(result.get("uid"));
-                Map<String, Object> userInfo = new HashMap<>();
-                userInfo.put("email", mEmail);
-                userInfo.put("fullName", mFullName);
-                mFirebase.child("users").child(uId).setValue(userInfo);
+                AuthorizationUtil.saveNewUser(uId, mEmail, mFullName, "");
                 Prefs.setLoggedType(Prefs.ACCOUNT_APP);
-                setUserToPrefs(uId, mEmail, mFullName, "");
+                Prefs.setUserId(uId);
                 doAfterSignIn();
             }
 
