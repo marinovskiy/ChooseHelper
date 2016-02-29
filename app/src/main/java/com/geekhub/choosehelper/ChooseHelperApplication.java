@@ -3,6 +3,7 @@ package com.geekhub.choosehelper;
 import android.app.Application;
 import android.content.Intent;
 
+import com.crashlytics.android.Crashlytics;
 import com.firebase.client.Firebase;
 import com.geekhub.choosehelper.screens.activities.SignInActivity;
 import com.geekhub.choosehelper.utils.Prefs;
@@ -10,6 +11,7 @@ import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKAccessTokenTracker;
 import com.vk.sdk.VKSdk;
 
+import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
@@ -29,6 +31,7 @@ public class ChooseHelperApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         Prefs.init(this);
         Firebase.setAndroidContext(this);
         vkAccessTokenTracker.startTracking();

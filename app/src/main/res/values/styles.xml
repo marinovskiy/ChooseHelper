@@ -4,6 +4,11 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <!--edit text-->
+        <item name="colorControlNormal">#FFFFFF</item>
+        <item name="colorControlActivated">#EEEEEE</item>
+        <item name="colorControlHighlight">#EEEEEE</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
