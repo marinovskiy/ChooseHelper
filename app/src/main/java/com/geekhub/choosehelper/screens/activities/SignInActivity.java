@@ -31,10 +31,7 @@ public class SignInActivity extends BaseSignInActivity {
 
     @OnClick(R.id.sign_up_tv)
     public void signUp() {
-        Intent intent = new Intent(SignInActivity.this, SignUpActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
+        startActivity(new Intent(SignInActivity.this, SignUpActivity.class));
     }
 
     @OnClick(R.id.sign_in_btn_google_plus)

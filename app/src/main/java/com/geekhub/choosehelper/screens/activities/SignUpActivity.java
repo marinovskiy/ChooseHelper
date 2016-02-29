@@ -42,10 +42,7 @@ public class SignUpActivity extends BaseSignInActivity {
 
     @OnClick(R.id.sign_in_tv)
     public void onClick() {
-        Intent intent = new Intent(SignUpActivity.this, SignInActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
+        startActivity(new Intent(SignUpActivity.this, SignInActivity.class));
     }
 
     @OnClick(R.id.sign_up_btn)
@@ -65,10 +62,7 @@ public class SignUpActivity extends BaseSignInActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(SignUpActivity.this, SignInActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
+        onClick();
     }
 
     @Override
