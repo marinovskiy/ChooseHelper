@@ -52,6 +52,7 @@ dependencies {
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.vk:androidsdk:1.6.3'
     compile 'com.google.android.gms:play-services-auth:8.3.0'
+    compile 'com.google.android.gms:play-services-plus:8.3.0'
     compile 'com.google.code.gson:gson:2.6.1'
     compile 'com.firebase:firebase-client-android:2.5.2'
     compile 'io.realm:realm-android:0.85.1'
