@@ -78,7 +78,7 @@ public class SignUpActivity extends BaseSignInActivity {
             @Override
             public void onSuccess(Map<String, Object> result) {
                 String uId = String.valueOf(result.get("uid"));
-                AuthorizationUtil.saveNewUser(uId, mEmail, mFullName, "");
+                AuthorizationUtil.saveNewUser(uId, mEmail, mFullName, "null");
                 Prefs.setLoggedType(Prefs.ACCOUNT_APP);
                 Prefs.setUserId(uId);
                 doAfterSignIn();

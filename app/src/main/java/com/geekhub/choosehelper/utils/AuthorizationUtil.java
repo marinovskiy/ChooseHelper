@@ -24,7 +24,6 @@ public class AuthorizationUtil {
                 .FIREBASE_BASE_REFERENCE)
                 .child("users")
                 .child(id);
-        Log.i(TAG, "isExistInFb: firebase = " + firebase.getRef());
         firebase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -53,7 +52,7 @@ public class AuthorizationUtil {
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("email", email);
         userInfo.put("fullName", fullName);
-        userInfo.put("photoUrl", photoUrl);
+        //userInfo.put("photoUrl", photoUrl);
         firebase.setValue(userInfo);
         // saving into database
         User user = new User();
@@ -74,10 +73,8 @@ public class AuthorizationUtil {
         firebase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                    NetworkUser networkUser = userSnapshot.getValue(NetworkUser.class);
-                    DbUtil.saveUser(ModelConverter.convertToUser(networkUser));
-                }
+                NetworkUser networkUser = dataSnapshot.getValue(NetworkUser.class);
+                DbUtil.saveUser(ModelConverter.convertToUser(networkUser));
             }
 
             @Override
@@ -86,4 +83,5 @@ public class AuthorizationUtil {
             }
         });
     }
+
 }

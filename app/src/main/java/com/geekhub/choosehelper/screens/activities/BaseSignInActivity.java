@@ -232,7 +232,7 @@ public class BaseSignInActivity extends AppCompatActivity
     }
 
     protected void signInViaVk() {
-        VKSdk.login(this, mScope);
+        VKSdk.login(BaseSignInActivity.this, mScope);
     }
 
     protected void signInViaAppAccount(String email, String password) {
