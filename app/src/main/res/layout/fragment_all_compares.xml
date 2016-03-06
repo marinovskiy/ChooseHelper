@@ -1,0 +1,14 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackgroundPrimary">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view_all_compares"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="78dp"
+        android:background="@color/colorBackgroundPrimary"
+        android:scrollbars="vertical" />
+
+</LinearLayout>

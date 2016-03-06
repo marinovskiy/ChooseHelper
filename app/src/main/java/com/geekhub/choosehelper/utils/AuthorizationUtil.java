@@ -9,6 +9,7 @@ import com.firebase.client.ValueEventListener;
 import com.geekhub.choosehelper.models.db.User;
 import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.screens.activities.BaseSignInActivity;
+import com.geekhub.choosehelper.utils.db.DbUsersManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -60,7 +61,7 @@ public class AuthorizationUtil {
         user.setEmail(email);
         user.setFullName(fullName);
         user.setPhotoUrl(photoUrl);
-        DbUtil.saveUser(user);
+        DbUsersManager.saveUser(user);
     }
 
     // Get user from firebase by id and save to local database
@@ -74,7 +75,7 @@ public class AuthorizationUtil {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 NetworkUser networkUser = dataSnapshot.getValue(NetworkUser.class);
-                DbUtil.saveUser(ModelConverter.convertToUser(networkUser));
+                DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser));
             }
 
             @Override

@@ -1,4 +1,4 @@
-package com.geekhub.choosehelper.utils;
+package com.geekhub.choosehelper.utils.db;
 
 import android.util.Log;
 
@@ -6,9 +6,9 @@ import com.geekhub.choosehelper.models.db.User;
 
 import io.realm.Realm;
 
-public class DbUtil {
+public class DbUsersManager {
 
-    private static final String TAG = DbUtil.class.getSimpleName();
+    private static final String TAG = DbUsersManager.class.getSimpleName();
 
     // Save user to local database
     public static void saveUser(final User user) {

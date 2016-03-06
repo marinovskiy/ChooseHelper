@@ -14,4 +14,14 @@
     <color name="colorSignInEditTextHint">#9E9E9E</color>
     <color name="colorSignInEditTextBackground">#FFFFFF</color>
     <color name="colorSignInLine">#FFFFFF</color>
+
+
+
+
+
+    <color name="colorBackgroundPrimary">#FAFAFA</color>
+
+
+
+
 </resources>

@@ -8,3 +8,5 @@
         android:startColor="@android:color/transparent" />
 
 </shape>
+
+    <!--android:endColor="#88333333"-->

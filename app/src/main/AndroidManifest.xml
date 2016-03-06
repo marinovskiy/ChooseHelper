@@ -31,6 +31,11 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".screens.activities.MainActivity"
+            android:label="Compares"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".screens.activities.AddCompareActivity"
+            android:label="New compare"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".screens.activities.ProfileActivity"
@@ -42,9 +47,10 @@
             android:label="ServiceActivity"
             android:theme="@style/VK.Transparent" />
 
-
-        <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-             App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        <!--
+             ATTENTION: This was auto-generated to add Google Play services to your project for
+             App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
+        -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -54,6 +60,7 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="b77f77b940ea374ce7ca53f6b55e0dcd219e2094" />
+
     </application>
 
 </manifest>
