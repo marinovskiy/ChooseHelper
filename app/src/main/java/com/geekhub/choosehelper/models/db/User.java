@@ -1,12 +1,14 @@
 package com.geekhub.choosehelper.models.db;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Alex on 28.02.2016.
  */
 public class User extends RealmObject {
 
+    @PrimaryKey
     private String id;
 
     private String email;

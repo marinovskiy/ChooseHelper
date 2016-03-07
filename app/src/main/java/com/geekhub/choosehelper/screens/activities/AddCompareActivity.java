@@ -48,12 +48,7 @@ public class AddCompareActivity extends BaseSignInActivity {
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationIcon(ContextCompat.getDrawable(getApplicationContext(),
                 R.drawable.icon_arrow_back));
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        mToolbar.setNavigationOnClickListener(v -> onBackPressed());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mToolbarShadow.setVisibility(View.INVISIBLE);
         }

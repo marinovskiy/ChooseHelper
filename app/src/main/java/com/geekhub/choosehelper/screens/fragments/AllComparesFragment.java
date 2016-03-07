@@ -66,11 +66,4 @@ public class AllComparesFragment extends BaseFragment {
         return compares;
     }
 
-//    private List<Variant> generateVariants() {
-//        List<Variant> variants = new ArrayList<>();
-//        for (int i = 0; i < 3; i++) {
-//            Variant variant = new
-//        }
-//        return variants;
-//    }
 }

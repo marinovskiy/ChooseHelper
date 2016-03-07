@@ -45,6 +45,8 @@ public class AuthorizationUtil {
 
     // Create new user in firebase and save to fb and db
     public static void saveNewUser(String id, String email, String fullName, String photoUrl) {
+        // saving to prefs
+        //saveUserToPrefs(id, email, fullName, photoUrl);
         // saving into firebase
         Firebase firebase = new Firebase(BaseSignInActivity
                 .FIREBASE_BASE_REFERENCE)
@@ -75,6 +77,9 @@ public class AuthorizationUtil {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 NetworkUser networkUser = dataSnapshot.getValue(NetworkUser.class);
+                Log.i(TAG, "setUpNavHeader: " + networkUser.getFullName());
+                Log.i(TAG, "setUpNavHeader: " + networkUser.getEmail());
+                Log.i(TAG, "setUpNavHeader: " + networkUser.getPhotoUrl());
                 DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser));
             }
 
@@ -84,5 +89,12 @@ public class AuthorizationUtil {
             }
         });
     }
+
+//    public static void saveUserToPrefs(String id, String email, String fullName, String photoUrl) {
+//        Prefs.setUserId(id);
+//        Prefs.setUserEmail(email);
+//        Prefs.setUserName(fullName);
+//        Prefs.setUserAvatarUrl(photoUrl);
+//    }
 
 }
