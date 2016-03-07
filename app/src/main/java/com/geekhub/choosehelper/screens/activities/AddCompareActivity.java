@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.view.View;
@@ -13,7 +12,7 @@ import android.widget.EditText;
 
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.network.NetworkVariant;
-import com.geekhub.choosehelper.utils.FirebaseManager;
+import com.geekhub.choosehelper.utils.firebase.FirebaseComparesManager;
 import com.geekhub.choosehelper.utils.Prefs;
 
 import java.io.ByteArrayOutputStream;
@@ -21,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class AddCompareActivity extends BaseSignInActivity {
@@ -68,7 +66,7 @@ public class AddCompareActivity extends BaseSignInActivity {
         List<NetworkVariant> variants = new ArrayList<>();
         variants.add(networkVariant1);
         variants.add(networkVariant2);
-        FirebaseManager.addCompare(Prefs.getUserId(), "Alex M", title, variants, "5 Mar 2016");
+        FirebaseComparesManager.addCompare(Prefs.getUserId(), "Alex M", title, variants, "5 Mar 2016");
     }
 
     private String generateImage() {

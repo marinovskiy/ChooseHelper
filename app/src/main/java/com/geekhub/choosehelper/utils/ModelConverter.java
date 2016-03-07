@@ -18,6 +18,10 @@ public class ModelConverter {
         user.setId(Prefs.getUserId());
         user.setEmail(networkUser.getEmail());
         user.setFullName(networkUser.getFullName());
+        user.setPhotoUrl(networkUser.getPhotoUrl());
+        user.setBirthday(networkUser.getBirthday());
+        user.setPlaceLive(networkUser.getPlaceLive());
+        user.setAbout(networkUser.getAbout());
         Log.i(TAG, "setUpNavHeader: " + networkUser.getFullName());
         Log.i(TAG, "setUpNavHeader: " + networkUser.getEmail());
         Log.i(TAG, "setUpNavHeader: " + networkUser.getPhotoUrl());

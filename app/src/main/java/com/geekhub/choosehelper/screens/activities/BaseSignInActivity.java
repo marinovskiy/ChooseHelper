@@ -11,13 +11,18 @@ import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.geekhub.choosehelper.R;
+import com.geekhub.choosehelper.models.network.NetworkUser;
+import com.geekhub.choosehelper.models.vk.VkUser;
 import com.geekhub.choosehelper.utils.AuthorizationUtil;
 import com.geekhub.choosehelper.utils.Prefs;
+import com.geekhub.choosehelper.utils.firebase.FirebaseUsersManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKScope;
@@ -28,9 +33,7 @@ import com.vk.sdk.api.VKError;
 import com.vk.sdk.api.VKParameters;
 import com.vk.sdk.api.VKRequest;
 import com.vk.sdk.api.VKResponse;
-import com.vk.sdk.api.model.VKApiUser;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 
 import butterknife.ButterKnife;
@@ -51,9 +54,6 @@ public class BaseSignInActivity extends AppCompatActivity
     private ConnectionResult mConnectionResult;
     private boolean mIntentInProgress;
     private boolean mSignInClicked;
-
-    private String fullName;
-    private String photoUrl;
 
     // Vk
     private String[] mScope = {
@@ -81,7 +81,8 @@ public class BaseSignInActivity extends AppCompatActivity
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).addApi(Plus.API)
-                .addScope(Plus.SCOPE_PLUS_LOGIN).build();
+                .addScope(Plus.SCOPE_PLUS_LOGIN)
+                .addScope(Plus.SCOPE_PLUS_PROFILE).build();
 
         // App account
         mFirebase = new Firebase(FIREBASE_BASE_REFERENCE);
@@ -96,20 +97,22 @@ public class BaseSignInActivity extends AppCompatActivity
     @Override
     public void onConnected(Bundle bundle) {
         mSignInClicked = false;
-        Toast.makeText(this, "User is connected!", Toast.LENGTH_LONG).show();
 
         if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
             Person account = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
             String userId = account.getId();
+            Prefs.setUserId(userId);
+            NetworkUser newUser = new NetworkUser(
+                    Plus.AccountApi.getAccountName(mGoogleApiClient),
+                    account.hasDisplayName() ? account.getDisplayName() : "null",
+                    account.getImage().hasUrl() ? account.getImage().getUrl() : "null",
+                    account.hasBirthday() ? account.getBirthday() : "null",
+                    account.hasPlacesLived() ? account.getPlacesLived().get(0).getValue() : "null",
+                    account.hasAboutMe() ? account.getAboutMe() : "null"
+            );
+            AuthorizationUtil.saveUser(newUser);
+
             Prefs.setLoggedType(Prefs.ACCOUNT_GOOGLE_PLUS);
-            if (AuthorizationUtil.isExistInFb(userId)) {
-                AuthorizationUtil.saveUserFromFb(userId);
-            } else {
-                AuthorizationUtil.saveNewUser(userId,
-                        Plus.AccountApi.getAccountName(mGoogleApiClient),
-                        account.getDisplayName(),
-                        String.valueOf(account.getImage().getUrl()));
-            }
         }
     }
 
@@ -140,45 +143,21 @@ public class BaseSignInActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case RC_GOOGLE_SIGN_IN:
-//                GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-//                if (result.isSuccess()) {
-//                    GoogleSignInAccount account = result.getSignInAccount();
-//                    String userId = account.getId();
-//                    Prefs.setLoggedType(Prefs.ACCOUNT_GOOGLE_PLUS);
-//                    if (AuthorizationUtil.isExistInFb(userId)) {
-//                        AuthorizationUtil.saveUserFromFb(userId);
-//                    } else {
-//                        AuthorizationUtil.saveNewUser(userId,
-//                                account.getEmail(),
-//                                account.getDisplayName(),
-//                                String.valueOf(account.getPhotoUrl()));
-//                    }
-//                if (responseCode != RESULT_OK) {
-//                    mSignInClicked = false;
-//                }
-
                 mIntentInProgress = false;
-
                 if (!mGoogleApiClient.isConnecting()) {
                     mGoogleApiClient.connect();
                 }
-
                 doAfterSignIn();
-//                } else
-//                    Log.d(LOG_TAG, "Sign in failed. Result code: " + resultCode);
                 break;
             case RC_VK_SIGN_IN:
                 VKCallback<VKAccessToken> callback = new VKCallback<VKAccessToken>() {
                     @Override
                     public void onResult(VKAccessToken res) {
-                        Prefs.setLoggedType(Prefs.ACCOUNT_VK);
                         String userId = res.userId;
                         String email = res.email;
-                        if (AuthorizationUtil.isExistInFb(userId)) {
-                            AuthorizationUtil.saveUserFromFb(userId);
-                        } else {
-                            setVkUserInfo(userId, email);
-                        }
+                        Prefs.setUserId(userId);
+                        getVkUser(userId, email);
+                        Prefs.setLoggedType(Prefs.ACCOUNT_VK);
                         doAfterSignIn();
                     }
 
@@ -210,9 +189,25 @@ public class BaseSignInActivity extends AppCompatActivity
         }
     }
 
+    protected void signInViaAppAccount(String email, String password) {
+        mFirebase.authWithPassword(email, password, new Firebase.AuthResultHandler() {
+            @Override
+            public void onAuthenticated(AuthData authData) {
+                Prefs.setUserId(authData.getUid());
+                FirebaseUsersManager.saveUserFromFirebase();
+                Prefs.setLoggedType(Prefs.ACCOUNT_APP);
+                doAfterSignIn();
+            }
+
+            @Override
+            public void onAuthenticationError(FirebaseError firebaseError) {
+                Log.i(LOG_TAG, "onError! Code: " + firebaseError.getCode() + "Message: "
+                        + firebaseError.getMessage() + "Details: " + firebaseError.getDetails());
+            }
+        });
+    }
+
     protected void signInViaGoogle() {
-//        Intent intent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-//        startActivityForResult(intent, RC_GOOGLE_SIGN_IN);
         if (!mGoogleApiClient.isConnecting()) {
             mSignInClicked = true;
             resolveSignInError();
@@ -235,45 +230,31 @@ public class BaseSignInActivity extends AppCompatActivity
         VKSdk.login(BaseSignInActivity.this, mScope);
     }
 
-    protected void signInViaAppAccount(String email, String password) {
-        mFirebase.authWithPassword(email, password, new Firebase.AuthResultHandler() {
-            @Override
-            public void onAuthenticated(AuthData authData) {
-                String uId = authData.getUid();
-                Prefs.setLoggedType(Prefs.ACCOUNT_APP);
-                Prefs.setUserId(uId);
-                AuthorizationUtil.saveUserFromFb(uId);
-                doAfterSignIn();
-            }
-
-            @Override
-            public void onAuthenticationError(FirebaseError firebaseError) {
-                Log.i(LOG_TAG, "onError! Code: " + firebaseError.getCode() + "Message: "
-                        + firebaseError.getMessage() + "Details: " + firebaseError.getDetails());
-            }
-        });
-    }
-
-    private void setVkUserInfo(final String id, final String email) {
+    private void getVkUser(String id, String email) {
         VKRequest vkRequest = VKApi.users()
                 .get(VKParameters.from(VKApiConst.USER_IDS, id,
-                        VKApiConst.FIELDS, getString(R.string.vk_api_photo_200)));
+                        VKApiConst.FIELDS, "photo_200,bdate,city,country,about"));
 
         vkRequest.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
                 super.onComplete(response);
                 try {
-                    JSONArray jsonArray = response.json.getJSONArray("response");
-                    VKApiUser vkApiUser = new VKApiUser(jsonArray.getJSONObject(0));
-                    fullName = String.format("%s %s",
-                            vkApiUser.first_name,
-                            vkApiUser.last_name);
-                    photoUrl = vkApiUser.photo_200;
-                    AuthorizationUtil.saveNewUser(id,
+                    GsonBuilder gsonBuilder = new GsonBuilder();
+                    Gson gson = gsonBuilder.create();
+                    VkUser vkUser = (gson.fromJson(String.valueOf(response.json
+                            .getJSONArray("response").getJSONObject(0)), VkUser.class));
+
+                    NetworkUser newUser = new NetworkUser(
                             email,
-                            fullName,
-                            photoUrl);
+                            vkUser.getFirstName() + " " + vkUser.getLastName(),
+                            vkUser.getImageUrl(),
+                            vkUser.getBirthday(),
+                            vkUser.getCity().getTitle() + ", " + vkUser.getCountry().getTitle(),
+                            vkUser.getAbout()
+                    );
+                    AuthorizationUtil.saveUser(newUser);
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -287,13 +268,6 @@ public class BaseSignInActivity extends AppCompatActivity
                 Toast.makeText(this, R.string.toast_sign_out_already, Toast.LENGTH_SHORT).show();
 
             case Prefs.ACCOUNT_GOOGLE_PLUS: {
-//                Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
-//                    @Override
-//                    public void onResult(Status status) {
-//                        Log.d(LOG_TAG, "Sign out success");
-//                    }
-//                });
-//            }
                 if (mGoogleApiClient.isConnected()) {
                     Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
                     mGoogleApiClient.disconnect();

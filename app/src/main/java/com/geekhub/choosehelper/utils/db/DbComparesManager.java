@@ -5,8 +5,4 @@ package com.geekhub.choosehelper.utils.db;
  */
 public class DbComparesManager {
 
-    public static void addCompare() {
-
-    }
-
 }

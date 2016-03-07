@@ -154,18 +154,22 @@ public class MainActivity extends BaseSignInActivity
     private void setUpNavHeader() {
         User user = DbUsersManager.getUser(Prefs.getUserId());
         if (user != null && user.isLoaded()) {
-            Log.i(LOG_TAG, "setUpNavHeader: " + user.getFullName());
-            Log.i(LOG_TAG, "setUpNavHeader: " + user.getEmail());
-            Log.i(LOG_TAG, "setUpNavHeader: " + user.getPhotoUrl());
+            Log.i("MainActivityTest", "setUpNavHeader: " + user.getId());
+            Log.i("MainActivityTest", "setUpNavHeader: " + user.getFullName());
+            Log.i("MainActivityTest", "setUpNavHeader: " + user.getEmail());
+            Log.i("MainActivityTest", "setUpNavHeader: " + user.getPhotoUrl());
+            Log.i("MainActivityTest", "setUpNavHeader: " + user.getBirthday());
+            Log.i("MainActivityTest", "setUpNavHeader: " + user.getPlaceLive());
+            Log.i("MainActivityTest", "setUpNavHeader: " + user.getAbout());
         }
         View headerView = mNavigationView.inflateHeaderView(R.layout.navigation_header_layout);
         ImageView ivAvatar = (ImageView) headerView.findViewById(R.id.nav_header_avatar);
         TextView tvFullName = (TextView) headerView.findViewById(R.id.nav_header_name);
         TextView tvEmail = (TextView) headerView.findViewById(R.id.nav_header_email);
-        tvFullName.setText("Name");
-        tvEmail.setText("Email");
+        tvFullName.setText(user.getFullName());
+        tvEmail.setText(user.getEmail());
         Glide.with(this)
-                .load(R.drawable.test_img)
+                .load(user.getPhotoUrl())
                 .bitmapTransform(new CropCircleTransformation(getApplicationContext()))
                 .into(ivAvatar);
     }

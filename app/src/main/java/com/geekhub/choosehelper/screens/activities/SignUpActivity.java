@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.geekhub.choosehelper.R;
+import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.utils.AuthorizationUtil;
 import com.geekhub.choosehelper.utils.Prefs;
 
@@ -42,7 +43,7 @@ public class SignUpActivity extends BaseSignInActivity {
 
     @OnClick(R.id.sign_in_tv)
     public void onClick() {
-        startActivity(new Intent(SignUpActivity.this, SignInActivity.class));
+        onBackPressed();
     }
 
     @OnClick(R.id.sign_up_btn)
@@ -60,15 +61,9 @@ public class SignUpActivity extends BaseSignInActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        onClick();
-    }
-
-    @Override
     public void doAfterSignIn() {
         Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
     }
@@ -77,10 +72,12 @@ public class SignUpActivity extends BaseSignInActivity {
         mFirebase.createUser(mEmail, mPassword, new Firebase.ValueResultHandler<Map<String, Object>>() {
             @Override
             public void onSuccess(Map<String, Object> result) {
-                String uId = String.valueOf(result.get("uid"));
-                AuthorizationUtil.saveNewUser(uId, mEmail, mFullName, "null");
+                Prefs.setUserId(String.valueOf(result.get("uid")));
+                NetworkUser newUser = new NetworkUser(mEmail,
+                        mFullName,
+                        "null");
+                AuthorizationUtil.saveUser(newUser);
                 Prefs.setLoggedType(Prefs.ACCOUNT_APP);
-                Prefs.setUserId(uId);
                 doAfterSignIn();
             }
 

@@ -19,9 +19,7 @@ public class User extends RealmObject {
 
     private String birthday;
 
-    private String country;
-
-    private String city;
+    private String placeLive;
 
     private String about;
 
@@ -65,20 +63,12 @@ public class User extends RealmObject {
         this.birthday = birthday;
     }
 
-    public String getCountry() {
-        return country;
+    public String getPlaceLive() {
+        return placeLive;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
+    public void setPlaceLive(String placeLive) {
+        this.placeLive = placeLive;
     }
 
     public String getAbout() {

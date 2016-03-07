@@ -1,15 +1,13 @@
 package com.geekhub.choosehelper.utils;
 
-import android.util.Log;
-
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
-import com.geekhub.choosehelper.models.db.User;
 import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.screens.activities.BaseSignInActivity;
 import com.geekhub.choosehelper.utils.db.DbUsersManager;
+import com.geekhub.choosehelper.utils.firebase.FirebaseConstants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,13 +16,15 @@ public class AuthorizationUtil {
 
     private static final String TAG = "AuthorizationUtil";
 
-    // Check if user already exist in firebase
-    public static boolean isExistInFb(String id) {
+    // check if user already exist in firebase
+    public static boolean isUserExist(String id) {
         final boolean[] result = new boolean[1];
+
         Firebase firebase = new Firebase(BaseSignInActivity
                 .FIREBASE_BASE_REFERENCE)
                 .child("users")
                 .child(id);
+
         firebase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -40,61 +40,32 @@ public class AuthorizationUtil {
                 result[0] = false;
             }
         });
+
         return result[0];
     }
 
-    // Create new user in firebase and save to fb and db
-    public static void saveNewUser(String id, String email, String fullName, String photoUrl) {
-        // saving to prefs
-        //saveUserToPrefs(id, email, fullName, photoUrl);
-        // saving into firebase
-        Firebase firebase = new Firebase(BaseSignInActivity
-                .FIREBASE_BASE_REFERENCE)
-                .child("users")
-                .child(id);
+    // save user to local database and firebase
+    public static void saveUser(NetworkUser networkUser) {
+
+        // saving to local database
+        DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser));
+
+        // saving to firebase
+        Firebase firebase = new Firebase(FirebaseConstants.FB_REFERENCE_MAIN)
+                .child(FirebaseConstants.FB_REFERENCE_USERS)
+                .child(Prefs.getUserId());
         Map<String, Object> userInfo = new HashMap<>();
-        userInfo.put("email", email);
-        userInfo.put("fullName", fullName);
-        //userInfo.put("photoUrl", photoUrl);
-        firebase.setValue(userInfo);
-        // saving into database
-        User user = new User();
-        user.setId(id);
-        user.setEmail(email);
-        user.setFullName(fullName);
-        user.setPhotoUrl(photoUrl);
-        DbUsersManager.saveUser(user);
+        userInfo.put(FirebaseConstants.FB_REFERENCE_USER_EMAIL, networkUser.getEmail());
+        userInfo.put(FirebaseConstants.FB_REFERENCE_USER_FULL_NAME, networkUser.getFullName());
+        userInfo.put(FirebaseConstants.FB_REFERENCE_USER_PHOTO_URL, networkUser.getPhotoUrl());
+        userInfo.put(FirebaseConstants.FB_REFERENCE_USER_BIRTHDAY, networkUser.getBirthday());
+        userInfo.put(FirebaseConstants.FB_REFERENCE_USER_PLACE_LIVE, networkUser.getPlaceLive());
+        userInfo.put(FirebaseConstants.FB_REFERENCE_USER_ABOUT, networkUser.getAbout());
+        if (isUserExist(Prefs.getUserId())) {
+            firebase.updateChildren(userInfo);
+        } else if (!isUserExist(Prefs.getUserId())) {
+            firebase.setValue(userInfo);
+        }
     }
-
-    // Get user from firebase by id and save to local database
-    public static void saveUserFromFb(String id) {
-        Firebase firebase = new Firebase(BaseSignInActivity
-                .FIREBASE_BASE_REFERENCE)
-                .child("users")
-                .child(id);
-        Log.i(TAG, "isExistInFb: firebase = " + firebase.getRef());
-        firebase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                NetworkUser networkUser = dataSnapshot.getValue(NetworkUser.class);
-                Log.i(TAG, "setUpNavHeader: " + networkUser.getFullName());
-                Log.i(TAG, "setUpNavHeader: " + networkUser.getEmail());
-                Log.i(TAG, "setUpNavHeader: " + networkUser.getPhotoUrl());
-                DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser));
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                Log.i(TAG, "saveUserFromFb: firebase = error");
-            }
-        });
-    }
-
-//    public static void saveUserToPrefs(String id, String email, String fullName, String photoUrl) {
-//        Prefs.setUserId(id);
-//        Prefs.setUserEmail(email);
-//        Prefs.setUserName(fullName);
-//        Prefs.setUserAvatarUrl(photoUrl);
-//    }
 
 }
