@@ -11,8 +11,6 @@ import com.geekhub.choosehelper.models.network.NetworkUser;
  */
 public class ModelConverter {
 
-    private static final String TAG = "AuthorizationUtil";
-
     public static User convertToUser(@NonNull NetworkUser networkUser) {
         User user = new User();
         user.setId(Prefs.getUserId());
@@ -22,12 +20,11 @@ public class ModelConverter {
         user.setBirthday(networkUser.getBirthday());
         user.setPlaceLive(networkUser.getPlaceLive());
         user.setAbout(networkUser.getAbout());
-        Log.i(TAG, "setUpNavHeader: " + networkUser.getFullName());
-        Log.i(TAG, "setUpNavHeader: " + networkUser.getEmail());
-        Log.i(TAG, "setUpNavHeader: " + networkUser.getPhotoUrl());
-        Log.i(TAG, "setUpNavHeader: " + user.getFullName());
-        Log.i(TAG, "setUpNavHeader: " + user.getEmail());
-        Log.i(TAG, "setUpNavHeader: " + user.getPhotoUrl());
+        Log.i("errorlogs", "AuthUtil execute: " + user.getId());
+        Log.i("errorlogs", "AuthUtil execute: " + user.getEmail());
+        Log.i("errorlogs", "AuthUtil execute: " + user.getFullName());
+        Log.i("errorlogs", "AuthUtil execute: " + user.getPhotoUrl());
+        Log.i("errorlogs", "AuthUtil execute: " + user);
         return user;
     }
 

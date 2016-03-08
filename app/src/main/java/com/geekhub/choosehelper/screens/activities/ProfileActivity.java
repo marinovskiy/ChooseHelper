@@ -3,12 +3,15 @@ package com.geekhub.choosehelper.screens.activities;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.geekhub.choosehelper.R;
+import com.geekhub.choosehelper.models.db.User;
 import com.geekhub.choosehelper.utils.Prefs;
+import com.geekhub.choosehelper.utils.db.DbUsersManager;
 
 import butterknife.Bind;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
@@ -31,6 +34,16 @@ public class ProfileActivity extends BaseSignInActivity {
         setContentView(R.layout.activity_profile);
         //AuthorizationUtil.getUser(Prefs.getUserId());
         setupToolbar();
+        /*User user = DbUsersManager.getUser(Prefs.getUserId());
+        if (user != null && user.isLoaded()) {
+            Log.i("MainActivityTest", "setupNavHeader: " + user.getId());
+            Log.i("MainActivityTest", "setupNavHeader: " + user.getFullName());
+            Log.i("MainActivityTest", "setupNavHeader: " + user.getEmail());
+            Log.i("MainActivityTest", "setupNavHeader: " + user.getPhotoUrl());
+            Log.i("MainActivityTest", "setupNavHeader: " + user.getBirthday());
+            Log.i("MainActivityTest", "setupNavHeader: " + user.getPlaceLive());
+            Log.i("MainActivityTest", "setupNavHeader: " + user.getAbout());
+        }*/
         /*Glide
                 .with(this)
                 .load(Prefs.getUserAvatarUrl())

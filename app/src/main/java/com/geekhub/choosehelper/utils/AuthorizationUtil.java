@@ -1,9 +1,12 @@
 package com.geekhub.choosehelper.utils;
 
+import android.util.Log;
+
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.geekhub.choosehelper.models.db.User;
 import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.screens.activities.BaseSignInActivity;
 import com.geekhub.choosehelper.utils.db.DbUsersManager;
@@ -11,6 +14,8 @@ import com.geekhub.choosehelper.utils.firebase.FirebaseConstants;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import io.realm.Realm;
 
 public class AuthorizationUtil {
 
@@ -46,6 +51,11 @@ public class AuthorizationUtil {
 
     // save user to local database and firebase
     public static void saveUser(NetworkUser networkUser) {
+        Log.i("errorlogs", AuthorizationUtil.class.getSimpleName() + "AuthUtil.saveUser()");
+        Log.i("errorlogs", "AuthUtil execute: " + Prefs.getUserId());
+        Log.i("errorlogs", "AuthUtil execute: " + networkUser.getEmail());
+        Log.i("errorlogs", "AuthUtil execute: " + networkUser.getFullName());
+        Log.i("errorlogs", "AuthUtil execute: " + networkUser.getPhotoUrl());
 
         // saving to local database
         DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser));

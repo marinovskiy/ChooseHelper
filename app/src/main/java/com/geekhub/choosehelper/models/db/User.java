@@ -23,6 +23,9 @@ public class User extends RealmObject {
 
     private String about;
 
+    public User() {
+    }
+
     public String getId() {
         return id;
     }

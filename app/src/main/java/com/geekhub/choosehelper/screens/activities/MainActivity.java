@@ -29,6 +29,7 @@ import com.geekhub.choosehelper.utils.db.DbUsersManager;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.RealmChangeListener;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 public class MainActivity extends BaseSignInActivity
@@ -55,27 +56,31 @@ public class MainActivity extends BaseSignInActivity
     @Bind(R.id.view_pager_main)
     ViewPager mViewPager;
 
-    /*@Bind(R.id.fab_add_main)
-    FloatingActionButton mFab;*/
+    private User mCurrentUser;
+
+    private RealmChangeListener mRealmChangeListener = new RealmChangeListener() {
+        @Override
+        public void onChange() {
+            if (mCurrentUser != null && mCurrentUser.isLoaded()) {
+                setupNavHeader(mCurrentUser);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-        setUpToolbar();
-        setUpNavDrawer();
-        mNavigationView.setNavigationItemSelectedListener(this);
-        setUpNavHeader();
+        setupToolbar();
+        setupNavDrawer();
+        getCurrentUserInfo();
         setupViewPager(mViewPager);
         mTabLayout.setupWithViewPager(mViewPager);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            //mToolbarShadow.setVisibility(View.INVISIBLE);
-        }
+        mNavigationView.setNavigationItemSelectedListener(this);
     }
 
     @OnClick(R.id.fab_add_main)
-    public void onClick() {
+    public void onFabClick() {
         startActivity(new Intent(MainActivity.this, AddCompareActivity.class));
     }
 
@@ -95,8 +100,11 @@ public class MainActivity extends BaseSignInActivity
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onPause() {
+        if (mCurrentUser != null) {
+            mCurrentUser.removeChangeListener(mRealmChangeListener);
+        }
+        super.onPause();
     }
 
     @Override
@@ -137,13 +145,16 @@ public class MainActivity extends BaseSignInActivity
         }
     }
 
-    private void setUpToolbar() {
+    private void setupToolbar() {
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            //mToolbarShadow.setVisibility(View.INVISIBLE);
+        }
     }
 
-    private void setUpNavDrawer() {
+    private void setupNavDrawer() {
         if (mToolbar != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             mToolbar.setNavigationIcon(R.drawable.icon_drawer);
@@ -151,17 +162,12 @@ public class MainActivity extends BaseSignInActivity
         }
     }
 
-    private void setUpNavHeader() {
-        User user = DbUsersManager.getUser(Prefs.getUserId());
-        if (user != null && user.isLoaded()) {
-            Log.i("MainActivityTest", "setUpNavHeader: " + user.getId());
-            Log.i("MainActivityTest", "setUpNavHeader: " + user.getFullName());
-            Log.i("MainActivityTest", "setUpNavHeader: " + user.getEmail());
-            Log.i("MainActivityTest", "setUpNavHeader: " + user.getPhotoUrl());
-            Log.i("MainActivityTest", "setUpNavHeader: " + user.getBirthday());
-            Log.i("MainActivityTest", "setUpNavHeader: " + user.getPlaceLive());
-            Log.i("MainActivityTest", "setUpNavHeader: " + user.getAbout());
-        }
+    private void getCurrentUserInfo() {
+        mCurrentUser = DbUsersManager.getUser(Prefs.getUserId());
+        mCurrentUser.addChangeListener(mRealmChangeListener);
+    }
+
+    private void setupNavHeader(User user) {
         View headerView = mNavigationView.inflateHeaderView(R.layout.navigation_header_layout);
         ImageView ivAvatar = (ImageView) headerView.findViewById(R.id.nav_header_avatar);
         TextView tvFullName = (TextView) headerView.findViewById(R.id.nav_header_name);
