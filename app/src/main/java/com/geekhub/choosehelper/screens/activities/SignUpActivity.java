@@ -1,8 +1,10 @@
 package com.geekhub.choosehelper.screens.activities;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -10,8 +12,11 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.network.NetworkUser;
-import com.geekhub.choosehelper.utils.AuthorizationUtil;
+import com.geekhub.choosehelper.utils.ModelConverter;
 import com.geekhub.choosehelper.utils.Prefs;
+import com.geekhub.choosehelper.utils.Utils;
+import com.geekhub.choosehelper.utils.db.DbUsersManager;
+import com.geekhub.choosehelper.utils.firebase.FirebaseUsersManager;
 
 import java.util.Map;
 
@@ -22,70 +27,89 @@ public class SignUpActivity extends BaseSignInActivity {
 
     private static final String LOG_TAG = SignUpActivity.class.getSimpleName();
 
-    @Bind(R.id.sign_up_et_full_name)
-    EditText mEtFullName;
+    @Bind(R.id.et_sign_up_full_name)
+    EditText mEtSignUpFullName;
 
-    @Bind(R.id.sign_up_et_email)
-    EditText mEtEmail;
+    @Bind(R.id.et_sign_up_email)
+    EditText mEtSignUpEmail;
 
-    @Bind(R.id.sign_up_et_password)
-    EditText mEtPassword;
+    @Bind(R.id.et_sign_up_password)
+    EditText mEtSignUpPassword;
+
+    @Bind(R.id.et_sign_up_repeat_password)
+    EditText mEtSignUpRepeatPassword;
 
     private String mFullName;
+
     private String mEmail;
+
     private String mPassword;
+
+    private String mRepeatPassword;
+
+    private String mImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up);
+        setContentView(R.layout.activity_register);
     }
 
-    @OnClick(R.id.sign_in_tv)
-    public void onClick() {
-        onBackPressed();
-    }
-
-    @OnClick(R.id.sign_up_btn)
-    public void signUpClick() {
-        mFullName = String.valueOf(mEtFullName.getText());
-        mEmail = String.valueOf(mEtEmail.getText());
-        mPassword = String.valueOf(mEtPassword.getText());
-        if (mFullName.equals("") || mEmail.equals("") || mPassword.equals("")) {
-            Toast.makeText(SignUpActivity.this,
-                    R.string.toast_empty_fields,
-                    Toast.LENGTH_SHORT).show();
-        } else {
-            signUp();
+    @OnClick({R.id.iv_sign_up_photo, R.id.btn_sign_up_go_login, R.id.btn_sign_up, R.id.btn_sign_up_skip_login})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.iv_sign_up_photo:
+                Utils.showPhotoPickerDialog(getApplicationContext());
+                break;
+            case R.id.btn_sign_up_go_login:
+                onBackPressed();
+                break;
+            case R.id.btn_sign_up:
+                mFullName = String.valueOf(mEtSignUpFullName.getText());
+                mEmail = String.valueOf(mEtSignUpEmail.getText());
+                mPassword = String.valueOf(mEtSignUpPassword.getText());
+                mRepeatPassword = String.valueOf(mEtSignUpRepeatPassword.getText());
+                if (mFullName.equals("") || mEmail.equals("") || mPassword.equals("")) {
+                    Toast.makeText(SignUpActivity.this, "You did not fill all fields", Toast.LENGTH_SHORT).show();
+                } else if (!mPassword.equals(mRepeatPassword)) {
+                    Toast.makeText(SignUpActivity.this, "Passwords are different", Toast.LENGTH_SHORT).show();
+                } else {
+                    signUp();
+                }
+                break;
+            case R.id.btn_sign_up_skip_login:
+                startMainActivity();
+                break;
         }
     }
 
-    @Override
-    public void doAfterSignIn() {
-        Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
-    }
-
     private void signUp() {
-        mFirebase.createUser(mEmail, mPassword, new Firebase.ValueResultHandler<Map<String, Object>>() {
+        Firebase firebase = new Firebase("https://choosehelper.firebaseio.com");
+        firebase.createUser(mEmail, mPassword, new Firebase.ValueResultHandler<Map<String, Object>>() {
             @Override
-            public void onSuccess(Map<String, Object> result) {
-                Prefs.setUserId(String.valueOf(result.get("uid")));
-                NetworkUser newUser = new NetworkUser(mEmail,
+            public void onSuccess(Map<String, Object> stringObjectMap) {
+                Log.i(LOG_TAG, "onSuccess");
+                Prefs.setUserId(String.valueOf(stringObjectMap.get("uid")));
+                mImage = Utils.convertBitmapToString(BitmapFactory.decodeResource(getResources(),
+                        R.drawable.test_img));
+                NetworkUser networkUser = new NetworkUser(mEmail,
                         mFullName,
-                        "null");
-                AuthorizationUtil.saveUser(newUser);
-                Prefs.setLoggedType(Prefs.ACCOUNT_APP);
-                doAfterSignIn();
+                        mImage);
+                DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser));
+                FirebaseUsersManager.saveUserToFirebase(networkUser);
+                Intent intentMain = new Intent(SignUpActivity.this, MainActivity.class);
+                intentMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intentMain);
+                finish();
             }
 
             @Override
             public void onError(FirebaseError firebaseError) {
+                Utils.showErrorDialog(getApplicationContext(), firebaseError.getMessage());
                 Log.i(LOG_TAG, "onError! Code: " + firebaseError.getCode() + "Message: "
                         + firebaseError.getMessage() + "Details: " + firebaseError.getDetails());
             }
         });
     }
+
 }

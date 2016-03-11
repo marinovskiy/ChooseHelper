@@ -17,14 +17,14 @@ public class ModelConverter {
         user.setEmail(networkUser.getEmail());
         user.setFullName(networkUser.getFullName());
         user.setPhotoUrl(networkUser.getPhotoUrl());
-        user.setBirthday(networkUser.getBirthday());
+        /*user.setBirthday(networkUser.getBirthday());
         user.setPlaceLive(networkUser.getPlaceLive());
-        user.setAbout(networkUser.getAbout());
-        Log.i("errorlogs", "AuthUtil execute: " + user.getId());
+        user.setAbout(networkUser.getAbout());*/
+        /*Log.i("errorlogs", "AuthUtil execute: " + user.getId());
         Log.i("errorlogs", "AuthUtil execute: " + user.getEmail());
         Log.i("errorlogs", "AuthUtil execute: " + user.getFullName());
         Log.i("errorlogs", "AuthUtil execute: " + user.getPhotoUrl());
-        Log.i("errorlogs", "AuthUtil execute: " + user);
+        Log.i("errorlogs", "AuthUtil execute: " + user);*/
         return user;
     }
 

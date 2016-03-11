@@ -36,7 +36,7 @@ public class MainActivity extends BaseSignInActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     //  Logs
-    private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     @Bind(R.id.drawer_main)
     DrawerLayout mDrawerLayout;
@@ -92,7 +92,8 @@ public class MainActivity extends BaseSignInActivity
                 startActivity(new Intent(MainActivity.this, ProfileActivity.class));
                 return true;
             case R.id.action_nav_logout:
-                signOut();
+                logout();
+                startSignInActivity(); //
                 return true;
             default:
                 return false;
@@ -114,15 +115,6 @@ public class MainActivity extends BaseSignInActivity
         } else {
             finish();
         }
-    }
-
-    @Override
-    public void doAfterSignOut() {
-        super.doAfterSignOut();
-        Intent intent = new Intent(MainActivity.this, SignInActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
     }
 
     @Override
@@ -155,7 +147,7 @@ public class MainActivity extends BaseSignInActivity
     }
 
     private void setupNavDrawer() {
-        if (mToolbar != null) {
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             mToolbar.setNavigationIcon(R.drawable.icon_drawer);
             mToolbar.setNavigationOnClickListener(v -> mDrawerLayout.openDrawer(GravityCompat.START));

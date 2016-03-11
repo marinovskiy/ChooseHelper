@@ -17,11 +17,11 @@ public class User extends RealmObject {
 
     private String photoUrl;
 
-    private String birthday;
+    /*private String birthday;
 
     private String placeLive;
 
-    private String about;
+    private String about;*/
 
     public User() {
     }
@@ -58,7 +58,7 @@ public class User extends RealmObject {
         this.photoUrl = photoUrl;
     }
 
-    public String getBirthday() {
+    /*public String getBirthday() {
         return birthday;
     }
 
@@ -80,5 +80,5 @@ public class User extends RealmObject {
 
     public void setAbout(String about) {
         this.about = about;
-    }
+    }*/
 }

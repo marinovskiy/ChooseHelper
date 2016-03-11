@@ -3,10 +3,13 @@
     <string name="action_settings">Settings</string>
 
     <!-- Api -->
-    <string name="api_key_google_plus">AIzaSyClVNCQmD4G3IQaK4fWpjLj9hFXKaptPUw</string>
-    <integer name="com_vk_sdk_AppId">5304588</integer>
-    <string name="vk_api_photo_200">photo_200</string>
+    <string name="facebook_app_id">1109390425777638</string>
 
+    <array name="photo_picker_array">
+        <item>Get from gallery</item>
+        <item>Make a photo</item>
+    </array>
+    
     <!-- Tips -->
     <string name="tip_incorrect_r_code">Incorrect request code.</string>
 

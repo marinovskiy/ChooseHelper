@@ -8,11 +8,11 @@ public class NetworkUser {
 
     private String photoUrl;
 
-    private String birthday;
+    /*private String birthday;
 
     private String placeLive;
 
-    private String about;
+    private String about;*/
 
     public NetworkUser() {
 
@@ -24,14 +24,14 @@ public class NetworkUser {
         this.photoUrl = photoUrl;
     }
 
-    public NetworkUser(String email, String fullName, String photoUrl, String birthday, String placeLive, String about) {
+    /*public NetworkUser(String email, String fullName, String photoUrl, String birthday, String placeLive, String about) {
         this.email = email;
         this.fullName = fullName;
         this.photoUrl = photoUrl;
         this.birthday = birthday;
         this.placeLive = placeLive;
         this.about = about;
-    }
+    }*/
 
     public String getEmail() {
         return email;
@@ -57,7 +57,7 @@ public class NetworkUser {
         this.photoUrl = photoUrl;
     }
 
-    public String getBirthday() {
+    /*public String getBirthday() {
         return birthday;
     }
 
@@ -79,5 +79,5 @@ public class NetworkUser {
 
     public void setAbout(String about) {
         this.about = about;
-    }
+    }*/
 }

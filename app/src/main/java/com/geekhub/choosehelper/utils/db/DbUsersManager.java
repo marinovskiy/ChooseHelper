@@ -11,23 +11,19 @@ public class DbUsersManager {
 
     private static final String TAG = DbUsersManager.class.getSimpleName();
 
-    // Save user to local database
+    // save user to local database
     public static void saveUser(User user) {
         Realm realm = Realm.getDefaultInstance();
 //        realm.beginTransaction();
 //        realm.copyToRealm(user);
 //        realm.commitTransaction();
 //        realm.close();
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                Log.i("errorlogs", "DbUsersManager.saveUser() -> execute");
-                Log.i(TAG, "execute: " + user.getId());
-                Log.i(TAG, "execute: " + user.getEmail());
-                Log.i(TAG, "execute: " + user.getFullName());
-                Log.i(TAG, "execute: " + user.getPhotoUrl());
-                realm.copyToRealmOrUpdate(user);
-            }
+        realm.executeTransaction(realm1 -> {
+            Log.i(TAG, "execute: " + user.getId());
+            Log.i(TAG, "execute: " + user.getEmail());
+            Log.i(TAG, "execute: " + user.getFullName());
+            Log.i(TAG, "execute: " + user.getPhotoUrl());
+            realm1.copyToRealmOrUpdate(user);
         }/*, new Realm.Transaction.Callback() {
             @Override
             public void onSuccess() {
