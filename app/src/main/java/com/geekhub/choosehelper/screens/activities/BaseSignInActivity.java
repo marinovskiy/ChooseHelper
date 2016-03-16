@@ -95,23 +95,6 @@ public class BaseSignInActivity extends AppCompatActivity
         /** FACEBOOK **/
 
         mFacebookCallbackManager = CallbackManager.Factory.create();
-        LoginManager.getInstance().registerCallback(mFacebookCallbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Log.i(LOG_TAG, "onSuccess: " + loginResult);
-            }
-
-            @Override
-            public void onCancel() {
-                Log.i(LOG_TAG, "onCancel: ");
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-                Log.i(LOG_TAG, "onError: " + error.getMessage());
-            }
-        });
-
         mFacebookAccessTokenTracker = new AccessTokenTracker() {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
@@ -134,8 +117,6 @@ public class BaseSignInActivity extends AppCompatActivity
         /** GENERAL **/
 
         mFirebase = new Firebase(FirebaseConstants.FB_REFERENCE_MAIN);
-
-        //showProgressDialog();
     }
 
     @Override
@@ -151,9 +132,9 @@ public class BaseSignInActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_GOOGLE_LOGIN) {
-            showProgressDialog();
             GoogleSignInResult googleSignInResult = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (googleSignInResult.isSuccess()) {
+                showProgressDialog();
                 GoogleSignInAccount googleSignInAccount = googleSignInResult.getSignInAccount();
                 String email = null;
                 if (googleSignInAccount != null) {
@@ -162,7 +143,6 @@ public class BaseSignInActivity extends AppCompatActivity
                 getGoogleOAuthTokenAndLogin(email);
             }
         } else {
-            showProgressDialog();
             mFacebookCallbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -172,10 +152,8 @@ public class BaseSignInActivity extends AppCompatActivity
      **/
 
     protected void googleLogin() {
-        showProgressDialog();
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_GOOGLE_LOGIN);
-        hideProgressDialog();
     }
 
     @Override
@@ -230,6 +208,25 @@ public class BaseSignInActivity extends AppCompatActivity
 
     protected void facebookLogin() {
         LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList(mFacebookPermissions));
+        LoginManager.getInstance().registerCallback(mFacebookCallbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                showProgressDialog();
+                Log.i(LOG_TAG, "onSuccess: " + loginResult);
+            }
+
+            @Override
+            public void onCancel() {
+                hideProgressDialog();
+                Log.i(LOG_TAG, "onCancel: ");
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                hideProgressDialog();
+                Log.i(LOG_TAG, "onError: " + error.getMessage());
+            }
+        });
     }
 
     private void onFacebookAccessTokenChange(AccessToken token) {
@@ -250,6 +247,7 @@ public class BaseSignInActivity extends AppCompatActivity
         if (email.equals("") || password.equals("")) {
             Toast.makeText(BaseSignInActivity.this, "You did not fill all fields", Toast.LENGTH_SHORT).show();
         } else {
+            showProgressDialog();
             mFirebase.authWithPassword(email, password, new AuthResultHandler("password"));
         }
     }
@@ -264,7 +262,6 @@ public class BaseSignInActivity extends AppCompatActivity
 
         @Override
         public void onAuthenticated(AuthData authData) {
-            //hideProgressDialog();
             switch (provider) {
                 case "facebook":
                     Prefs.setLoggedType(Prefs.FACEBOOK_LOGIN);
@@ -283,7 +280,6 @@ public class BaseSignInActivity extends AppCompatActivity
         @Override
         public void onAuthenticationError(FirebaseError firebaseError) {
             hideProgressDialog();
-            //Utils.showErrorDialog(getApplicationContext(), firebaseError.toString());
             Utils.showErrorMessage(getApplicationContext(), firebaseError.toString());
         }
     }
@@ -346,7 +342,7 @@ public class BaseSignInActivity extends AppCompatActivity
             mProgressDialog.setMessage("Authenticating...");
             mProgressDialog.setCancelable(false);
         }
-//        mProgressDialog.show();
+        mProgressDialog.show();
     }
 
     private void hideProgressDialog() {

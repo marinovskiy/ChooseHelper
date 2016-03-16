@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.geekhub.choosehelper.R;
+import com.geekhub.choosehelper.utils.Prefs;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -26,7 +27,7 @@ public class SignInActivity extends BaseSignInActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_sign_in);
     }
 
     @OnClick({R.id.btn_go_sign_up, R.id.btn_sign_in, R.id.btn_sign_in_skip_login, R.id.btn_sign_in_google, R.id.btn_sign_in_facebook})
@@ -44,6 +45,7 @@ public class SignInActivity extends BaseSignInActivity {
                 loginEmailPassword(mEmail, mPassword);
                 break;
             case R.id.btn_sign_in_skip_login:
+                Prefs.setLoggedType(Prefs.NOT_LOGIN);
                 startMainActivity();
                 break;
             case R.id.btn_sign_in_google:

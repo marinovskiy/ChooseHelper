@@ -1,145 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorSignInBackground"
+    android:background="#FFFFFF"
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/tv_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
-        android:text="Sign In"
-        android:textColor="@color/colorSignInText"
-        android:textSize="30sp" />
+        android:layout_gravity="start"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="24dp"
+        android:text="Login"
+        android:textAllCaps="false"
+        android:textColor="#03A9F4"
+        android:textSize="24sp" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/tv_login_text"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/tv_login"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
         android:layout_marginTop="24dp"
-        android:text="Sign in with a simple click:"
-        android:textColor="@color/colorSignInText"
-        android:textSize="20sp" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/sign_in_btn_google_plus"
-            style="@style/AppTheme.Button.GooglePlus"
-            android:layout_width="@dimen/width_button_social_networks"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="6dp"
-            android:elevation="2dp"
-            android:text="Sign in with G+" />
-
-        <!--<com.facebook.login.widget.LoginButton-->
-            <!--android:id="@+id/login_button"-->
-            <!--android:layout_marginLeft="6dp"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"/>-->
-
-        <Button
-            style="@style/AppTheme.Button.Vk"
-            android:id="@+id/login_button"
-            android:layout_width="@dimen/width_button_social_networks"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="6dp"
-            android:elevation="2dp"
-            android:text="Sign in with Fb" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:orientation="horizontal">
-
-        <View
-            android:layout_width="120dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="12dp"
-            android:background="@color/colorSignInLine" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingLeft="6dp"
-            android:paddingRight="6dp"
-            android:text="OR"
-            android:textColor="@color/colorSignInText"
-            android:textSize="20sp" />
-
-        <View
-            android:layout_width="120dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="12dp"
-            android:background="@color/colorSignInLine" />
-
-    </LinearLayout>
+        android:text="Sign in with your email and password"
+        android:textColor="#757575"
+        android:textSize="18sp" />
 
     <EditText
-        android:id="@+id/sign_in_et_email"
+        android:id="@+id/et_sign_in_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_left_right_edit_text_login"
-        android:layout_marginRight="@dimen/margin_left_right_edit_text_login"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/edit_box"
-        android:elevation="2dp"
-        android:hint="Login"
-        android:padding="12dp"
-        android:textColorHint="@color/colorSignInEditTextHint" />
+        android:layout_below="@id/tv_login_text"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/edittextline"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:paddingBottom="16dp"
+        android:paddingLeft="10dp"
+        android:textColor="#9E9E9E"
+        android:textColorHint="#9E9E9E"
+        android:textSize="16sp" />
 
     <EditText
-        android:id="@+id/sign_in_et_password"
+        android:id="@+id/et_sign_in_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_left_right_edit_text_login"
-        android:layout_marginRight="@dimen/margin_left_right_edit_text_login"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/edit_box"
-        android:elevation="2dp"
+        android:layout_below="@id/et_sign_in_email"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/edittextline"
         android:hint="Password"
         android:inputType="textPassword"
-        android:padding="12dp"
-        android:textColorHint="@color/colorSignInEditTextHint" />
+        android:paddingBottom="16dp"
+        android:paddingLeft="10dp"
+        android:textColor="#9E9E9E"
+        android:textColorHint="#9E9E9E"
+        android:textSize="16sp" />
 
     <Button
-        android:id="@+id/sign_in_btn"
-        style="@style/AppTheme.Button.SignIn"
+        android:id="@+id/btn_sign_in"
+        style="?borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/et_sign_in_password"
+        android:layout_marginRight="24dp"
+        android:layout_marginTop="24dp"
+        android:background="#03A9F4"
+        android:text="LOGIN"
+        android:textAllCaps="true"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btn_go_sign_up"
+        style="?borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/et_sign_in_password"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_toLeftOf="@id/btn_sign_in"
+        android:text="SIGN UP"
+        android:textAllCaps="true"
+        android:textColor="#03A9F4"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btn_sign_in_skip_login"
+        style="?borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/btn_sign_in"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_toLeftOf="@id/btn_sign_in"
+        android:text="Skip >>"
+        android:textAllCaps="false"
+        android:textColor="#03A9F4"
+        android:textSize="16sp" />
+
+    <!--<TextView-->
+    <!--android:id="@+id/tv_skip_login"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_below="@id/btn_sign_in"-->
+    <!--android:layout_marginRight="24dp"-->
+    <!--android:layout_marginTop="24dp"-->
+    <!--android:text="Skip >>"-->
+    <!--android:textAllCaps="false"-->
+    <!--android:textColor="#03A9F4"-->
+    <!--android:textSize="18sp" />-->
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_left_right_edit_text_login"
-        android:layout_marginRight="@dimen/margin_left_right_edit_text_login"
-        android:layout_marginTop="12dp"
-        android:elevation="2dp"
-        android:text="Sign In" />
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="18dp"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/sign_up_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:clickable="true"
-        android:text="No account yet? Create one"
-        android:textColor="@color/colorSignInText"
-        android:textSize="18sp" />
+        <Button
+            android:id="@+id/btn_sign_in_google"
+            style="@style/AppTheme.Button.GooglePlus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="4dp"
+            android:layout_weight="1"
+            android:text="Login with Google +"
+            android:textSize="14sp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:clickable="true"
-        android:text="Forgot password"
-        android:textColor="@color/colorSignInText"
-        android:textSize="18sp" />
+        <Button
+            android:id="@+id/btn_sign_in_facebook"
+            style="@style/AppTheme.Button.Vk"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_weight="1"
+            android:text="Login with Facebook"
+            android:textSize="14sp" />
 
-</LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

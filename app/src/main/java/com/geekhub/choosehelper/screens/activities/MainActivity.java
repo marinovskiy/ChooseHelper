@@ -73,7 +73,9 @@ public class MainActivity extends BaseSignInActivity
         setContentView(R.layout.activity_main);
         setupToolbar();
         setupNavDrawer();
-        getCurrentUserInfo();
+        if (Prefs.getLoggedType() != Prefs.NOT_LOGIN) {
+            getCurrentUserInfo();
+        }
         setupViewPager(mViewPager);
         mTabLayout.setupWithViewPager(mViewPager);
         mNavigationView.setNavigationItemSelectedListener(this);
@@ -93,7 +95,7 @@ public class MainActivity extends BaseSignInActivity
                 return true;
             case R.id.action_nav_logout:
                 logout();
-                startSignInActivity(); //
+                startSignInActivity();
                 return true;
             default:
                 return false;
@@ -154,11 +156,6 @@ public class MainActivity extends BaseSignInActivity
         }
     }
 
-    private void getCurrentUserInfo() {
-        mCurrentUser = DbUsersManager.getUser(Prefs.getUserId());
-        mCurrentUser.addChangeListener(mRealmChangeListener);
-    }
-
     private void setupNavHeader(User user) {
         View headerView = mNavigationView.inflateHeaderView(R.layout.navigation_header_layout);
         ImageView ivAvatar = (ImageView) headerView.findViewById(R.id.nav_header_avatar);
@@ -178,5 +175,10 @@ public class MainActivity extends BaseSignInActivity
         adapter.addFragment(FriendsComparesFragment.newInstance(), "Friend's");
         adapter.addFragment(MyComparesFragment.newInstance(), "My");
         viewPager.setAdapter(adapter);
+    }
+
+    private void getCurrentUserInfo() {
+        mCurrentUser = DbUsersManager.getUser(Prefs.getUserId());
+        mCurrentUser.addChangeListener(mRealmChangeListener);
     }
 }

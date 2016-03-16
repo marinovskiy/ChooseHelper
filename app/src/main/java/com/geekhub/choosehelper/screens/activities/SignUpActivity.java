@@ -1,5 +1,6 @@
 package com.geekhub.choosehelper.screens.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -49,17 +50,19 @@ public class SignUpActivity extends BaseSignInActivity {
 
     private String mImage;
 
+    private ProgressDialog mProgressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.activity_sign_up);
     }
 
     @OnClick({R.id.iv_sign_up_photo, R.id.btn_sign_up_go_login, R.id.btn_sign_up, R.id.btn_sign_up_skip_login})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_sign_up_photo:
-                Utils.showPhotoPickerDialog(getApplicationContext());
+                //Utils.showPhotoPickerDialog(getApplicationContext());
                 break;
             case R.id.btn_sign_up_go_login:
                 onBackPressed();
@@ -78,12 +81,14 @@ public class SignUpActivity extends BaseSignInActivity {
                 }
                 break;
             case R.id.btn_sign_up_skip_login:
+                Prefs.setLoggedType(Prefs.NOT_LOGIN);
                 startMainActivity();
                 break;
         }
     }
 
     private void signUp() {
+        showProgressDialog();
         Firebase firebase = new Firebase("https://choosehelper.firebaseio.com");
         firebase.createUser(mEmail, mPassword, new Firebase.ValueResultHandler<Map<String, Object>>() {
             @Override
@@ -97,6 +102,7 @@ public class SignUpActivity extends BaseSignInActivity {
                         mImage);
                 DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser));
                 FirebaseUsersManager.saveUserToFirebase(networkUser);
+                hideProgressDialog();
                 Intent intentMain = new Intent(SignUpActivity.this, MainActivity.class);
                 intentMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intentMain);
@@ -105,11 +111,27 @@ public class SignUpActivity extends BaseSignInActivity {
 
             @Override
             public void onError(FirebaseError firebaseError) {
-                Utils.showErrorDialog(getApplicationContext(), firebaseError.getMessage());
+                hideProgressDialog();
+                Utils.showErrorMessage(getApplicationContext(), firebaseError.getMessage());
                 Log.i(LOG_TAG, "onError! Code: " + firebaseError.getCode() + "Message: "
                         + firebaseError.getMessage() + "Details: " + firebaseError.getDetails());
             }
         });
+    }
+
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage("R...");
+            mProgressDialog.setCancelable(false);
+        }
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+        }
     }
 
 }
