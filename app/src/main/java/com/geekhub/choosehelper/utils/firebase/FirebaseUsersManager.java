@@ -56,7 +56,8 @@ public class FirebaseUsersManager {
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-                Log.i(TAG, "saveUserFromFb: firebase = error details:" + firebaseError.getDetails() + "message: " + firebaseError.getMessage() + " code: " + firebaseError.getCode());
+                Log.i(TAG, "saveUserFromFb: firebase = error details:" + firebaseError.getDetails()
+                        + "message: " + firebaseError.getMessage() + " code: " + firebaseError.getCode());
             }
         });
     }

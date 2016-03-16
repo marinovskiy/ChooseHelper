@@ -1,5 +1,6 @@
 package com.geekhub.choosehelper.utils;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
@@ -17,14 +18,6 @@ import java.io.ByteArrayOutputStream;
  */
 public class Utils {
 
-    public static void showErrorDialog(Context context, String message) {
-        new AlertDialog.Builder(context)
-                .setTitle("Error")
-                .setMessage(message)
-                .setPositiveButton(android.R.string.ok, null)
-                .show();
-    }
-
     public static void showErrorMessage(Context context, String message) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
@@ -32,18 +25,9 @@ public class Utils {
     public static void showPhotoPickerDialog(Context context) {
         new AlertDialog.Builder(context)
                 .setTitle("Photo")
-                .setItems(R.array.photo_picker_array, (dialog, which) -> {
-                    Toast.makeText(context, "Pos = " + which, Toast.LENGTH_SHORT).show();
-//                    switch (which) {
-//                        case 0:
-//                            Toast.makeText(context, "Pos = " + which, Toast.LENGTH_SHORT).show();
-//                            break;
-//                        case 1:
-//                            Toast.makeText(context, "Pos = " + which, Toast.LENGTH_SHORT).show();
-//                            break;
-//                    }
+                .setItems(R.array.photo_variants, (dialog, which) -> {
+                    Toast.makeText(context, "pos = " + which, Toast.LENGTH_SHORT).show();
                 })
-                .setPositiveButton(android.R.string.ok, null)
                 .show();
     }
 

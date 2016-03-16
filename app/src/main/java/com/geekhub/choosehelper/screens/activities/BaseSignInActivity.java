@@ -21,6 +21,7 @@ import com.facebook.login.LoginResult;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.utils.ModelConverter;
 import com.geekhub.choosehelper.utils.Prefs;
@@ -79,6 +80,8 @@ public class BaseSignInActivity extends AppCompatActivity
 
     private AuthData mAuthData;
 
+    private Firebase.AuthStateListener mAuthStateListener;
+
     private ProgressDialog mProgressDialog;
 
     @Override
@@ -117,6 +120,14 @@ public class BaseSignInActivity extends AppCompatActivity
         /** GENERAL **/
 
         mFirebase = new Firebase(FirebaseConstants.FB_REFERENCE_MAIN);
+
+        mAuthStateListener = authData -> {
+            if (authData != null) {
+                setAuthenticatedUser(authData);
+            } else {
+                logout();
+            }
+        };
     }
 
     @Override
@@ -125,6 +136,8 @@ public class BaseSignInActivity extends AppCompatActivity
         if (mFacebookAccessTokenTracker != null) {
             mFacebookAccessTokenTracker.stopTracking();
         }
+        mFirebase.removeAuthStateListener(mAuthStateListener);
+        dismissProgressDialog();
         ButterKnife.unbind(this);
     }
 
@@ -195,7 +208,7 @@ public class BaseSignInActivity extends AppCompatActivity
                     mFirebase.authWithOAuthToken("google", token, new AuthResultHandler("google"));
                 } else if (errorMessage != null) {
                     hideProgressDialog();
-                    Utils.showErrorDialog(getApplicationContext(), errorMessage);
+                    Utils.showErrorMessage(getApplicationContext(), errorMessage);
                 }
             }
         };
@@ -301,7 +314,6 @@ public class BaseSignInActivity extends AppCompatActivity
             }
         }
         this.mAuthData = authData;
-        hideProgressDialog();
         startMainActivity();
     }
 
@@ -339,7 +351,7 @@ public class BaseSignInActivity extends AppCompatActivity
     private void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage("Authenticating...");
+            mProgressDialog.setMessage(getString(R.string.pd_msg_authenticating));
             mProgressDialog.setCancelable(false);
         }
         mProgressDialog.show();
@@ -348,6 +360,12 @@ public class BaseSignInActivity extends AppCompatActivity
     private void hideProgressDialog() {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.hide();
+        }
+    }
+
+    private void dismissProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
         }
     }
 

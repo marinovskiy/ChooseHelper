@@ -5,14 +5,7 @@
     <!-- Api -->
     <string name="facebook_app_id">1109390425777638</string>
 
-    <array name="photo_picker_array">
-        <item>Get from gallery</item>
-        <item>Make a photo</item>
-    </array>
-    
-    <!-- Tips -->
-    <string name="tip_incorrect_r_code">Incorrect request code.</string>
-
+    <!--Navigation Drawers-->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
@@ -22,9 +15,17 @@
     <string name="toast_sign_up_error">Error. Try to register later</string>
     <string name="toast_empty_fields">You did not fill all fields</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_scrolling">ScrollingActivity</string>
+    <!--Progress Dialogs-->
+    <string name="pd_msg_wait_please">Wait please…</string>
+    <string name="pd_msg_authenticating">Authenticating…</string>
+
+    <!--Arrays-->
+    <string-array name="photo_variants">
+        <item>Get from gallery</item>
+        <item>Make a photo</item>
+    </string-array>
+
+
     <string name="large_text">
         "Material is the metaphor.\n\n"
 

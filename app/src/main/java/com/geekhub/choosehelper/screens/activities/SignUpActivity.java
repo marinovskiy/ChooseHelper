@@ -103,10 +103,7 @@ public class SignUpActivity extends BaseSignInActivity {
                 DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser));
                 FirebaseUsersManager.saveUserToFirebase(networkUser);
                 hideProgressDialog();
-                Intent intentMain = new Intent(SignUpActivity.this, MainActivity.class);
-                intentMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intentMain);
-                finish();
+                startMainActivity();
             }
 
             @Override
@@ -122,7 +119,7 @@ public class SignUpActivity extends BaseSignInActivity {
     private void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage("R...");
+            mProgressDialog.setMessage(getString(R.string.pd_msg_wait_please));
             mProgressDialog.setCancelable(false);
         }
         mProgressDialog.show();

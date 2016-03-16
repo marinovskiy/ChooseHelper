@@ -62,14 +62,4 @@ public class Prefs {
                 .apply();
     }
 
-    private static void setBoolean(String key, boolean value) {
-        sPrefs.edit()
-                .putBoolean(key, value)
-                .apply();
-    }
-
-    private static boolean getBoolean(String key) {
-        return sPrefs.getBoolean(key, false);
-    }
-
 }
