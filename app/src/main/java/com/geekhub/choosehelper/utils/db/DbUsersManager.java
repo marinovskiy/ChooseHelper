@@ -14,16 +14,16 @@ public class DbUsersManager {
     public static void saveUser(User user) {
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransaction(realm1 -> {
-            Log.i(TAG, "execute: " + user.getId());
-            Log.i(TAG, "execute: " + user.getEmail());
-            Log.i(TAG, "execute: " + user.getFullName());
-            Log.i(TAG, "execute: " + user.getPhotoUrl());
             realm1.copyToRealmOrUpdate(user);
         });
     }
 
     // Get user to local database
-    public static User getUser(String id) {
+    public static User getUserAsync(String id) {
         return Realm.getDefaultInstance().where(User.class).equalTo("id", id).findFirstAsync();
+    }
+
+    public static User getUserNotAsync(String id) {
+        return Realm.getDefaultInstance().where(User.class).equalTo("id", id).findFirst();
     }
 }

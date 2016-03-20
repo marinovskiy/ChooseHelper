@@ -3,8 +3,7 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <dimen name="button_corner_radius">4dp</dimen>
-    <dimen name="width_button_social_networks">135dp</dimen>
+    <dimen name="social_button_corner_radius">2dp</dimen>
     <dimen name="margin_left_right_edit_text_login">45dp</dimen>
 
 
@@ -17,5 +16,7 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="app_bar_height">180dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="text_size_sign_button">16sp</dimen>
+    <dimen name="text_size_social_login_button">14sp</dimen>
 
 </resources>

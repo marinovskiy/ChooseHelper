@@ -7,7 +7,6 @@
     <!--SIGN IN ACTIVITY-->
     <color name="colorSignInBackground">#00796B</color>
     <color name="colorSignInText">#FFFFFF</color>
-    <color name="colorSignInBtnGoogle">#D34836</color>
     <color name="colorSignInBtnVk">#36638E</color>
     <color name="colorSignInBtnText">#FFFFFF</color>
     <color name="colorSignInBtn">#03A9F4</color>
@@ -15,13 +14,14 @@
     <color name="colorSignInEditTextBackground">#FFFFFF</color>
     <color name="colorSignInLine">#FFFFFF</color>
 
-
-
-
-
     <color name="colorBackgroundPrimary">#FAFAFA</color>
 
+    <!--social-->
+    <color name="colorSignInUp">#03A9F4</color>
+    <color name="colorGooglePlus">#D34836</color>
+    <color name="colorFacebook">#3B5998</color>
 
-
+    <color name="colorEditText">#9F9F9F</color>
+    <color name="colorEditTextFocus">#000000</color>
 
 </resources>

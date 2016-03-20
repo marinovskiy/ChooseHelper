@@ -1,15 +1,11 @@
 package com.geekhub.choosehelper.utils;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AlertDialog;
 import android.util.Base64;
 import android.widget.Toast;
-
-import com.geekhub.choosehelper.R;
 
 import java.io.ByteArrayOutputStream;
 
@@ -23,12 +19,20 @@ public class Utils {
     }
 
     public static void showPhotoPickerDialog(Context context) {
-        new AlertDialog.Builder(context)
-                .setTitle("Photo")
-                .setItems(R.array.photo_variants, (dialog, which) -> {
-                    Toast.makeText(context, "pos = " + which, Toast.LENGTH_SHORT).show();
-                })
-                .show();
+        AlertDialog alertDialog = new AlertDialog.Builder(context)
+                .setTitle("title")
+                .setMessage("message")
+//                .setItems(R.array.photo_variants, (dialog, which) -> {
+//                    Toast.makeText(context, "pos = " + which, Toast.LENGTH_SHORT).show();
+//                })
+                .create();
+        alertDialog.show();
+//        new AlertDialog.Builder(context)
+//                .setTitle("Photo")
+//                .setItems(R.array.photo_variants, (dialog, which) -> {
+//                    Toast.makeText(context, "pos = " + which, Toast.LENGTH_SHORT).show();
+//                })
+//                .show();
     }
 
     public static String convertBitmapToString(Bitmap bitmap) {

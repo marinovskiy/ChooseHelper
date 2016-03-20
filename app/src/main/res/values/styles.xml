@@ -1,24 +1,16 @@
 <resources>
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-
-        <!--edit text-->
-        <item name="colorControlNormal">#FFFFFF</item>
-        <item name="colorControlActivated">#EEEEEE</item>
-        <item name="colorControlHighlight">#EEEEEE</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
-    </style>
-
-    <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
-        <item name="color">@android:color/white</item>
     </style>
 
     <style name="AppTheme.Button" parent="Base.Widget.AppCompat.Button">
@@ -26,19 +18,23 @@
         <item name="android:textColor">@color/colorSignInBtnText</item>
     </style>
 
+    <style name="AppTheme.Button.Sign" parent="AppTheme.Button">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:background">@drawable/sign_button</item>
+        <item name="android:textSize">@dimen/text_size_sign_button</item>
+    </style>
+
     <style name="AppTheme.Button.GooglePlus" parent="AppTheme.Button">
+        <item name="android:textStyle">normal</item>
         <item name="android:background">@drawable/google_plus_button</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">@dimen/text_size_social_login_button</item>
     </style>
 
-    <style name="AppTheme.Button.Vk" parent="AppTheme.Button">
-        <item name="android:background">@drawable/vk_button</item>
-        <item name="android:textSize">16sp</item>
-    </style>
-
-    <style name="AppTheme.Button.SignIn" parent="AppTheme.Button">
-        <item name="android:background">@drawable/sign_in_button</item>
-        <item name="android:textSize">18sp</item>
+    <style name="AppTheme.Button.Facebook" parent="AppTheme.Button">
+        <item name="android:textStyle">normal</item>
+        <item name="android:background">@drawable/facebook_button</item>
+        <item name="android:textSize">@dimen/text_size_social_login_button</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

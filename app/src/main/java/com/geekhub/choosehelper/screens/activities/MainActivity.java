@@ -9,7 +9,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,7 +26,6 @@ import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.db.DbUsersManager;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.realm.RealmChangeListener;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
@@ -178,7 +176,7 @@ public class MainActivity extends BaseSignInActivity
     }
 
     private void getCurrentUserInfo() {
-        mCurrentUser = DbUsersManager.getUser(Prefs.getUserId());
+        mCurrentUser = DbUsersManager.getUserAsync(Prefs.getUserId());
         mCurrentUser.addChangeListener(mRealmChangeListener);
     }
 }

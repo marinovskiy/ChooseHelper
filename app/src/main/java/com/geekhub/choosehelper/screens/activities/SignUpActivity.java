@@ -17,6 +17,7 @@ import com.geekhub.choosehelper.utils.ModelConverter;
 import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.Utils;
 import com.geekhub.choosehelper.utils.db.DbUsersManager;
+import com.geekhub.choosehelper.utils.firebase.FirebaseConstants;
 import com.geekhub.choosehelper.utils.firebase.FirebaseUsersManager;
 
 import java.util.Map;
@@ -89,7 +90,7 @@ public class SignUpActivity extends BaseSignInActivity {
 
     private void signUp() {
         showProgressDialog();
-        Firebase firebase = new Firebase("https://choosehelper.firebaseio.com");
+        Firebase firebase = new Firebase(FirebaseConstants.FB_REFERENCE_MAIN);
         firebase.createUser(mEmail, mPassword, new Firebase.ValueResultHandler<Map<String, Object>>() {
             @Override
             public void onSuccess(Map<String, Object> stringObjectMap) {

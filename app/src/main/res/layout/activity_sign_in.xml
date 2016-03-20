@@ -13,7 +13,7 @@
         android:layout_gravity="start"
         android:layout_marginLeft="24dp"
         android:layout_marginTop="24dp"
-        android:text="Login"
+        android:text="@string/label_login"
         android:textAllCaps="false"
         android:textColor="#03A9F4"
         android:textSize="24sp" />
@@ -26,7 +26,7 @@
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
         android:layout_marginTop="24dp"
-        android:text="Sign in with your email and password"
+        android:text="@string/label_sign_in_email_pass"
         android:textColor="#757575"
         android:textSize="18sp" />
 
@@ -38,13 +38,14 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="32dp"
-        android:background="@drawable/edittextline"
-        android:hint="Email"
+        android:background="@drawable/login_et_selector"
+        android:hint="@string/hint_email"
         android:inputType="textEmailAddress"
         android:paddingBottom="16dp"
         android:paddingLeft="10dp"
-        android:textColor="#9E9E9E"
+        android:textColor="#000000"
         android:textColorHint="#9E9E9E"
+        android:textCursorDrawable="@null"
         android:textSize="16sp" />
 
     <EditText
@@ -55,18 +56,29 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="24dp"
-        android:background="@drawable/edittextline"
-        android:hint="Password"
+        android:background="@drawable/login_et_selector"
+        android:hint="@string/hint_password"
         android:inputType="textPassword"
         android:paddingBottom="16dp"
         android:paddingLeft="10dp"
-        android:textColor="#9E9E9E"
+        android:textColor="#000000"
         android:textColorHint="#9E9E9E"
         android:textSize="16sp" />
 
+    <!--<Button-->
+    <!--android:id="@+id/btn_sign_in"-->
+    <!--style="@style/AppTheme.Button.Sign"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_below="@id/et_sign_in_password"-->
+    <!--android:layout_marginRight="24dp"-->
+    <!--android:layout_marginTop="24dp"-->
+    <!--android:text="@string/label_login" />-->
+
     <Button
         android:id="@+id/btn_sign_in"
-        style="?borderlessButtonStyle"
+        style="@style/Base.Widget.AppCompat.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -74,7 +86,7 @@
         android:layout_marginRight="24dp"
         android:layout_marginTop="24dp"
         android:background="#03A9F4"
-        android:text="LOGIN"
+        android:text="@string/label_login"
         android:textAllCaps="true"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
@@ -89,7 +101,11 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="24dp"
         android:layout_toLeftOf="@id/btn_sign_in"
-        android:text="SIGN UP"
+        android:paddingBottom="6dp"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:paddingTop="6dp"
+        android:text="@string/label_sign_up"
         android:textAllCaps="true"
         android:textColor="#03A9F4"
         android:textSize="16sp"
@@ -105,23 +121,10 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="24dp"
         android:layout_toLeftOf="@id/btn_sign_in"
-        android:text="Skip >>"
+        android:text="@string/label_skip"
         android:textAllCaps="false"
         android:textColor="#03A9F4"
         android:textSize="16sp" />
-
-    <!--<TextView-->
-    <!--android:id="@+id/tv_skip_login"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_alignParentRight="true"-->
-    <!--android:layout_below="@id/btn_sign_in"-->
-    <!--android:layout_marginRight="24dp"-->
-    <!--android:layout_marginTop="24dp"-->
-    <!--android:text="Skip >>"-->
-    <!--android:textAllCaps="false"-->
-    <!--android:textColor="#03A9F4"-->
-    <!--android:textSize="18sp" />-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -140,18 +143,16 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="4dp"
             android:layout_weight="1"
-            android:text="Login with Google +"
-            android:textSize="14sp" />
+            android:text="@string/label_login_google_plus" />
 
         <Button
             android:id="@+id/btn_sign_in_facebook"
-            style="@style/AppTheme.Button.Vk"
+            style="@style/AppTheme.Button.Facebook"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="4dp"
             android:layout_weight="1"
-            android:text="Login with Facebook"
-            android:textSize="14sp" />
+            android:text="@string/label_login_facebook" />
 
     </LinearLayout>
 

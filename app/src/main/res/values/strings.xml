@@ -25,6 +25,19 @@
         <item>Make a photo</item>
     </string-array>
 
+    <!--labels-->
+    <string name="label_login">Login</string>
+    <string name="label_sign_in_email_pass">Sign in with your email and password</string>
+    <string name="label_sign_up">SIGN UP</string>
+    <string name="label_skip"><![CDATA[Skip >>]]></string>
+    <string name="label_login_google_plus">Login with Google +</string>
+    <string name="label_login_facebook">Login with Facebook</string>
+
+    <!--hints-->
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+
+
 
     <string name="large_text">
         "Material is the metaphor.\n\n"
