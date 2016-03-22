@@ -9,9 +9,10 @@ public class Prefs {
     public static final String LOGGED_TYPE = "logged_type";
 
     public static final int NOT_LOGIN = 0;
-    public static final int GOOGLE_LOGIN = 1;
-    public static final int FACEBOOK_LOGIN = 2;
-    public static final int FIREBASE_LOGIN = 3;
+    public static final int SKIP_LOGIN = 1;
+    public static final int GOOGLE_LOGIN = 2;
+    public static final int FACEBOOK_LOGIN = 3;
+    public static final int FIREBASE_LOGIN = 4;
 
     private static SharedPreferences sPrefs;
 

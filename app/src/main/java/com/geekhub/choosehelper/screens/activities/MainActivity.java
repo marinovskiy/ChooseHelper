@@ -1,6 +1,7 @@
 package com.geekhub.choosehelper.screens.activities;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -16,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.firebase.client.Firebase;
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.db.User;
 import com.geekhub.choosehelper.screens.fragments.AllComparesFragment;
@@ -23,7 +25,12 @@ import com.geekhub.choosehelper.screens.fragments.FriendsComparesFragment;
 import com.geekhub.choosehelper.screens.fragments.MyComparesFragment;
 import com.geekhub.choosehelper.ui.adapters.ComparesViewPagerAdapter;
 import com.geekhub.choosehelper.utils.Prefs;
+import com.geekhub.choosehelper.utils.Utils;
 import com.geekhub.choosehelper.utils.db.DbUsersManager;
+import com.geekhub.choosehelper.utils.firebase.FirebaseConstants;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -81,7 +88,13 @@ public class MainActivity extends BaseSignInActivity
 
     @OnClick(R.id.fab_add_main)
     public void onFabClick() {
-        startActivity(new Intent(MainActivity.this, AddCompareActivity.class));
+        //startActivity(new Intent(MainActivity.this, AddCompareActivity.class));
+        Firebase firebase = new Firebase(FirebaseConstants.FB_REFERENCE_MAIN);
+        firebase.child("test");
+        Map<Object, Object> map = new HashMap<>();
+        map.put("img", Utils.convertBitmapToString(BitmapFactory.decodeResource(getResources(),
+                R.drawable.test_img)));
+        firebase.setValue(map);
     }
 
     @Override

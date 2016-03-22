@@ -1,159 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    android:gravity="center_horizontal"
+    android:background="@color/colorPrimary"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tv_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginLeft="24dp"
-        android:layout_marginTop="24dp"
-        android:text="@string/label_login"
-        android:textAllCaps="false"
-        android:textColor="#03A9F4"
-        android:textSize="24sp" />
-
-    <TextView
-        android:id="@+id/tv_login_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_login"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:layout_marginTop="24dp"
-        android:text="@string/label_sign_in_email_pass"
-        android:textColor="#757575"
-        android:textSize="18sp" />
-
-    <EditText
-        android:id="@+id/et_sign_in_email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_login_text"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="32dp"
-        android:background="@drawable/login_et_selector"
-        android:hint="@string/hint_email"
-        android:inputType="textEmailAddress"
-        android:paddingBottom="16dp"
-        android:paddingLeft="10dp"
-        android:textColor="#000000"
-        android:textColorHint="#9E9E9E"
-        android:textCursorDrawable="@null"
-        android:textSize="16sp" />
-
-    <EditText
-        android:id="@+id/et_sign_in_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/et_sign_in_email"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="24dp"
-        android:background="@drawable/login_et_selector"
-        android:hint="@string/hint_password"
-        android:inputType="textPassword"
-        android:paddingBottom="16dp"
-        android:paddingLeft="10dp"
-        android:textColor="#000000"
-        android:textColorHint="#9E9E9E"
-        android:textSize="16sp" />
-
-    <!--<Button-->
-    <!--android:id="@+id/btn_sign_in"-->
-    <!--style="@style/AppTheme.Button.Sign"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_alignParentRight="true"-->
-    <!--android:layout_below="@id/et_sign_in_password"-->
-    <!--android:layout_marginRight="24dp"-->
-    <!--android:layout_marginTop="24dp"-->
-    <!--android:text="@string/label_login" />-->
-
-    <Button
-        android:id="@+id/btn_sign_in"
-        style="@style/Base.Widget.AppCompat.Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/et_sign_in_password"
-        android:layout_marginRight="24dp"
-        android:layout_marginTop="24dp"
-        android:background="#03A9F4"
-        android:text="@string/label_login"
-        android:textAllCaps="true"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-
-    <Button
-        android:id="@+id/btn_go_sign_up"
-        style="?borderlessButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/et_sign_in_password"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="24dp"
-        android:layout_toLeftOf="@id/btn_sign_in"
-        android:paddingBottom="6dp"
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp"
-        android:paddingTop="6dp"
-        android:text="@string/label_sign_up"
-        android:textAllCaps="true"
-        android:textColor="#03A9F4"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-
-    <Button
-        android:id="@+id/btn_sign_in_skip_login"
-        style="?borderlessButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/btn_sign_in"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="24dp"
-        android:layout_toLeftOf="@id/btn_sign_in"
-        android:text="@string/label_skip"
-        android:textAllCaps="false"
-        android:textColor="#03A9F4"
-        android:textSize="16sp" />
-
     <LinearLayout
+        android:id="@+id/ll_login_top"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="18dp"
-        android:orientation="horizontal">
+        android:background="@drawable/sign_in_top_shadow"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        app:layout_heightPercent="62%">
 
-        <Button
-            android:id="@+id/btn_sign_in_google"
-            style="@style/AppTheme.Button.GooglePlus"
+        <TextView
+            android:id="@+id/tv_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/app_name"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="26sp" />
+
+        <EditText
+            android:id="@+id/et_sign_in_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="4dp"
-            android:layout_weight="1"
-            android:text="@string/label_login_google_plus" />
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/sign_in_et_selector"
+            android:hint="@string/hint_email"
+            android:inputType="textEmailAddress"
+            android:paddingBottom="16dp"
+            android:paddingLeft="10dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#BDBDBD"
+            android:textCursorDrawable="@null"
+            android:textSize="16sp" />
 
-        <Button
-            android:id="@+id/btn_sign_in_facebook"
-            style="@style/AppTheme.Button.Facebook"
+        <EditText
+            android:id="@+id/et_sign_in_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
-            android:layout_weight="1"
-            android:text="@string/label_login_facebook" />
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/sign_in_et_selector"
+            android:hint="@string/hint_password"
+            android:inputType="textPassword"
+            android:paddingBottom="16dp"
+            android:paddingLeft="10dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#BDBDBD"
+            android:textCursorDrawable="@null"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/btn_sign_in"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="24dp"
+            android:background="03A9F4"
+            android:text="@string/label_login"
+            android:textAllCaps="true"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_forgot_password"
+            style="?borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="14dp"
+            android:layout_marginTop="16dp"
+            android:text="Forgot password?"
+            android:textAllCaps="false"
+            android:textColor="#03A9F4"
+            android:textSize="16sp" />
 
     </LinearLayout>
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_below="@id/ll_login_top"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        app:layout_heightPercent="33%">
+
+        <TextView
+            style="?borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Log In Using"
+            android:textAllCaps="false"
+            android:textColor="#03A9F4"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/sign_in_facebook"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_marginRight="4dp"
+                android:src="@mipmap/icon_facebook_circle" />
+
+            <ImageView
+                android:id="@+id/sign_in_google"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_marginLeft="4dp"
+                android:src="@mipmap/icon_google_plus_circle" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_create_an_account"
+        style="?borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="Create an Account"
+        android:textAllCaps="false"
+        android:textColor="#03A9F4"
+        android:textSize="16sp" />
+
+</android.support.percent.PercentRelativeLayout>

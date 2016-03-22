@@ -13,6 +13,7 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.network.NetworkUser;
+import com.geekhub.choosehelper.ui.dialogs.PhotoPickerDialog;
 import com.geekhub.choosehelper.utils.ModelConverter;
 import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.Utils;
@@ -59,14 +60,12 @@ public class SignUpActivity extends BaseSignInActivity {
         setContentView(R.layout.activity_sign_up);
     }
 
-    @OnClick({R.id.iv_sign_up_photo, R.id.btn_sign_up_go_login, R.id.btn_sign_up, R.id.btn_sign_up_skip_login})
+    @OnClick({R.id.iv_sign_up_photo, R.id.btn_sign_up, R.id.tv_already_have_an_account})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_sign_up_photo:
-                //Utils.showPhotoPickerDialog(getApplicationContext());
-                break;
-            case R.id.btn_sign_up_go_login:
-                onBackPressed();
+                PhotoPickerDialog photoPickerDialog = new PhotoPickerDialog();
+                photoPickerDialog.show(getSupportFragmentManager(), PhotoPickerDialog.class.getSimpleName());
                 break;
             case R.id.btn_sign_up:
                 mFullName = String.valueOf(mEtSignUpFullName.getText());
@@ -81,9 +80,8 @@ public class SignUpActivity extends BaseSignInActivity {
                     signUp();
                 }
                 break;
-            case R.id.btn_sign_up_skip_login:
-                Prefs.setLoggedType(Prefs.NOT_LOGIN);
-                startMainActivity();
+            case R.id.tv_already_have_an_account:
+                onBackPressed();
                 break;
         }
     }
