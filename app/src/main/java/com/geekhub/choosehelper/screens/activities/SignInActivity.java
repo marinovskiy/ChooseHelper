@@ -28,31 +28,33 @@ public class SignInActivity extends BaseSignInActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
+        if (Prefs.getLoggedType() != Prefs.NOT_LOGIN) {
+            startMainActivity();
+        }
     }
 
-    @OnClick({R.id.btn_go_sign_up, R.id.btn_sign_in, R.id.btn_sign_in_skip_login, R.id.btn_sign_in_google, R.id.btn_sign_in_facebook})
+    @OnClick({R.id.btn_sign_in, R.id.tv_forgot_password, R.id.sign_in_google, R.id.sign_in_facebook, R.id.tv_create_an_account})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btn_go_sign_up:
-                Intent intentSignUp = new Intent(SignInActivity.this, SignUpActivity.class);
-                Bundle bndlanimation = ActivityOptions.makeCustomAnimation(getApplicationContext(),
-                        R.anim.slide_in_to_left, R.anim.do_nothing).toBundle();
-                startActivity(intentSignUp, bndlanimation);
-                break;
             case R.id.btn_sign_in:
                 mEmail = mEtSignInEmail.getText().toString();
                 mPassword = mEtSignInPassword.getText().toString();
                 loginEmailPassword(mEmail, mPassword);
                 break;
-            case R.id.btn_sign_in_skip_login:
-                Prefs.setLoggedType(Prefs.NOT_LOGIN);
-                startMainActivity();
+            case R.id.tv_forgot_password:
+                //TODO forgot password
                 break;
-            case R.id.btn_sign_in_google:
+            case R.id.sign_in_facebook:
+                facebookLogin();
+                break;
+            case R.id.sign_in_google:
                 googleLogin();
                 break;
-            case R.id.btn_sign_in_facebook:
-                facebookLogin();
+            case R.id.tv_create_an_account:
+                Intent intentSignUp = new Intent(SignInActivity.this, SignUpActivity.class);
+                Bundle bndlanimation = ActivityOptions.makeCustomAnimation(getApplicationContext(),
+                        R.anim.slide_in_to_left, R.anim.do_nothing).toBundle();
+                startActivity(intentSignUp, bndlanimation);
                 break;
         }
     }

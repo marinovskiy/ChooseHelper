@@ -1,49 +1,64 @@
 package com.geekhub.choosehelper.utils;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.util.Base64;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.geekhub.choosehelper.R;
+
 import java.io.ByteArrayOutputStream;
+
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 /**
  * Created by Alex on 10.03.2016.
  */
 public class Utils {
 
+    public static void loadImageByUri(ImageView imageView, Uri uri) {
+        Glide.with(imageView.getContext())
+                .load(uri)
+                .into(imageView);
+    }
+
+    public static void loadCircleImageByUri(ImageView imageView, Uri uri) {
+        Glide.with(imageView.getContext())
+                .load(uri)
+                .bitmapTransform(new CropCircleTransformation(imageView.getContext()))
+                .into(imageView);
+    }
+
+    public static void loadImageByUrl(ImageView imageView, String url) {
+        Glide.with(imageView.getContext())
+                .load(url)
+                .into(imageView);
+    }
+
+    public static void loadCircleImageByUrl(ImageView imageView, String url) {
+        Glide.with(imageView.getContext())
+                .load(url)
+                .bitmapTransform(new CropCircleTransformation(imageView.getContext()))
+                .into(imageView);
+    }
+
     public static void showErrorMessage(Context context, String message) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
-    public static void showPhotoPickerDialog(Context context) {
+    public static void showPhotoDialog(Context context, DialogInterface.OnClickListener onClickListener) {
         AlertDialog alertDialog = new AlertDialog.Builder(context)
-                .setTitle("title")
-                .setMessage("message")
-//                .setItems(R.array.photo_variants, (dialog, which) -> {
-//                    Toast.makeText(context, "pos = " + which, Toast.LENGTH_SHORT).show();
-//                })
+                .setCancelable(false)
+                .setTitle("Photo")
+                .setItems(R.array.photo_variants, onClickListener)
                 .create();
         alertDialog.show();
-//        new AlertDialog.Builder(context)
-//                .setTitle("Photo")
-//                .setItems(R.array.photo_variants, (dialog, which) -> {
-//                    Toast.makeText(context, "pos = " + which, Toast.LENGTH_SHORT).show();
-//                })
-//                .show();
-    }
-
-    public static String convertBitmapToString(Bitmap bitmap) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        return Base64.encodeToString(stream.toByteArray(), Base64.DEFAULT);
-    }
-
-    public static Bitmap convertStringToBitmap(String strBitmap) {
-        byte[] bytes = Base64.decode(strBitmap, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 
 }

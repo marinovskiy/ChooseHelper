@@ -5,8 +5,11 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
@@ -45,7 +48,7 @@ public class AddCompareActivity extends BaseSignInActivity {
         setContentView(R.layout.activity_add_compare);
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationIcon(ContextCompat.getDrawable(getApplicationContext(),
-                R.drawable.icon_arrow_back));
+                R.drawable.ic_close_white));
         mToolbar.setNavigationOnClickListener(v -> onBackPressed());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mToolbarShadow.setVisibility(View.INVISIBLE);
@@ -67,6 +70,28 @@ public class AddCompareActivity extends BaseSignInActivity {
         variants.add(networkVariant1);
         variants.add(networkVariant2);
         FirebaseComparesManager.addCompare(Prefs.getUserId(), "Alex M", title, variants, "5 Mar 2016");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_add_compare, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add:
+                setResult(RESULT_OK);
+                finish();
+                return true;
+            case android.R.id.home:
+                setResult(RESULT_CANCELED);
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private String generateImage() {

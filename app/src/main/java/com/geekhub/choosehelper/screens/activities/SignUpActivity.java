@@ -2,17 +2,22 @@ package com.geekhub.choosehelper.screens.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.network.NetworkUser;
+import com.geekhub.choosehelper.utils.AmazonUtil;
 import com.geekhub.choosehelper.utils.ModelConverter;
 import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.Utils;
@@ -20,6 +25,8 @@ import com.geekhub.choosehelper.utils.db.DbUsersManager;
 import com.geekhub.choosehelper.utils.firebase.FirebaseConstants;
 import com.geekhub.choosehelper.utils.firebase.FirebaseUsersManager;
 
+import java.io.File;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 import butterknife.Bind;
@@ -27,7 +34,14 @@ import butterknife.OnClick;
 
 public class SignUpActivity extends BaseSignInActivity {
 
-    private static final String LOG_TAG = SignUpActivity.class.getSimpleName();
+    public static final String LOG_TAG = SignUpActivity.class.getSimpleName() + "logs";
+
+    // request codes for onActivityResult
+    private static final int RC_GALLERY = 1;
+    private static final int RC_CAMERA = 2;
+
+    @Bind(R.id.iv_sign_up_photo)
+    ImageView mIvAvatar;
 
     @Bind(R.id.et_sign_up_full_name)
     EditText mEtSignUpFullName;
@@ -42,14 +56,14 @@ public class SignUpActivity extends BaseSignInActivity {
     EditText mEtSignUpRepeatPassword;
 
     private String mFullName;
-
     private String mEmail;
-
     private String mPassword;
-
     private String mRepeatPassword;
 
-    private String mImage;
+    private String mAvatarUrl = "";
+    private Uri mAvatarUri;
+
+    private TransferObserver mTransferObserver;
 
     private ProgressDialog mProgressDialog;
 
@@ -59,14 +73,20 @@ public class SignUpActivity extends BaseSignInActivity {
         setContentView(R.layout.activity_sign_up);
     }
 
-    @OnClick({R.id.iv_sign_up_photo, R.id.btn_sign_up_go_login, R.id.btn_sign_up, R.id.btn_sign_up_skip_login})
+    @OnClick({R.id.iv_sign_up_photo, R.id.btn_sign_up, R.id.tv_already_have_an_account})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_sign_up_photo:
-                //Utils.showPhotoPickerDialog(getApplicationContext());
-                break;
-            case R.id.btn_sign_up_go_login:
-                onBackPressed();
+                Utils.showPhotoDialog(SignUpActivity.this, (dialog, which) -> {
+                    switch (which) {
+                        case 0:
+                            takePhotoFromGallery();
+                            break;
+                        case 1:
+                            takePhotoFromCamera();
+                            break;
+                    }
+                });
                 break;
             case R.id.btn_sign_up:
                 mFullName = String.valueOf(mEtSignUpFullName.getText());
@@ -81,10 +101,66 @@ public class SignUpActivity extends BaseSignInActivity {
                     signUp();
                 }
                 break;
-            case R.id.btn_sign_up_skip_login:
-                Prefs.setLoggedType(Prefs.NOT_LOGIN);
-                startMainActivity();
+            case R.id.tv_already_have_an_account:
+                onBackPressed();
                 break;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dismissProgressDialog();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case RC_GALLERY:
+                    mAvatarUri = data.getData();
+                    Utils.loadCircleImageByUri(mIvAvatar, mAvatarUri);
+                    try {
+                        String filePath = AmazonUtil.getFilePath(getApplicationContext(),
+                                mAvatarUri);
+                        if (filePath != null) {
+                            File file = new File(filePath);
+                            mTransferObserver = AmazonUtil
+                                    .getTransferUtility(getApplicationContext())
+                                    .upload(AmazonUtil.BUCKET_NAME + AmazonUtil.FOLDER_AVATARS,
+                                            file.getName(),
+                                            file);
+                            mAvatarUrl = AmazonUtil.BASE_URL + AmazonUtil.FOLDER_AVATARS + "/" +
+                                    file.getName();
+                        }
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                        //TODO toast exception
+                    }
+                    break;
+                case RC_CAMERA:
+                    mAvatarUri = AmazonUtil.getImageUri(getApplicationContext(),
+                            (Bitmap) data.getExtras().get("data"));
+                    Utils.loadCircleImageByUri(mIvAvatar, mAvatarUri);
+                    try {
+                        String filePath = AmazonUtil.getFilePath(getApplicationContext(),
+                                mAvatarUri);
+                        if (filePath != null) {
+                            File file = new File(filePath);
+                            mTransferObserver = AmazonUtil
+                                    .getTransferUtility(getApplicationContext())
+                                    .upload(AmazonUtil.BUCKET_NAME + AmazonUtil.FOLDER_AVATARS,
+                                            file.getName(),
+                                            file);
+                            mAvatarUrl = AmazonUtil.BASE_URL + AmazonUtil.FOLDER_AVATARS + "/" +
+                                    file.getName();
+                        }
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                        //TODO toast exception
+                    }
+                    break;
+            }
         }
     }
 
@@ -94,15 +170,17 @@ public class SignUpActivity extends BaseSignInActivity {
         firebase.createUser(mEmail, mPassword, new Firebase.ValueResultHandler<Map<String, Object>>() {
             @Override
             public void onSuccess(Map<String, Object> stringObjectMap) {
-                Log.i(LOG_TAG, "onSuccess");
+
+                Prefs.setLoggedType(Prefs.FIREBASE_LOGIN);
                 Prefs.setUserId(String.valueOf(stringObjectMap.get("uid")));
-                mImage = Utils.convertBitmapToString(BitmapFactory.decodeResource(getResources(),
-                        R.drawable.test_img));
                 NetworkUser networkUser = new NetworkUser(mEmail,
                         mFullName,
-                        mImage);
+                        mAvatarUrl);
+
                 DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser));
                 FirebaseUsersManager.saveUserToFirebase(networkUser);
+                AmazonUtil.uploadImage(mTransferObserver);
+
                 hideProgressDialog();
                 startMainActivity();
             }
@@ -117,6 +195,22 @@ public class SignUpActivity extends BaseSignInActivity {
         });
     }
 
+    // intents for avatar
+    private void takePhotoFromGallery() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), RC_GALLERY);
+    }
+
+    private void takePhotoFromCamera() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, RC_CAMERA);
+        }
+    }
+
+    // progress dialog
     private void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
@@ -129,6 +223,12 @@ public class SignUpActivity extends BaseSignInActivity {
     private void hideProgressDialog() {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.hide();
+        }
+    }
+
+    private void dismissProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
         }
     }
 

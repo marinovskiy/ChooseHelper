@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.geekhub.choosehelper.R;
@@ -35,6 +36,8 @@ public class MainActivity extends BaseSignInActivity
 
     //  Logs
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    public static final int RC_ADD_COMPARE = 1;
 
     @Bind(R.id.drawer_main)
     DrawerLayout mDrawerLayout;
@@ -81,7 +84,7 @@ public class MainActivity extends BaseSignInActivity
 
     @OnClick(R.id.fab_add_main)
     public void onFabClick() {
-        startActivity(new Intent(MainActivity.this, AddCompareActivity.class));
+        startActivityForResult(new Intent(this, AddCompareActivity.class), RC_ADD_COMPARE);
     }
 
     @Override
@@ -114,6 +117,19 @@ public class MainActivity extends BaseSignInActivity
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             finish();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case RC_ADD_COMPARE:
+
+                    break;
+            }
+        } else {
+            Toast.makeText(MainActivity.this, "Canceled", Toast.LENGTH_SHORT).show();
         }
     }
 
