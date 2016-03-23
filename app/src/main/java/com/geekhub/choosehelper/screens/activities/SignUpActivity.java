@@ -179,7 +179,9 @@ public class SignUpActivity extends BaseSignInActivity {
 
                 DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser));
                 FirebaseUsersManager.saveUserToFirebase(networkUser);
-                AmazonUtil.uploadImage(mTransferObserver);
+                if (mAvatarUri != null) {
+                    AmazonUtil.uploadImage(mTransferObserver);
+                }
 
                 hideProgressDialog();
                 startMainActivity();
