@@ -37,7 +37,8 @@
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
 
-
+    <!--Profile-->
+    <string name="toolbar_title">Profile</string>
 
     <string name="large_text">
         "Material is the metaphor.\n\n"
