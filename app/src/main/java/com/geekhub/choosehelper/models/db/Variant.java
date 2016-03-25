@@ -1,20 +1,24 @@
 package com.geekhub.choosehelper.models.db;
 
-/**
- * Created by Alex on 05.03.2016.
- */
-public class Variant {
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
-    private String image;
+public class Variant extends RealmObject {
+
+    @PrimaryKey
+    private String imageUrl;
 
     private String description;
 
-    public String getImage() {
-        return image;
+    public Variant() {
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getDescription() {

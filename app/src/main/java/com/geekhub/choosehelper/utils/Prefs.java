@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 public class Prefs {
 
     public static final String USER_ID = "user_id";
+    public static final String USER_NAME = "user_name";
     public static final String LOGGED_TYPE = "logged_type";
 
     public static final int NOT_LOGIN = 0;
@@ -39,6 +40,14 @@ public class Prefs {
 
     public static void setUserId(String userId) {
         setString(USER_ID, userId);
+    }
+
+    public static String getUserName() {
+        return getString(USER_NAME);
+    }
+
+    public static void setUserName(String Name) {
+        setString(USER_NAME, Name);
     }
 
     private static String getString(String key) {

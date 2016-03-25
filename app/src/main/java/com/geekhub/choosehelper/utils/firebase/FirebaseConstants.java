@@ -1,8 +1,5 @@
 package com.geekhub.choosehelper.utils.firebase;
 
-/**
- * Created by Alex on 07.03.2016.
- */
 public final class FirebaseConstants {
 
     // base firebase reference

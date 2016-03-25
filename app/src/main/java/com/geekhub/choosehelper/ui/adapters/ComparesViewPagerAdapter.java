@@ -7,9 +7,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Alex on 05.03.2016.
- */
 public class ComparesViewPagerAdapter extends FragmentPagerAdapter {
 
     private final List<String> mFragmentTitleList = new ArrayList<>();

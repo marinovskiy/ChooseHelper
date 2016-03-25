@@ -9,9 +9,6 @@ import android.widget.Toast;
 
 import com.geekhub.choosehelper.R;
 
-/**
- * Created by Alex on 20.03.2016.
- */
 public class PhotoPickerDialog extends DialogFragment {
 
     @NonNull

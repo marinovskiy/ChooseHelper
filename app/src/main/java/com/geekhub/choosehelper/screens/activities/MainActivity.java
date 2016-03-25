@@ -1,10 +1,10 @@
 package com.geekhub.choosehelper.screens.activities;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -14,30 +14,33 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.geekhub.choosehelper.R;
+import com.geekhub.choosehelper.models.db.Compare;
 import com.geekhub.choosehelper.models.db.User;
 import com.geekhub.choosehelper.screens.fragments.AllComparesFragment;
 import com.geekhub.choosehelper.screens.fragments.FriendsComparesFragment;
-import com.geekhub.choosehelper.screens.fragments.MyComparesFragment;
 import com.geekhub.choosehelper.ui.adapters.ComparesViewPagerAdapter;
+import com.geekhub.choosehelper.utils.ImageUtil;
 import com.geekhub.choosehelper.utils.Prefs;
+import com.geekhub.choosehelper.utils.db.DbComparesManager;
 import com.geekhub.choosehelper.utils.db.DbUsersManager;
+import com.geekhub.choosehelper.utils.firebase.FirebaseComparesManager;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import io.realm.Realm;
 import io.realm.RealmChangeListener;
-import jp.wasabeef.glide.transformations.CropCircleTransformation;
+import io.realm.RealmResults;
 
 public class MainActivity extends BaseSignInActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    //  Logs
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    public static final int RC_ADD_COMPARE = 1;
+    public static final String INTENT_KEY_USER_NAME = "intent_key_user_name";
 
     @Bind(R.id.drawer_main)
     DrawerLayout mDrawerLayout;
@@ -59,11 +62,13 @@ public class MainActivity extends BaseSignInActivity
 
     private User mCurrentUser;
 
+    private RealmChangeListener mUserListener;
+
     private RealmChangeListener mRealmChangeListener = new RealmChangeListener() {
         @Override
         public void onChange() {
             if (mCurrentUser != null && mCurrentUser.isLoaded()) {
-                setupNavHeader(mCurrentUser);
+                setupNavDrawerHeader(mCurrentUser);
             }
         }
     };
@@ -72,19 +77,30 @@ public class MainActivity extends BaseSignInActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        /** setup UI elements **/
         setupToolbar();
-        setupNavDrawer();
-        if (Prefs.getLoggedType() != Prefs.NOT_LOGIN) {
-            getCurrentUserInfo();
-        }
         setupViewPager(mViewPager);
         mTabLayout.setupWithViewPager(mViewPager);
         mNavigationView.setNavigationItemSelectedListener(this);
+
+        /** work with realm **/
+        mUserListener = () -> {
+            if (mCurrentUser != null && mCurrentUser.isLoaded()) {
+                setupNavDrawerHeader(mCurrentUser);
+            }
+        };
+        getCurrentUserInfo();
+
+        //FirebaseComparesManager.getTwentyCompares();
     }
 
     @OnClick(R.id.fab_add_main)
     public void onFabClick() {
-        startActivityForResult(new Intent(this, AddCompareActivity.class), RC_ADD_COMPARE);
+        if (mCurrentUser != null) {
+            Intent intent = new Intent(this, AddCompareActivity.class);
+            intent.putExtra(INTENT_KEY_USER_NAME, mCurrentUser.getFullName());
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -92,7 +108,7 @@ public class MainActivity extends BaseSignInActivity
         switch (item.getItemId()) {
             case R.id.action_nav_profile:
                 mDrawerLayout.closeDrawers();
-                startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                startActivity(new Intent(this, ProfileActivity.class));
                 return true;
             case R.id.action_nav_logout:
                 logout();
@@ -105,10 +121,8 @@ public class MainActivity extends BaseSignInActivity
 
     @Override
     protected void onPause() {
-        if (mCurrentUser != null) {
-            mCurrentUser.removeChangeListener(mRealmChangeListener);
-        }
         super.onPause();
+        Realm.getDefaultInstance().removeAllChangeListeners();
     }
 
     @Override
@@ -117,19 +131,7 @@ public class MainActivity extends BaseSignInActivity
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             finish();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case RC_ADD_COMPARE:
-
-                    break;
-            }
-        } else {
-            Toast.makeText(MainActivity.this, "Canceled", Toast.LENGTH_SHORT).show();
+            // TODO: add toast: "click again for exit"
         }
     }
 
@@ -156,43 +158,39 @@ public class MainActivity extends BaseSignInActivity
     private void setupToolbar() {
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            //mToolbarShadow.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    private void setupNavDrawer() {
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             mToolbar.setNavigationIcon(R.drawable.icon_drawer);
             mToolbar.setNavigationOnClickListener(v -> mDrawerLayout.openDrawer(GravityCompat.START));
         }
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mToolbarShadow.setVisibility(View.INVISIBLE);
+        }*/
     }
 
-    private void setupNavHeader(User user) {
+    private void setupNavDrawerHeader(User user) {
         View headerView = mNavigationView.inflateHeaderView(R.layout.navigation_header_layout);
         ImageView ivAvatar = (ImageView) headerView.findViewById(R.id.nav_header_avatar);
         TextView tvFullName = (TextView) headerView.findViewById(R.id.nav_header_name);
         TextView tvEmail = (TextView) headerView.findViewById(R.id.nav_header_email);
         tvFullName.setText(user.getFullName());
         tvEmail.setText(user.getEmail());
-        Glide.with(this)
-                .load(user.getPhotoUrl())
-                .bitmapTransform(new CropCircleTransformation(getApplicationContext()))
-                .into(ivAvatar);
+        if (user.getPhotoUrl() != null) {
+            ImageUtil.loadCircleImage(ivAvatar, user.getPhotoUrl());
+        } else {
+            ivAvatar.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
+                    R.drawable.icon_no_avatar));
+        }
     }
 
     private void setupViewPager(ViewPager viewPager) {
         ComparesViewPagerAdapter adapter = new ComparesViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(AllComparesFragment.newInstance(), "All");
         adapter.addFragment(FriendsComparesFragment.newInstance(), "Friend's");
-        adapter.addFragment(MyComparesFragment.newInstance(), "My");
+        //adapter.addFragment(MyComparesFragment.newInstance(), "My");
         viewPager.setAdapter(adapter);
     }
 
     private void getCurrentUserInfo() {
         mCurrentUser = DbUsersManager.getUserAsync(Prefs.getUserId());
-        mCurrentUser.addChangeListener(mRealmChangeListener);
+        mCurrentUser.addChangeListener(mUserListener);
     }
 }

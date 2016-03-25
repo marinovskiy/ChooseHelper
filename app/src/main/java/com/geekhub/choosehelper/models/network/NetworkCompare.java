@@ -2,12 +2,9 @@ package com.geekhub.choosehelper.models.network;
 
 import java.util.List;
 
-/**
- * Created by Alex on 06.03.2016.
- */
 public class NetworkCompare {
 
-    private String title;
+    private String question;
 
     private List<NetworkVariant> variants;
 
@@ -19,12 +16,12 @@ public class NetworkCompare {
 
     }
 
-    public String getTitle() {
-        return title;
+    public String getQuestion() {
+        return question;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setQuestion(String question) {
+        this.question = question;
     }
 
     public List<NetworkVariant> getVariants() {

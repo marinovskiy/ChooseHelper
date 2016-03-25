@@ -336,7 +336,7 @@ public class BaseSignInActivity extends AppCompatActivity
 
     protected void startMainActivity() {
         Intent intentMain = new Intent(BaseSignInActivity.this, MainActivity.class);
-        intentMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intentMain.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intentMain);
         finish();
     }

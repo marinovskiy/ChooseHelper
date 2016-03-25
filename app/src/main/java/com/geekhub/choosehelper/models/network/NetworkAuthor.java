@@ -1,8 +1,5 @@
 package com.geekhub.choosehelper.models.network;
 
-/**
- * Created by Alex on 06.03.2016.
- */
 public class NetworkAuthor {
 
     private String id;

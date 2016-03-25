@@ -4,12 +4,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.db.Compare;
 import com.geekhub.choosehelper.ui.listeners.OnItemClickListener;
+import com.geekhub.choosehelper.utils.ImageUtil;
 
 import java.util.List;
 
@@ -33,6 +34,10 @@ public class ComparesRecyclerViewAdapter extends RecyclerView.Adapter<ComparesRe
                 .inflate(R.layout.compare_item_layout, parent, false));
     }
 
+    public void updateList(List<Compare> compares) {
+        mCompares = compares;
+    }
+
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.bindCompare(mCompares.get(position));
@@ -48,8 +53,11 @@ public class ComparesRecyclerViewAdapter extends RecyclerView.Adapter<ComparesRe
         @Bind(R.id.rv_tv_title)
         TextView mTvTitle;
 
-        @Bind(R.id.rv_ll_variants)
-        LinearLayout mLlVariants;
+        @Bind(R.id.rv_iv_img_one)
+        ImageView mIvOne;
+
+        @Bind(R.id.rv_iv_img_two)
+        ImageView mIvTwo;
 
         @Bind(R.id.rv_tv_author)
         TextView mTvAuthor;
@@ -71,9 +79,11 @@ public class ComparesRecyclerViewAdapter extends RecyclerView.Adapter<ComparesRe
         }
 
         private void bindCompare(Compare compare) {
-            mTvTitle.setText(compare.getTitle());
-            // TODO: set view by layout inflater. Number depends on number of compare's variants
-            mTvAuthor.setText(compare.getAuthor());
+            // TODO: set view by layout inflater. Number depends on number of compares variants
+            mTvTitle.setText(compare.getQuestion());
+            ImageUtil.loadImage(mIvOne, compare.getVariants().get(0).getImageUrl());
+            ImageUtil.loadImage(mIvTwo, compare.getVariants().get(1).getImageUrl());
+            mTvAuthor.setText(compare.getAuthor().getName());
             mTvDate.setText(compare.getDate());
         }
     }

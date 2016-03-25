@@ -1,8 +1,5 @@
 package com.geekhub.choosehelper.models.network;
 
-/**
- * Created by Alex on 06.03.2016.
- */
 public class NetworkVariant {
 
     private String imageUrl;
@@ -11,6 +8,11 @@ public class NetworkVariant {
 
     public NetworkVariant() {
 
+    }
+
+    public NetworkVariant(String imageUrl, String description) {
+        this.imageUrl = imageUrl;
+        this.description = description;
     }
 
     public String getImageUrl() {

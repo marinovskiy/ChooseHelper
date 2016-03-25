@@ -1,45 +1,55 @@
 package com.geekhub.choosehelper.models.db;
 
-import com.geekhub.choosehelper.models.network.NetworkAuthor;
-import com.geekhub.choosehelper.models.network.NetworkVariant;
+import io.realm.RealmList;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
-import java.util.List;
+public class Compare extends RealmObject {
 
-/**
- * Created by Alex on 05.03.2016.
- */
-public class Compare {
+    @PrimaryKey
+    private String id;
 
-    private String title;
+    private String question;
 
-    private List<NetworkVariant> variants;
+    private Author author;
 
-    private String author;
+    private RealmList<Variant> variants;
 
     private String date;
 
-    public String getTitle() {
-        return title;
+    public Compare() {
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public String getId() {
+        return id;
     }
 
-    public List<NetworkVariant> getVariants() {
-        return variants;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public void setVariants(List<NetworkVariant> variants) {
-        this.variants = variants;
+    public String getQuestion() {
+        return question;
     }
 
-    public String getAuthor() {
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public Author getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
-        author = author;
+    public void setAuthor(Author author) {
+        this.author = author;
+    }
+
+    public RealmList<Variant> getVariants() {
+        return variants;
+    }
+
+    public void setVariants(RealmList<Variant> variants) {
+        this.variants = variants;
     }
 
     public String getDate() {

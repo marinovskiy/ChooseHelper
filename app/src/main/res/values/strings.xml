@@ -129,5 +129,7 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
+    <string name="compare_dialog_photo_title">Select picture for variant</string>
+    <string name="qwe">You did not fill all fields</string>
 
 </resources>

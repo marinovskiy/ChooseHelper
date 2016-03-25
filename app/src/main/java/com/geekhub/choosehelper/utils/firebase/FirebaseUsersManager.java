@@ -15,9 +15,6 @@ import com.geekhub.choosehelper.utils.db.DbUsersManager;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by Alex on 07.03.2016.
- */
 public class FirebaseUsersManager {
 
     public static final String TAG = FirebaseUsersManager.class.getSimpleName();
@@ -42,7 +39,6 @@ public class FirebaseUsersManager {
     }
 
     public static void saveUserFromFirebase(String id) {
-
         Firebase firebase = new Firebase(FirebaseConstants.FB_REFERENCE_MAIN)
                 .child(FirebaseConstants.FB_REFERENCE_USERS)
                 .child(id);
@@ -63,7 +59,6 @@ public class FirebaseUsersManager {
     }
 
     public static void saveUserToFirebase(NetworkUser networkUser) {
-
         Firebase firebase = new Firebase(FirebaseConstants.FB_REFERENCE_MAIN)
                 .child(FirebaseConstants.FB_REFERENCE_USERS)
                 .child(Prefs.getUserId());

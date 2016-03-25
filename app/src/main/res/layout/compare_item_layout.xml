@@ -43,6 +43,7 @@
                 android:orientation="vertical">
 
                 <ImageView
+                    android:id="@+id/rv_iv_img_one"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:padding="8dp"
@@ -70,6 +71,7 @@
                 android:orientation="vertical">
 
                 <ImageView
+                    android:id="@+id/rv_iv_img_two"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:padding="8dp"
