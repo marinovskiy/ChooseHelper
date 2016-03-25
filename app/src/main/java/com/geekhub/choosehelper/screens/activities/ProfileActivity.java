@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -38,6 +39,9 @@ public class ProfileActivity extends BaseSignInActivity {
 
     @Bind(R.id.profile_rv_friends)
     RecyclerView mRvFriends;
+
+    @Bind(R.id.profile_sv)
+    ScrollView mSvContent;
 
     private User mUser;
 
@@ -86,7 +90,7 @@ public class ProfileActivity extends BaseSignInActivity {
 
             // Set toolbar options
             if (getSupportActionBar() != null) {
-                toolbar.setTitle(title);
+//                toolbar.setTitle(title);
                 getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(
                         getApplicationContext(), R.drawable.icon_arrow_back));
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -103,5 +107,6 @@ public class ProfileActivity extends BaseSignInActivity {
 
         FriendsRecyclerViewAdapter mAdapter = new FriendsRecyclerViewAdapter();
         mRvFriends.setAdapter(mAdapter);
+        mRvFriends.setFocusable(false);
     }
 }
