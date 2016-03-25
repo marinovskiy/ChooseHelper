@@ -2,7 +2,11 @@ package com.geekhub.choosehelper.screens.activities;
 
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,6 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.db.User;
+import com.geekhub.choosehelper.ui.adapters.FriendsRecyclerViewAdapter;
 import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.db.DbUsersManager;
 
@@ -17,7 +22,7 @@ import butterknife.Bind;
 
 public class ProfileActivity extends BaseSignInActivity {
 
-    private static final String TAG = "ProfileActivity";
+    private static final String TAG = ProfileActivity.class.getName();
 
     @Bind(R.id.profile_toolbar)
     Toolbar mToolbar;
@@ -26,10 +31,13 @@ public class ProfileActivity extends BaseSignInActivity {
     ImageView mIvUserAvatar;
 
     @Bind(R.id.profile_tv_username)
-    TextView mUsername;
+    TextView mTvUsername;
 
     @Bind(R.id.profile_tv_email)
-    TextView mEmail;
+    TextView mTvEmail;
+
+    @Bind(R.id.profile_rv_friends)
+    RecyclerView mRvFriends;
 
     private User mUser;
 
@@ -38,32 +46,25 @@ public class ProfileActivity extends BaseSignInActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        // Get user profile info
+        // Get user profile from DB
         mUser = DbUsersManager.getUserNotAsync(Prefs.getUserId());
 
+        // Set user info into UI
         Glide.with(getApplicationContext())
                 .load(mUser.getPhotoUrl())
                 .into(mIvUserAvatar);
-        mEmail.setText(mUser.getEmail());
-        mUsername.setText(mUser.getFullName());
+        mTvUsername.setText(mUser.getFullName());
+        mTvEmail.setText(mUser.getEmail());
 
-        // Init toolbar
-        setupToolbar();
+        // Init toolbar, friends recycler view
+        setToolbar(mToolbar, "Profile");
+        setFriendsRecyclerView();
+    }
 
-        /*final String[] img = {null};
-        Firebase firebase = new Firebase("https://choosehelper.firebaseio.com/img");
-        firebase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.i(TAG, "" + dataSnapshot.getValue());
-                img[0] = String.valueOf(dataSnapshot.getValue());
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                Log.i(TAG, "error: " + firebaseError);
-            }
-        });*/
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
     }
 
     @Override
@@ -72,18 +73,35 @@ public class ProfileActivity extends BaseSignInActivity {
             case android.R.id.home:
                 onBackPressed();
                 return true;
+            case R.id.action_search:
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void setupToolbar() {
-        setSupportActionBar(mToolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(R.string.toolbar_title);
-            getSupportActionBar().setHomeAsUpIndicator(ContextCompat
-                    .getDrawable(getApplicationContext(), R.drawable.icon_arrow_back));
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    private void setToolbar(Toolbar toolbar, String title) {
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+
+            // Set toolbar options
+            if (getSupportActionBar() != null) {
+                toolbar.setTitle(title);
+                getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(
+                        getApplicationContext(), R.drawable.icon_arrow_back));
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            }
+        } else {
+            Log.d(TAG, "Can`t setup toolbar: Toolbar is null");
         }
+    }
+
+    private void setFriendsRecyclerView() {
+        RecyclerView.LayoutManager mLayoutManager =
+                new LinearLayoutManager(getBaseContext());
+        mRvFriends.setLayoutManager(mLayoutManager);
+
+        FriendsRecyclerViewAdapter mAdapter = new FriendsRecyclerViewAdapter();
+        mRvFriends.setAdapter(mAdapter);
     }
 }

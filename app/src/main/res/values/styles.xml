@@ -20,6 +20,31 @@
         <item name="android:textSize">@dimen/text_size_sign_button</item>
     </style>
 
+    <!-- Profile -->
+    <style name="AppTheme.Profile.Toolbar" parent="Base.Widget.AppCompat.Toolbar">
+        <item name="titleTextColor">@android:color/white</item>
+        <item name="android:background">?attr/colorPrimary</item>
+    </style>
+
+    <style name="AppTheme.Profile.TextView" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:padding">@dimen/profile_tv_padding</item>
+        <item name="android:textSize">@dimen/profile_text_email_size</item>
+    </style>
+
+    <style name="AppTheme.Profile.TextView.Username" parent="AppTheme.Profile.TextView">
+        <item name="android:textSize">@dimen/profile_text_username_size</item>
+    </style>
+
+    <style name="AppTheme.Profile.TextView.FriendName" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:padding">6dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />

@@ -1,46 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/profile_toolbar"
+        style="@style/AppTheme.Profile.Toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary" />
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <View
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="6dp"
-        android:background="@drawable/toolbar_shadow" />
+        android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/profile_iv_avatar"
-            android:layout_width="100dp"
-            android:layout_height="100dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:orientation="vertical"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/profile_header_height">
 
-            <TextView
-                android:id="@+id/profile_tv_username"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                    <ImageView
+                        android:id="@+id/profile_iv_avatar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop" />
 
-            <TextView
-                android:id="@+id/profile_tv_email"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:layout_marginLeft="@dimen/profile_tv_margin_left"
+                        android:background="@android:color/transparent"
+                        android:orientation="vertical">
 
+                        <TextView
+                            android:id="@+id/profile_tv_username"
+                            style="@style/AppTheme.Profile.TextView.Username"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:id="@+id/profile_tv_email"
+                            style="@style/AppTheme.Profile.TextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+                </FrameLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:background="@drawable/toolbar_shadow" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="20dp"
+                    android:text="Your friends"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="25sp" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/profile_rv_friends"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+        </ScrollView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:background="@drawable/toolbar_shadow" />
+    </FrameLayout>
 </LinearLayout>

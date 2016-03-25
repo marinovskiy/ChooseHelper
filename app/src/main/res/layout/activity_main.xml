@@ -35,7 +35,8 @@
                 android:background="?attr/colorPrimary"
                 app:tabIndicatorColor="@android:color/white"
                 app:tabSelectedTextColor="@android:color/white"
-                app:tabTextColor="#EEEEEE" />
+                app:tabTextColor="#EEEEEE"
+                android:fillViewport="false" />
 
             <FrameLayout
                 android:layout_width="match_parent"

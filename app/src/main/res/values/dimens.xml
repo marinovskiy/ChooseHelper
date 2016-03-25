@@ -19,4 +19,12 @@
     <dimen name="text_size_sign_button">16sp</dimen>
     <dimen name="text_size_social_login_button">14sp</dimen>
 
+    <!-- Profile -->
+    <dimen name="profile_header_height">230dp</dimen>
+    <dimen name="profile_friend_photo_size">90dp</dimen>
+    <dimen name="profile_tv_padding">4dp</dimen>
+    <dimen name="profile_tv_margin_left">25dp</dimen>
+    <dimen name="profile_text_username_size">28sp</dimen>
+    <dimen name="profile_text_email_size">14sp</dimen>
+
 </resources>
