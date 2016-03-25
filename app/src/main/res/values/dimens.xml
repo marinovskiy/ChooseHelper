@@ -20,8 +20,8 @@
     <dimen name="text_size_social_login_button">14sp</dimen>
 
     <!-- Profile -->
-    <dimen name="profile_header_height">230dp</dimen>
-    <dimen name="profile_friend_photo_size">90dp</dimen>
+    <dimen name="profile_header_height">250dp</dimen>
+    <dimen name="profile_friend_photo_size">110dp</dimen>
     <dimen name="profile_tv_padding">4dp</dimen>
     <dimen name="profile_tv_margin_left">25dp</dimen>
     <dimen name="profile_text_username_size">28sp</dimen>

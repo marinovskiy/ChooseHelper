@@ -23,6 +23,7 @@
     <!-- Profile -->
     <style name="AppTheme.Profile.Toolbar" parent="Base.Widget.AppCompat.Toolbar">
         <item name="titleTextColor">@android:color/white</item>
+        <item name="android:title">@string/profile_toolbar_title</item>
         <item name="android:background">?attr/colorPrimary</item>
     </style>
 

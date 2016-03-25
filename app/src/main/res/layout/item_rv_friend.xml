@@ -2,37 +2,47 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:padding="@dimen/activity_vertical_margin">
 
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/profile_iv_friend_avatar"
-            android:layout_width="@dimen/profile_friend_photo_size"
-            android:layout_height="@dimen/profile_friend_photo_size"
-            android:scaleType="centerCrop"
-            android:src="@drawable/test_img" />
-
-        <!--<ImageView-->
-            <!--android:layout_width="@dimen/profile_friend_photo_size"-->
-            <!--android:layout_height="@dimen/profile_friend_photo_size"-->
-            <!--android:src="@drawable/circle" />-->
-
-        <ImageView
-            android:layout_width="@dimen/profile_friend_photo_size"
-            android:layout_height="@dimen/profile_friend_photo_size"
-            android:src="@drawable/frame" />
-
-    </FrameLayout>
-
-    <TextView
-        android:id="@+id/profile_tv_friend_name"
-        style="@style/AppTheme.Profile.TextView.FriendName"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Helen Anderson" />
+        android:orientation="horizontal">
 
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/profile_iv_friend_avatar"
+                android:layout_width="@dimen/profile_friend_photo_size"
+                android:layout_height="@dimen/profile_friend_photo_size"
+                android:padding="1dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/test_img" />
+
+            <ImageView
+                android:layout_width="@dimen/profile_friend_photo_size"
+                android:layout_height="@dimen/profile_friend_photo_size"
+                android:src="@drawable/frame" />
+
+            <ImageView
+                android:layout_width="@dimen/profile_friend_photo_size"
+                android:layout_height="@dimen/profile_friend_photo_size"
+                android:src="@drawable/circle" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/profile_tv_friend_name"
+            style="@style/AppTheme.Profile.TextView.FriendName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Alis Anderson" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/divider" />
 </LinearLayout>
