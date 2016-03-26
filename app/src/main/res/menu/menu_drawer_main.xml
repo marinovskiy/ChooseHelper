@@ -3,6 +3,14 @@
     <item
         android:id="@+id/action_nav_profile"
         android:title="Profile" />
+
+    <item
+        android:id="@+id/action_nav_about"
+        android:title="Logout" />
+
+    <!--<item-->
+        <!--android:id="@+id/action_nav_help"-->
+        <!--android:title="Logout" />-->
     <item
         android:id="@+id/action_nav_logout"
         android:title="Logout" />

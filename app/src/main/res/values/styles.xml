@@ -31,6 +31,11 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:padding">@dimen/profile_tv_padding</item>
         <item name="android:textSize">@dimen/profile_text_email_size</item>
+        <!--Shadow-->
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">1</item>
     </style>
 
     <style name="AppTheme.Profile.TextView.Username" parent="AppTheme.Profile.TextView">
@@ -45,6 +50,12 @@
         <item name="android:layout_gravity">center</item>
     </style>
 
+    <!--AboutActivity-->
+    <style name="AppTheme.About.Toolbar" parent="Base.Widget.AppCompat.Toolbar">
+        <item name="title">@string/app_name</item>
+        <item name="titleTextColor">@android:color/white</item>
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 

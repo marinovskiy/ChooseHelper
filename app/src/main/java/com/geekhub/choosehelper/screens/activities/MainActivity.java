@@ -16,24 +16,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.geekhub.choosehelper.R;
-import com.geekhub.choosehelper.models.db.Compare;
 import com.geekhub.choosehelper.models.db.User;
 import com.geekhub.choosehelper.screens.fragments.AllComparesFragment;
 import com.geekhub.choosehelper.screens.fragments.FriendsComparesFragment;
 import com.geekhub.choosehelper.ui.adapters.ComparesViewPagerAdapter;
 import com.geekhub.choosehelper.utils.ImageUtil;
 import com.geekhub.choosehelper.utils.Prefs;
-import com.geekhub.choosehelper.utils.db.DbComparesManager;
 import com.geekhub.choosehelper.utils.db.DbUsersManager;
-import com.geekhub.choosehelper.utils.firebase.FirebaseComparesManager;
-
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
-import io.realm.RealmResults;
 
 public class MainActivity extends BaseSignInActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -109,6 +103,10 @@ public class MainActivity extends BaseSignInActivity
             case R.id.action_nav_profile:
                 mDrawerLayout.closeDrawers();
                 startActivity(new Intent(this, ProfileActivity.class));
+                return true;
+            case R.id.action_nav_about:
+                mDrawerLayout.closeDrawers();
+                startActivity(new Intent(this, AboutActivity.class));
                 return true;
             case R.id.action_nav_logout:
                 logout();

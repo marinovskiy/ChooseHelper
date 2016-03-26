@@ -11,13 +11,18 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.geekhub.choosehelper.R;
+import com.geekhub.choosehelper.models.db.Friend;
 import com.geekhub.choosehelper.models.db.User;
 import com.geekhub.choosehelper.ui.adapters.FriendsRecyclerViewAdapter;
 import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.db.DbUsersManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 
@@ -105,8 +110,20 @@ public class ProfileActivity extends BaseSignInActivity {
                 new LinearLayoutManager(getBaseContext());
         mRvFriends.setLayoutManager(mLayoutManager);
 
-        FriendsRecyclerViewAdapter mAdapter = new FriendsRecyclerViewAdapter();
+        // Temp
+        String link = "http://www.ogo.ua/images/articles/1567/big/1330531172.jpg";
+        List<Friend> list = new ArrayList<>();
+        list.add(new Friend("Alis Anderson", link));
+        list.add(new Friend("Andriy Mechanic", link));
+        list.add(new Friend("Jack London", link));
+        list.add(new Friend("Nick Cok", link));
+        // Will be replace
+
+        FriendsRecyclerViewAdapter mAdapter = new FriendsRecyclerViewAdapter(list);
         mRvFriends.setAdapter(mAdapter);
+        mAdapter.setOnItemClickListener((view, position) ->
+                Toast.makeText(getApplicationContext(), "Position = " + position, Toast.LENGTH_SHORT).show());
+
         mRvFriends.setFocusable(false);
     }
 }
