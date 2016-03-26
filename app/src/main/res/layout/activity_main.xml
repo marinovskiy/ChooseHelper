@@ -33,10 +33,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?attr/colorPrimary"
+                android:fillViewport="false"
                 app:tabIndicatorColor="@android:color/white"
                 app:tabSelectedTextColor="@android:color/white"
-                app:tabTextColor="#EEEEEE"
-                android:fillViewport="false" />
+                app:tabTextColor="#EEEEEE" />
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -74,6 +74,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@color/colorPrimary"
+        app:itemTextColor="@color/colorBackgroundPrimary"
         android:fitsSystemWindows="true"
         app:menu="@menu/menu_drawer_main" />
 

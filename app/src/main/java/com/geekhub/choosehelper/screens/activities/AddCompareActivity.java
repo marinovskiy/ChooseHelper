@@ -174,7 +174,7 @@ public class AddCompareActivity extends BaseSignInActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_add_compare, menu);
+        getMenuInflater().inflate(R.menu.menu_done, menu);
         return true;
     }
 

@@ -169,6 +169,7 @@ public class MainActivity extends BaseSignInActivity
         ImageView ivAvatar = (ImageView) headerView.findViewById(R.id.nav_header_avatar);
         TextView tvFullName = (TextView) headerView.findViewById(R.id.nav_header_name);
         TextView tvEmail = (TextView) headerView.findViewById(R.id.nav_header_email);
+
         tvFullName.setText(user.getFullName());
         tvEmail.setText(user.getEmail());
         if (user.getPhotoUrl() != null) {
