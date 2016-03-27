@@ -1,8 +1,10 @@
 package com.geekhub.choosehelper.screens.fragments;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,22 +13,33 @@ import android.widget.Toast;
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.db.Compare;
 import com.geekhub.choosehelper.ui.adapters.ComparesRecyclerViewAdapter;
+import com.geekhub.choosehelper.utils.Utils;
 import com.geekhub.choosehelper.utils.db.DbComparesManager;
 import com.geekhub.choosehelper.utils.firebase.FirebaseComparesManager;
 
+import java.util.List;
+
 import butterknife.Bind;
-import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
 public class AllComparesFragment extends BaseFragment {
 
-    private RealmResults<Compare> mCompares;
-
-    private RealmChangeListener mComparesListener;
+    @Bind(R.id.all_compares_swipe_to_refresh)
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Bind(R.id.recycler_view_all_compares)
     RecyclerView mRecyclerView;
+
+    private boolean mIsNeedToReload = false;
+
+    private RealmResults<Compare> mCompares;
+
+    private RealmChangeListener mComparesListener = () -> {
+        if (mCompares != null && mCompares.isLoaded()) {
+            updateUi(mCompares);
+        }
+    };
 
     public AllComparesFragment() {
 
@@ -43,42 +56,67 @@ public class AllComparesFragment extends BaseFragment {
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        FirebaseComparesManager.getTwentyCompares();
-        mComparesListener = () -> {
-            if (mCompares != null && mCompares.isLoaded()) {
-                updateUi();
+
+        fetchComparesFromDb();
+
+        if (Utils.hasInternet(getContext())) {
+            fetchComparesFromNetwork();
+        }
+
+        /** swipe refresh layout **/
+        mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+        mSwipeRefreshLayout.setOnRefreshListener(() -> {
+            mSwipeRefreshLayout.setRefreshing(true);
+            if (Utils.hasInternet(getContext())) {
+                fetchComparesFromNetwork();
+            } else {
+                Toast.makeText(getContext(), R.string.toast_no_internet, Toast.LENGTH_SHORT).show();
             }
-        };
-        getComparesFromDb();
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        ComparesRecyclerViewAdapter adapter = new ComparesRecyclerViewAdapter(mCompares);
-        mRecyclerView.setAdapter(adapter);
-        adapter.setOnItemClickListener((view, position) ->
-                Toast.makeText(getContext(), "Position = " + position, Toast.LENGTH_SHORT).show());
+            mSwipeRefreshLayout.setRefreshing(false);
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!mIsNeedToReload) {
+            mIsNeedToReload = true;
+        } else {
+            fetchComparesFromDb();
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Realm.getDefaultInstance().removeAllChangeListeners();
+        mCompares.removeChangeListener(mComparesListener);
     }
 
-    private void updateUi() {
-        ComparesRecyclerViewAdapter adapter;
-        if (mRecyclerView.getAdapter() == null) {
-            adapter = new ComparesRecyclerViewAdapter(mCompares);
-            mRecyclerView.setAdapter(adapter);
-        } else {
-            adapter = (ComparesRecyclerViewAdapter) mRecyclerView.getAdapter();
-            adapter.updateList(mCompares);
-        }
-    }
-
-    private void getComparesFromDb() {
+    private void fetchComparesFromDb() {
         mCompares = DbComparesManager.getCompares();
         mCompares.addChangeListener(mComparesListener);
     }
 
+    private void fetchComparesFromNetwork() {
+        FirebaseComparesManager.getLastTwentyCompares();
+    }
+
+    private void updateUi(List<Compare> compares) {
+        ComparesRecyclerViewAdapter adapter = new ComparesRecyclerViewAdapter(compares);
+        mRecyclerView.setAdapter(adapter);
+        adapter.setOnItemClickListener((view, position) ->
+                Toast.makeText(getContext(), "Position = " + position, Toast.LENGTH_SHORT).show());
+    }
 }

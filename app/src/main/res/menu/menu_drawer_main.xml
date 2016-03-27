@@ -6,7 +6,7 @@
 
     <item
         android:id="@+id/action_nav_about"
-        android:title="Logout" />
+        android:title="About" />
 
     <!--<item-->
         <!--android:id="@+id/action_nav_help"-->

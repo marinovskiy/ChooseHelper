@@ -6,11 +6,21 @@ import io.realm.annotations.PrimaryKey;
 public class Variant extends RealmObject {
 
     @PrimaryKey
+    private long id;
+
     private String imageUrl;
 
     private String description;
 
     public Variant() {
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getImageUrl() {

@@ -131,5 +131,6 @@
     </string>
     <string name="compare_dialog_photo_title">Select picture for variant</string>
     <string name="qwe">You did not fill all fields</string>
+    <string name="toast_no_internet">No internet connection</string>
 
 </resources>

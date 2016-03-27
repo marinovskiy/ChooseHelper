@@ -6,13 +6,18 @@ import android.support.multidex.MultiDex;
 
 import com.crashlytics.android.Crashlytics;
 import com.firebase.client.Firebase;
+import com.geekhub.choosehelper.models.db.Variant;
 import com.geekhub.choosehelper.utils.Prefs;
+
+import java.util.concurrent.atomic.AtomicLong;
 
 import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
 public class ChooseHelperApplication extends Application {
+
+    public static AtomicLong sPrimaryKey;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -32,5 +37,12 @@ public class ChooseHelperApplication extends Application {
                 .deleteRealmIfMigrationNeeded()
                 .build();
         Realm.setDefaultConfiguration(configuration);
+        Realm realm = Realm.getDefaultInstance();
+        try {
+            sPrimaryKey = new AtomicLong(realm.where(Variant.class).max("id").longValue());
+        } catch (NullPointerException e) {
+            sPrimaryKey = new AtomicLong(0);
+        }
+        realm.close();
     }
 }

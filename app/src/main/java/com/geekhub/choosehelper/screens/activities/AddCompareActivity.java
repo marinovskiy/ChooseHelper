@@ -212,12 +212,18 @@ public class AddCompareActivity extends BaseSignInActivity {
     private void addCompare() {
 
         /** check if user pick images. If he didn't - will be using standard image **/
-        if (!mFirstImagePath.equals("")) {
+        if (mFirstImagePath != null) {
             mFirstImageUrl = getUrlAndStartUpload(mFirstImagePath);
         }
-        if (!mSecondImagePath.equals("")) {
+        if (mSecondImagePath != null) {
             mSecondImageUrl = getUrlAndStartUpload(mSecondImagePath);
         }
+//        if (!mFirstImagePath.equals("")) {
+//            mFirstImageUrl = getUrlAndStartUpload(mFirstImagePath);
+//        }
+//        if (!mSecondImagePath.equals("")) {
+//            mSecondImageUrl = getUrlAndStartUpload(mSecondImagePath);
+//        }
 
         /** create variants list of compare **/
         List<NetworkVariant> variants = new ArrayList<>();

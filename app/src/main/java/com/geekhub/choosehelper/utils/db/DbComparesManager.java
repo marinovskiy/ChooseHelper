@@ -1,5 +1,7 @@
 package com.geekhub.choosehelper.utils.db;
 
+import android.util.Log;
+
 import com.geekhub.choosehelper.models.db.Compare;
 
 import java.util.List;

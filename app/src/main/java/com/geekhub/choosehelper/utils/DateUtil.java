@@ -7,7 +7,7 @@ import java.util.Date;
 public class DateUtil {
 
     public static String convertDateTime(long dateTime) {
-        return DateFormat.format("D'th' MMM yyyy H m", new Date(dateTime)).toString();
+        return DateFormat.format("d'th' MMM yyyy H m", new Date(dateTime)).toString();
     }
 
 }

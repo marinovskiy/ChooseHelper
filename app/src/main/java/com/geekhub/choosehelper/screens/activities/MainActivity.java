@@ -9,6 +9,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +23,7 @@ import com.geekhub.choosehelper.screens.fragments.FriendsComparesFragment;
 import com.geekhub.choosehelper.ui.adapters.ComparesViewPagerAdapter;
 import com.geekhub.choosehelper.utils.ImageUtil;
 import com.geekhub.choosehelper.utils.Prefs;
+import com.geekhub.choosehelper.utils.db.DbManager;
 import com.geekhub.choosehelper.utils.db.DbUsersManager;
 
 import butterknife.Bind;
@@ -45,7 +47,7 @@ public class MainActivity extends BaseSignInActivity
     @Bind(R.id.toolbar_main)
     Toolbar mToolbar;
 
-    @Bind(R.id.main_tab_layout)
+    @Bind(R.id.tab_layout_main)
     TabLayout mTabLayout;
 
 //    @Bind(R.id.toolbar_shadow_main)
@@ -85,7 +87,7 @@ public class MainActivity extends BaseSignInActivity
         };
         getCurrentUserInfo();
 
-        //FirebaseComparesManager.getTwentyCompares();
+        //FirebaseComparesManager.getLastTwentyCompares();
     }
 
     @OnClick(R.id.fab_add_main)
@@ -169,7 +171,6 @@ public class MainActivity extends BaseSignInActivity
         ImageView ivAvatar = (ImageView) headerView.findViewById(R.id.nav_header_avatar);
         TextView tvFullName = (TextView) headerView.findViewById(R.id.nav_header_name);
         TextView tvEmail = (TextView) headerView.findViewById(R.id.nav_header_email);
-
         tvFullName.setText(user.getFullName());
         tvEmail.setText(user.getEmail());
         if (user.getPhotoUrl() != null) {

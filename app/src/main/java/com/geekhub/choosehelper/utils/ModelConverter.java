@@ -2,6 +2,7 @@ package com.geekhub.choosehelper.utils;
 
 import android.support.annotation.NonNull;
 
+import com.geekhub.choosehelper.ChooseHelperApplication;
 import com.geekhub.choosehelper.models.db.Author;
 import com.geekhub.choosehelper.models.db.Compare;
 import com.geekhub.choosehelper.models.db.User;
@@ -10,6 +11,7 @@ import com.geekhub.choosehelper.models.network.NetworkAuthor;
 import com.geekhub.choosehelper.models.network.NetworkCompare;
 import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.models.network.NetworkVariant;
+import com.geekhub.choosehelper.utils.db.DbManager;
 
 import java.util.List;
 
@@ -56,6 +58,8 @@ public class ModelConverter {
 
     public static Variant convertToVariant(@NonNull NetworkVariant networkVariant) {
         Variant variant = new Variant();
+        //variant.setId(DbManager.getNextVariantId());
+        variant.setId(ChooseHelperApplication.sPrimaryKey.incrementAndGet());
         variant.setImageUrl(networkVariant.getImageUrl());
         variant.setDescription(networkVariant.getDescription());
         return variant;
