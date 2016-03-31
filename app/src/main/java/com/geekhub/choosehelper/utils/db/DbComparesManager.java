@@ -17,7 +17,8 @@ public class DbComparesManager {
     }
 
     public static void saveCompare(Compare compare) {
-        Log.i("logtags", "saveCompare`  `");
+        Log.i("commentslogtags", "saveCompare");
+        Log.i("commentslogtags", "compare.comment=" + compare.getComments().get(0).getCommentText());
         Realm.getDefaultInstance().executeTransaction(realm1 -> realm1.copyToRealmOrUpdate(compare));
     }
 

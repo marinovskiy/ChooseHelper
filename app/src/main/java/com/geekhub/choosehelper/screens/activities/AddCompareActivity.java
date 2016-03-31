@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.network.NetworkVariant;
+import com.geekhub.choosehelper.screens.fragments.AllComparesFragment;
 import com.geekhub.choosehelper.utils.AmazonUtil;
 import com.geekhub.choosehelper.utils.ImageUtil;
 import com.geekhub.choosehelper.utils.Prefs;
@@ -189,6 +190,7 @@ public class AddCompareActivity extends BaseSignInActivity {
                 if (mQuestion.equals("") || mFirstVariant.equals("") || mSecondVariant.equals("")) {
                     Toast.makeText(this, R.string.toast_empty_fields, Toast.LENGTH_SHORT).show();
                 } else {
+                    AllComparesFragment.sIsNeedToReload = true;
                     addCompare();
                     finish();
                 }

@@ -33,7 +33,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import io.realm.RealmChangeListener;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
 public class AllComparesFragment extends BaseFragment {
@@ -51,7 +53,7 @@ public class AllComparesFragment extends BaseFragment {
 
     private Query mFirebaseQuery;
 
-    private boolean mIsNeedToReload = false;
+    public static boolean sIsNeedToReload = false;
 
     private RealmResults<Compare> mCompares;
 
@@ -117,9 +119,8 @@ public class AllComparesFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (!mIsNeedToReload) {
-            mIsNeedToReload = true;
-        } else {
+        if (sIsNeedToReload) {
+            sIsNeedToReload = false;
             fetchComparesFromNetwork();
         }
     }
@@ -145,7 +146,7 @@ public class AllComparesFragment extends BaseFragment {
         mFirebaseQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<Compare> compares = new ArrayList<>();
+                RealmList<Compare> compares = new RealmList<>();
                 for (DataSnapshot compareSnapshot : dataSnapshot.getChildren()) {
                     NetworkCompare networkCompare = compareSnapshot.getValue(NetworkCompare.class);
                     new Firebase(FirebaseConstants.FB_REFERENCE_MAIN)
@@ -158,9 +159,9 @@ public class AllComparesFragment extends BaseFragment {
                                             compareSnapshot.getKey(),
                                             dataSnapshot.getValue(NetworkUser.class),
                                             networkCompare.getUserId()));
-                                    if (!compares.isEmpty()) {
-                                        updateUi(compares);
+                                    if (compares.size() == dataSnapshot.getChildrenCount()) {
                                         DbComparesManager.saveCompares(compares);
+                                        updateUi(compares);
                                     }
                                 }
 
@@ -198,7 +199,9 @@ public class AllComparesFragment extends BaseFragment {
             intent.putExtra(INTENT_KEY_COMPARE_ID, compares.get(position).getId());
             startActivity(intent);
         });
-        adapter.setOnItemClickListenerPopup((view, position) -> showPopupMenu(compares, view, position));
+        adapter.setOnItemClickListenerPopup((view, position) -> {
+            showPopupMenu(compares, view, position);
+        });
         if (mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);
         }

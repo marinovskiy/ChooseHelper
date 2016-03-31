@@ -22,4 +22,8 @@ public final class FirebaseConstants {
     public static final String FB_REFERENCE_COMMENTS = "comments";
     public static final String FB_REFERENCE_COMMENTS_CID = "compareId";
 
+    // likes' firebase references
+    public static final String FB_REFERENCE_LIKES = "likes";
+    public static final String FB_REFERENCE_LIKES_CID = "compareId";
+
 }

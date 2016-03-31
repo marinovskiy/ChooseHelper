@@ -23,7 +23,6 @@ import com.firebase.client.ValueEventListener;
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.db.Comment;
 import com.geekhub.choosehelper.models.db.Compare;
-import com.geekhub.choosehelper.models.db.User;
 import com.geekhub.choosehelper.models.network.NetworkComment;
 import com.geekhub.choosehelper.models.network.NetworkCompare;
 import com.geekhub.choosehelper.models.network.NetworkUser;
@@ -33,11 +32,7 @@ import com.geekhub.choosehelper.utils.ModelConverter;
 import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.Utils;
 import com.geekhub.choosehelper.utils.db.DbComparesManager;
-import com.geekhub.choosehelper.utils.firebase.FirebaseComparesManager;
 import com.geekhub.choosehelper.utils.firebase.FirebaseConstants;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -117,7 +112,7 @@ public class DetailsActivity extends BaseSignInActivity {
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
             mSwipeRefreshLayout.setRefreshing(true);
             if (Utils.hasInternet(getApplicationContext())) {
-                fetchCompareFromDb();
+                fetchCompareFromNetwork();
             } else {
                 Toast.makeText(getApplicationContext(), R.string.toast_no_internet, Toast.LENGTH_SHORT).show();
                 mSwipeRefreshLayout.setRefreshing(false);
@@ -129,12 +124,7 @@ public class DetailsActivity extends BaseSignInActivity {
     public void onClick() {
         String commentText = mDetailsEtCommentText.getText().toString();
         if (!commentText.equals("")) {
-            NetworkComment networkComment = new NetworkComment();
-            networkComment.setCompareId(mCompareId);
-            networkComment.setUserId(Prefs.getUserId());
-            networkComment.setDate(-1 * System.currentTimeMillis());
-            networkComment.setCommentText(commentText);
-            FirebaseComparesManager.addCommentToCompare(networkComment);
+            addComment(commentText);
         } else {
             Toast.makeText(this, "You can't post an empty comment", Toast.LENGTH_SHORT).show();
         }
@@ -241,9 +231,13 @@ public class DetailsActivity extends BaseSignInActivity {
                                             commentsSnapshot.getKey(),
                                             userSnapshot.getValue(NetworkUser.class),
                                             networkComment.getUserId()));
-                                    compare.setComments(comments);
-                                    DbComparesManager.saveCompare(compare);
-                                    updateUi(compare);
+                                    Log.i("commentslogtags", "1)comments,size=" + comments.size());
+                                    if (comments.size() == dataSnapshot.getChildrenCount()) {
+                                        compare.setComments(comments);
+                                        Log.i("commentslogtags", "compare.comment=" + compare.getComments().get(0).getCommentText());
+                                        DbComparesManager.saveCompare(compare);
+                                        updateUi(compare);
+                                    }
                                 }
 
                                 @Override
@@ -255,6 +249,10 @@ public class DetailsActivity extends BaseSignInActivity {
                                 }
                             });
                 }
+//                Log.i("commentslogtags", "2)comments.size=" + comments.size());
+//                compare.setComments(comments);
+//                DbComparesManager.saveCompare(compare);
+//                updateUi(compare);
             }
 
             @Override
@@ -268,6 +266,9 @@ public class DetailsActivity extends BaseSignInActivity {
     }
 
     private void updateUi(Compare compare) {
+        Log.i("commentslogtags", "updateUi");
+        Log.i("commentslogtags", "compare.id=" + compare.getId());
+        Log.i("commentslogtags", "compare.comment=" + compare.getComments().size());
         CommentsRecyclerViewAdapter adapter = new CommentsRecyclerViewAdapter(compare);
         mRecyclerView.setAdapter(adapter);
         if (mSwipeRefreshLayout.isRefreshing()) {
@@ -282,20 +283,19 @@ public class DetailsActivity extends BaseSignInActivity {
         mSnackbar.show();
     }
 
-    private List<Comment> generateComments() {
-        List<Comment> comments = new ArrayList<>();
-        User author = new User();
-        author.setId("qesadasd");
-        author.setFullName("Johny");
-        author.setPhotoUrl("https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcS-0d56tCE7lbXKopMQTh_ugToAx0R7-9v5iGXfKQe18MJ9-wi1");
-        for (int i = 0; i < 10; i++) {
-            Comment comment = new Comment();
-            comment.setId(String.valueOf(i));
-            comment.setDate(System.currentTimeMillis());
-            comment.setCommentText("bla-bla-bla-bla-bla...");
-            comment.setAuthor(author);
-            comments.add(comment);
-        }
-        return comments;
+    private void addComment(String commentText) {
+        NetworkComment networkComment = new NetworkComment();
+        networkComment.setCompareId(mCompareId);
+        networkComment.setUserId(Prefs.getUserId());
+        networkComment.setDate(-1 * System.currentTimeMillis());
+        networkComment.setCommentText(commentText);
+        mFirebaseComments.push().setValue(networkComment, (firebaseError, firebase) -> {
+            if (firebaseError != null) {
+                showSnackbar(firebaseError.getMessage() + " " + firebaseError.getCode());
+            } else {
+                Log.i("commentslogtags", "onComplete: " + firebase);
+                fetchCompareFromNetwork();
+            }
+        });
     }
 }
