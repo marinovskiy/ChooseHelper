@@ -9,9 +9,6 @@ import android.view.ViewGroup;
 
 import com.geekhub.choosehelper.R;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import butterknife.Bind;
 
 public class MyComparesFragment extends BaseFragment {

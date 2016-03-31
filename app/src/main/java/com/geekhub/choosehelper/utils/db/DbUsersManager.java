@@ -1,10 +1,12 @@
 package com.geekhub.choosehelper.utils.db;
 
-import android.util.Log;
-
+import com.geekhub.choosehelper.models.db.Compare;
 import com.geekhub.choosehelper.models.db.User;
 
+import java.util.List;
+
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 public class DbUsersManager {
 
@@ -13,9 +15,19 @@ public class DbUsersManager {
     // save user to local database
     public static void saveUser(User user) {
         Realm realm = Realm.getDefaultInstance();
-        realm.executeTransaction(realm1 -> {
-            realm1.copyToRealmOrUpdate(user);
-        });
+        realm.executeTransaction(realm1 -> realm1.copyToRealmOrUpdate(user));
+    }
+
+    public static void saveUsers(List<User> user) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(realm1 -> realm1.copyToRealmOrUpdate(user));
+    }
+
+    public static User getUserById(String userId) {
+        return Realm.getDefaultInstance()
+                .where(User.class)
+                .equalTo("userId", userId)
+                .findFirstAsync();
     }
 
     // Get user to local database

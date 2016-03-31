@@ -11,11 +11,13 @@ public class Compare extends RealmObject {
 
     private String question;
 
-    private Author author;
+    private User author;
 
     private RealmList<Variant> variants;
 
-    private String date;
+    private RealmList<Comment> comments;
+
+    private long date;
 
     public Compare() {
     }
@@ -36,11 +38,11 @@ public class Compare extends RealmObject {
         this.question = question;
     }
 
-    public Author getAuthor() {
+    public User getAuthor() {
         return author;
     }
 
-    public void setAuthor(Author author) {
+    public void setAuthor(User author) {
         this.author = author;
     }
 
@@ -52,11 +54,19 @@ public class Compare extends RealmObject {
         this.variants = variants;
     }
 
-    public String getDate() {
+    public long getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(long date) {
         this.date = date;
+    }
+
+    public RealmList<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(RealmList<Comment> comments) {
+        this.comments = comments;
     }
 }

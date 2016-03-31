@@ -8,7 +8,9 @@ public class Author extends RealmObject {
     @PrimaryKey
     private String id;
 
-    private String name;
+    private String fullName;
+
+    private String photoUrl;
 
     public Author() {
     }
@@ -21,11 +23,19 @@ public class Author extends RealmObject {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 }

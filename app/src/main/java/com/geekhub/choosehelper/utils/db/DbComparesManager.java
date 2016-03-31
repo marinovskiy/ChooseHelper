@@ -16,10 +16,24 @@ public class DbComparesManager {
                 realm1.copyToRealmOrUpdate(compares));
     }
 
+    public static void saveCompare(Compare compare) {
+        Log.i("logtags", "saveCompare`  `");
+        Realm.getDefaultInstance().executeTransaction(realm1 -> realm1.copyToRealmOrUpdate(compare));
+    }
+
     public static RealmResults<Compare> getCompares() {
+        RealmResults<Compare> compares = Realm.getDefaultInstance()
+                .where(Compare.class)
+                .findAllSortedAsync(DbFields.DB_COMPARES_DATE, false);
+        Log.i("logtags", "fetchComparesFromDb mCompares.size=" + compares.size());
+        return compares;
+    }
+
+    public static Compare getCompareById(String id) {
         return Realm.getDefaultInstance()
                 .where(Compare.class)
-                .findAllAsync();
+                .equalTo(DbFields.DB_COMPARES_ID, id)
+                .findFirstAsync();
     }
 
 }

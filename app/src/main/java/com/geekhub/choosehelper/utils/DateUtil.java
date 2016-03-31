@@ -1,13 +1,14 @@
 package com.geekhub.choosehelper.utils;
 
-import android.text.format.DateFormat;
-
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class DateUtil {
 
     public static String convertDateTime(long dateTime) {
-        return DateFormat.format("d'th' MMM yyyy H m", new Date(dateTime)).toString();
+        return new SimpleDateFormat("d'th' MMM HH:mm", Locale.getDefault())
+                .format(new Date(dateTime));
     }
 
 }

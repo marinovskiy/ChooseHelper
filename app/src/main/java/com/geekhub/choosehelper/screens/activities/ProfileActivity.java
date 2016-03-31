@@ -97,7 +97,7 @@ public class ProfileActivity extends BaseSignInActivity {
             if (getSupportActionBar() != null) {
 //                toolbar.setTitle(title);
                 getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(
-                        getApplicationContext(), R.drawable.icon_arrow_back));
+                        getApplicationContext(), R.drawable.icon_arrow_back_white));
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             }
         } else {

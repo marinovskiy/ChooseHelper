@@ -3,6 +3,7 @@ package com.geekhub.choosehelper.screens.activities;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
@@ -18,7 +19,6 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.network.NetworkVariant;
 import com.geekhub.choosehelper.utils.AmazonUtil;
-import com.geekhub.choosehelper.utils.DateUtil;
 import com.geekhub.choosehelper.utils.ImageUtil;
 import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.Utils;
@@ -38,25 +38,26 @@ public class AddCompareActivity extends BaseSignInActivity {
     public static final int RC_CAMERA_FIRST = 2;
     public static final int RC_GALLERY_SECOND = 3;
     public static final int RC_CAMERA_SECOND = 4;
-    //public static final int RC_GALLERY_THIRD = 5;
-    //public static final int RC_CAMERA_THIRD = 6;
 
     @Bind(R.id.toolbar_add_compare)
     Toolbar mToolbar;
 
+    @Bind(R.id.toolbar_shadow_add_compare)
+    View mToolbarShadow;
+
     @Bind(R.id.add_compare_et_question)
     EditText mAddCompareEtQuestion;
 
-    @Bind(R.id.add_compare_et_variant_one)
+    @Bind(R.id.add_compare_et_first_variant)
     EditText mAddCompareEtVariantOne;
 
-    @Bind(R.id.add_compare_img_one)
+    @Bind(R.id.add_compare_first_img)
     ImageView mAddCompareImgOne;
 
-    @Bind(R.id.add_compare_et_variant_two)
+    @Bind(R.id.add_compare_et_second_variant)
     EditText mAddCompareEtVariantTwo;
 
-    @Bind(R.id.add_compare_img_two)
+    @Bind(R.id.add_compare_second_img)
     ImageView mAddCompareImgTwo;
 
     private String mQuestion;
@@ -75,10 +76,10 @@ public class AddCompareActivity extends BaseSignInActivity {
         setupToolbar();
     }
 
-    @OnClick({R.id.add_compare_img_one, R.id.add_compare_img_two})
+    @OnClick({R.id.add_compare_first_img, R.id.add_compare_second_img})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.add_compare_img_one:
+            case R.id.add_compare_first_img:
                 Utils.showPhotoPickerDialog(AddCompareActivity.this, (dialog, which) -> {
                     switch (which) {
                         case 0:
@@ -98,7 +99,7 @@ public class AddCompareActivity extends BaseSignInActivity {
                     }
                 });
                 break;
-            case R.id.add_compare_img_two:
+            case R.id.add_compare_second_img:
                 Utils.showPhotoPickerDialog(AddCompareActivity.this, (dialog, which) -> {
                     switch (which) {
                         case 0:
@@ -207,6 +208,9 @@ public class AddCompareActivity extends BaseSignInActivity {
                     R.drawable.ic_close_white));
             mToolbar.setNavigationOnClickListener(v -> onBackPressed());
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mToolbarShadow.setVisibility(View.GONE);
+        }
     }
 
     private void addCompare() {
@@ -218,12 +222,6 @@ public class AddCompareActivity extends BaseSignInActivity {
         if (mSecondImagePath != null) {
             mSecondImageUrl = getUrlAndStartUpload(mSecondImagePath);
         }
-//        if (!mFirstImagePath.equals("")) {
-//            mFirstImageUrl = getUrlAndStartUpload(mFirstImagePath);
-//        }
-//        if (!mSecondImagePath.equals("")) {
-//            mSecondImageUrl = getUrlAndStartUpload(mSecondImagePath);
-//        }
 
         /** create variants list of compare **/
         List<NetworkVariant> variants = new ArrayList<>();
@@ -233,10 +231,9 @@ public class AddCompareActivity extends BaseSignInActivity {
         /** save new compare to firebase **/
         FirebaseComparesManager.addCompare(
                 Prefs.getUserId(),
-                getIntent().getStringExtra(MainActivity.INTENT_KEY_USER_NAME),
                 mQuestion,
                 variants,
-                DateUtil.convertDateTime(System.currentTimeMillis()));
+                -1 * System.currentTimeMillis());
     }
 
     private String getUrlAndStartUpload(String filePath) {

@@ -6,6 +6,8 @@ public class NetworkAuthor {
 
     private String fullName;
 
+    private String photoUrl;
+
     public NetworkAuthor() {
 
     }
@@ -24,5 +26,13 @@ public class NetworkAuthor {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 }

@@ -14,10 +14,10 @@ import butterknife.OnClick;
 
 public class SignInActivity extends BaseSignInActivity {
 
-    @Bind(R.id.et_sign_in_email)
+    @Bind(R.id.sign_in_et_email)
     EditText mEtSignInEmail;
 
-    @Bind(R.id.et_sign_in_password)
+    @Bind(R.id.sign_in_et_password)
     EditText mEtSignInPassword;
 
     private String mEmail;
@@ -33,15 +33,15 @@ public class SignInActivity extends BaseSignInActivity {
         }
     }
 
-    @OnClick({R.id.btn_sign_in, R.id.tv_forgot_password, R.id.sign_in_google, R.id.sign_in_facebook, R.id.tv_create_an_account})
+    @OnClick({R.id.sign_in_btn_login, R.id.sign_in_tv_forgot_password, R.id.sign_in_google, R.id.sign_in_facebook, R.id.tv_create_an_account})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btn_sign_in:
+            case R.id.sign_in_btn_login:
                 mEmail = mEtSignInEmail.getText().toString();
                 mPassword = mEtSignInPassword.getText().toString();
                 loginEmailPassword(mEmail, mPassword);
                 break;
-            case R.id.tv_forgot_password:
+            case R.id.sign_in_tv_forgot_password:
                 //TODO forgot password
                 break;
             case R.id.sign_in_facebook:

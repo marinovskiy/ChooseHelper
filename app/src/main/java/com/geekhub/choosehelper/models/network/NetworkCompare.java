@@ -1,16 +1,21 @@
 package com.geekhub.choosehelper.models.network;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class NetworkCompare {
 
     private String question;
 
+    private String userId;
+
+    private long date;
+
     private List<NetworkVariant> variants;
 
-    private NetworkAuthor networkAuthor;
-
-    private String date;
+    private List<NetworkComment> networkComments;
 
     public NetworkCompare() {
 
@@ -24,6 +29,22 @@ public class NetworkCompare {
         this.question = question;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public long getDate() {
+        return date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
+    }
+
     public List<NetworkVariant> getVariants() {
         return variants;
     }
@@ -32,19 +53,11 @@ public class NetworkCompare {
         this.variants = variants;
     }
 
-    public NetworkAuthor getNetworkAuthor() {
-        return networkAuthor;
+    public List<NetworkComment> getNetworkComments() {
+        return networkComments;
     }
 
-    public void setNetworkAuthor(NetworkAuthor networkAuthor) {
-        this.networkAuthor = networkAuthor;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
+    public void setNetworkComments(List<NetworkComment> networkComments) {
+        this.networkComments = networkComments;
     }
 }

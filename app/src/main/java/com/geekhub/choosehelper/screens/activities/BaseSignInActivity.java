@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
@@ -307,7 +306,7 @@ public class BaseSignInActivity extends AppCompatActivity
                         authData.getProviderData().get("displayName").toString(),
                         authData.getProviderData().get("profileImageURL").toString()
                 );
-                DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser));
+                DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser, Prefs.getUserId()));
                 FirebaseUsersManager.saveUserToFirebase(networkUser);
             } else if (loggedType == Prefs.FIREBASE_LOGIN) {
                 FirebaseUsersManager.saveUserFromFirebase(Prefs.getUserId());

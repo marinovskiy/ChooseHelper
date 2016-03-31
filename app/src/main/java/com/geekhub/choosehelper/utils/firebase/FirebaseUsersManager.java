@@ -7,7 +7,6 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.geekhub.choosehelper.models.network.NetworkUser;
-import com.geekhub.choosehelper.screens.activities.BaseSignInActivity;
 import com.geekhub.choosehelper.utils.ModelConverter;
 import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.db.DbUsersManager;
@@ -47,7 +46,7 @@ public class FirebaseUsersManager {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 NetworkUser networkUser = dataSnapshot.getValue(NetworkUser.class);
-                DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser));
+                DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser, id));
             }
 
             @Override

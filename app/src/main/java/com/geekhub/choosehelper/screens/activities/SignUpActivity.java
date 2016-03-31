@@ -178,7 +178,7 @@ public class SignUpActivity extends BaseSignInActivity {
                 NetworkUser networkUser = new NetworkUser(mEmail,
                         mFullName,
                         mAvatarUrl);
-                DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser));
+                DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser, uid));
                 FirebaseUsersManager.saveUserToFirebase(networkUser);
 
                 /** hide progress dialog and start main activity **/

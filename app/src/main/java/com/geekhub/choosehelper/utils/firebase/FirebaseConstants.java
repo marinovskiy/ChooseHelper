@@ -16,5 +16,9 @@ public final class FirebaseConstants {
 
     // compares' firebase references
     public static final String FB_REFERENCE_COMPARES = "compares";
+    public static final String FB_REFERENCE_COMPARES_DATE = "date";
+
+    // comments' firebase references
+    public static final String FB_REFERENCE_COMMENTS = "networkComments";
 
 }

@@ -22,7 +22,7 @@
             android:layout_width="92dp"
             android:layout_height="92dp"
             android:src="@drawable/icon_no_avatar"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+            android:layout_marginBottom="@dimen/activity_vertical_margin" />
 
         <TextView
             android:id="@+id/nav_header_name"

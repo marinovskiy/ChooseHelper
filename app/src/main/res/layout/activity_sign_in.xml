@@ -15,7 +15,6 @@
         app:layout_heightPercent="62%">
 
         <TextView
-            android:id="@+id/tv_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -25,7 +24,7 @@
             android:textSize="26sp" />
 
         <EditText
-            android:id="@+id/et_sign_in_email"
+            android:id="@+id/sign_in_et_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
@@ -42,7 +41,7 @@
             android:textSize="16sp" />
 
         <EditText
-            android:id="@+id/et_sign_in_password"
+            android:id="@+id/sign_in_et_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
@@ -59,7 +58,7 @@
             android:textSize="16sp" />
 
         <Button
-            android:id="@+id/btn_sign_in"
+            android:id="@+id/sign_in_btn_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
@@ -72,7 +71,7 @@
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/tv_forgot_password"
+            android:id="@+id/sign_in_tv_forgot_password"
             style="?borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

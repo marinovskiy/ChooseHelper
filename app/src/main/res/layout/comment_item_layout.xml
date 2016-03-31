@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/details_comments_iv_avatar"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:src="@drawable/test_img" />
+
+    <TextView
+        android:id="@+id/details_comments_tv_author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/details_comments_iv_avatar"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        tools:text="Johny Depp" />
+
+    <TextView
+        android:id="@+id/details_comments_tv_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/details_comments_tv_author"
+        android:layout_toRightOf="@id/details_comments_iv_avatar"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        tools:text="I think better variant is ..." />
+
+    <TextView
+        android:id="@+id/details_comments_tv_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/details_comments_tv_comment"
+        android:layout_toRightOf="@id/details_comments_iv_avatar"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        tools:text="30.03.2016" />
+
+</RelativeLayout>

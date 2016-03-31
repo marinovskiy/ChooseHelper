@@ -16,97 +16,108 @@
         app:title="Add compare"
         app:titleTextColor="@android:color/white" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginTop="8dp"
-        android:text="Question"
-        android:textColor="#BDBDBD"
-        android:textSize="16sp" />
-
-    <EditText
-        android:id="@+id/add_compare_et_question"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:hint="Type your question"
-        android:textColorHint="#BDBDBD" />
+        android:background="@android:color/white">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginTop="12dp"
-        android:text="Variants"
-        android:textColor="#000000"
-        android:textSize="18sp" />
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginTop="8dp"
-        android:text="Variant"
-        android:textColor="#BDBDBD"
-        android:textSize="16sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/add_compare_et_variant_one"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:hint="Type your variant"
-        android:textColorHint="#BDBDBD" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Question"
+                    android:textColor="#BDBDBD"
+                    android:textSize="16sp" />
 
-    <ImageView
-        android:id="@+id/add_compare_img_one"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginLeft="4dp"
-        android:src="@drawable/stand_photo" />
+                <EditText
+                    android:id="@+id/add_compare_et_question"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    android:hint="Type your question"
+                    android:textColorHint="#BDBDBD" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginTop="8dp"
-        android:text="Variant"
-        android:textColor="#BDBDBD"
-        android:textSize="16sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginTop="12dp"
+                    android:text="Variants"
+                    android:textColor="#000000"
+                    android:textSize="18sp" />
 
-    <EditText
-        android:id="@+id/add_compare_et_variant_two"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:hint="Type your variant"
-        android:textColorHint="#BDBDBD" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Variant"
+                    android:textColor="#BDBDBD"
+                    android:textSize="16sp" />
 
-    <ImageView
-        android:id="@+id/add_compare_img_two"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginLeft="4dp"
-        android:src="@drawable/stand_photo" />
+                <EditText
+                    android:id="@+id/add_compare_et_first_variant"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    android:hint="Type your variant"
+                    android:textColorHint="#BDBDBD" />
 
-    <!--<EditText-->
-    <!--android:id="@+id/et_first"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content" />-->
+                <ImageView
+                    android:id="@+id/add_compare_first_img"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginLeft="4dp"
+                    android:src="@drawable/stand_photo" />
 
-    <!--<EditText-->
-    <!--android:id="@+id/et_second"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content" />-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Variant"
+                    android:textColor="#BDBDBD"
+                    android:textSize="16sp" />
 
-    <!--<Button-->
-    <!--android:id="@+id/btn_new"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:text="Create" />-->
+                <EditText
+                    android:id="@+id/add_compare_et_second_variant"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    android:hint="Type your variant"
+                    android:textColorHint="#BDBDBD" />
+
+                <ImageView
+                    android:id="@+id/add_compare_second_img"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginLeft="4dp"
+                    android:src="@drawable/stand_photo" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+        <View
+            android:id="@+id/toolbar_shadow_add_compare"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:background="@drawable/toolbar_shadow" />
+
+    </FrameLayout>
+
 
 </LinearLayout>

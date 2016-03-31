@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import butterknife.ButterKnife;
+
 public class BaseFragment extends Fragment {
 
     @Override

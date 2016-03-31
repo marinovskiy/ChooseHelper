@@ -1,6 +1,7 @@
 package com.geekhub.choosehelper.screens.activities;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -9,7 +10,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,7 +23,6 @@ import com.geekhub.choosehelper.screens.fragments.FriendsComparesFragment;
 import com.geekhub.choosehelper.ui.adapters.ComparesViewPagerAdapter;
 import com.geekhub.choosehelper.utils.ImageUtil;
 import com.geekhub.choosehelper.utils.Prefs;
-import com.geekhub.choosehelper.utils.db.DbManager;
 import com.geekhub.choosehelper.utils.db.DbUsersManager;
 
 import butterknife.Bind;
@@ -60,15 +59,6 @@ public class MainActivity extends BaseSignInActivity
 
     private RealmChangeListener mUserListener;
 
-    private RealmChangeListener mRealmChangeListener = new RealmChangeListener() {
-        @Override
-        public void onChange() {
-            if (mCurrentUser != null && mCurrentUser.isLoaded()) {
-                setupNavDrawerHeader(mCurrentUser);
-            }
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,8 +76,6 @@ public class MainActivity extends BaseSignInActivity
             }
         };
         getCurrentUserInfo();
-
-        //FirebaseComparesManager.getLastTwentyCompares();
     }
 
     @OnClick(R.id.fab_add_main)
@@ -130,8 +118,8 @@ public class MainActivity extends BaseSignInActivity
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
+            //TODO click again for exit
             finish();
-            // TODO: add toast: "click again for exit"
         }
     }
 
@@ -161,9 +149,9 @@ public class MainActivity extends BaseSignInActivity
             mToolbar.setNavigationIcon(R.drawable.icon_drawer);
             mToolbar.setNavigationOnClickListener(v -> mDrawerLayout.openDrawer(GravityCompat.START));
         }
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mToolbarShadow.setVisibility(View.INVISIBLE);
-        }*/
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            mToolbarShadow.setVisibility(View.GONE);
+//        }
     }
 
     private void setupNavDrawerHeader(User user) {

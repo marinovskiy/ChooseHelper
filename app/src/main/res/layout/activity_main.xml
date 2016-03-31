@@ -37,19 +37,6 @@
                 app:tabSelectedTextColor="@android:color/white"
                 app:tabTextColor="#EEEEEE" />
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white">
-
-                <View
-                    android:id="@+id/toolbar_shadow_main"
-                    android:layout_width="match_parent"
-                    android:layout_height="5dp"
-                    android:background="@drawable/toolbar_shadow" />
-
-            </FrameLayout>
-
         </android.support.design.widget.AppBarLayout>
 
         <android.support.v4.view.ViewPager
@@ -74,8 +61,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="@color/colorPrimary"
-        app:itemTextColor="@color/colorBackgroundPrimary"
         android:fitsSystemWindows="true"
+        app:itemTextColor="@color/colorBackgroundPrimary"
         app:menu="@menu/menu_drawer_main" />
 
 </android.support.v4.widget.DrawerLayout>

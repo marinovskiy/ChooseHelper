@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.geekhub.choosehelper" >
+    package="com.geekhub.choosehelper">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -17,11 +17,11 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".screens.activities.SignInActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" >
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -49,6 +49,9 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".screens.activities.AboutActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".screens.activities.DetailsActivity"
             android:theme="@style/AppTheme" />
 
         <service
