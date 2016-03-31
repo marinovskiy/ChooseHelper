@@ -8,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -41,6 +42,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.OnClick;
 import io.realm.RealmChangeListener;
+import io.realm.RealmList;
 
 public class DetailsActivity extends BaseSignInActivity {
 
@@ -64,8 +66,9 @@ public class DetailsActivity extends BaseSignInActivity {
 
     private Snackbar mSnackbar;
 
-    private Firebase mFirebase;
+    private Firebase mFirebaseCompare;
     private Firebase mFirebaseComments;
+    private Query mQuearyCompareComments;
 
     private String mCompareId;
 
@@ -91,11 +94,12 @@ public class DetailsActivity extends BaseSignInActivity {
         if (getIntent() != null) {
             mCompareId = getIntent().getStringExtra(AllComparesFragment.INTENT_KEY_COMPARE_ID);
         }
-        mFirebase = new Firebase(FirebaseConstants.FB_REFERENCE_MAIN)
+        mFirebaseCompare = new Firebase(FirebaseConstants.FB_REFERENCE_MAIN)
                 .child(FirebaseConstants.FB_REFERENCE_COMPARES)
                 .child(mCompareId);
         mFirebaseComments = new Firebase(FirebaseConstants.FB_REFERENCE_MAIN)
                 .child(FirebaseConstants.FB_REFERENCE_COMMENTS);
+        mQuearyCompareComments = mFirebaseComments.orderByChild(FirebaseConstants.FB_REFERENCE_COMMENTS_CID).equalTo(mCompareId);
 
         /** get compare from database and network **/
         fetchCompareFromDb();
@@ -126,12 +130,13 @@ public class DetailsActivity extends BaseSignInActivity {
         String commentText = mDetailsEtCommentText.getText().toString();
         if (!commentText.equals("")) {
             NetworkComment networkComment = new NetworkComment();
-            networkComment.setDate(System.currentTimeMillis());
-            networkComment.setCommentText(commentText);
+            networkComment.setCompareId(mCompareId);
             networkComment.setUserId(Prefs.getUserId());
-            FirebaseComparesManager.addCommentToCompare(mCompareId, networkComment);
+            networkComment.setDate(-1 * System.currentTimeMillis());
+            networkComment.setCommentText(commentText);
+            FirebaseComparesManager.addCommentToCompare(networkComment);
         } else {
-            Toast.makeText(this, "You can't post empty comment", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "You can't post an empty comment", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -176,7 +181,7 @@ public class DetailsActivity extends BaseSignInActivity {
     }
 
     private void fetchCompareFromNetwork() {
-        mFirebase.addListenerForSingleValueEvent(new ValueEventListener() {
+        mFirebaseCompare.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot compareSnapshot) {
                 NetworkCompare networkCompare = compareSnapshot.getValue(NetworkCompare.class);
@@ -190,10 +195,11 @@ public class DetailsActivity extends BaseSignInActivity {
                                         compareSnapshot.getKey(),
                                         userSnapshot.getValue(NetworkUser.class),
                                         networkCompare.getUserId());
-                                if (compare != null) {
-                                    DbComparesManager.saveCompare(compare);
-                                    updateUi(compare);
-                                }
+                                fetchCommentsFromNetwork(compare);
+//                                if (compare != null) {
+//                                    DbComparesManager.saveCompare(compare);
+//                                    updateUi(compare);
+//                                }
                             }
 
                             @Override
@@ -216,9 +222,53 @@ public class DetailsActivity extends BaseSignInActivity {
         });
     }
 
+    private void fetchCommentsFromNetwork(Compare compare) {
+        mQuearyCompareComments.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.i("commentslogtags", "size=" + dataSnapshot.getChildrenCount());
+                RealmList<Comment> comments = new RealmList<>();
+                for (DataSnapshot commentsSnapshot : dataSnapshot.getChildren()) {
+                    Log.i("commentslogtags", "id=" + commentsSnapshot.getKey());
+                    NetworkComment networkComment = commentsSnapshot.getValue(NetworkComment.class);
+                    new Firebase(FirebaseConstants.FB_REFERENCE_MAIN)
+                            .child(FirebaseConstants.FB_REFERENCE_USERS)
+                            .child(networkComment.getUserId())
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot userSnapshot) {
+                                    comments.add(ModelConverter.convertToComment(networkComment,
+                                            commentsSnapshot.getKey(),
+                                            userSnapshot.getValue(NetworkUser.class),
+                                            networkComment.getUserId()));
+                                    compare.setComments(comments);
+                                    DbComparesManager.saveCompare(compare);
+                                    updateUi(compare);
+                                }
+
+                                @Override
+                                public void onCancelled(FirebaseError firebaseError) {
+                                    if (mSwipeRefreshLayout.isRefreshing()) {
+                                        mSwipeRefreshLayout.setRefreshing(false);
+                                    }
+                                    showSnackbar(firebaseError.getMessage() + " " + firebaseError.getCode());
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                if (mSwipeRefreshLayout.isRefreshing()) {
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+                showSnackbar(firebaseError.getMessage() + " " + firebaseError.getCode());
+            }
+        });
+    }
+
     private void updateUi(Compare compare) {
-        CommentsRecyclerViewAdapter adapter = new CommentsRecyclerViewAdapter(compare/*,
-                generateComments()*/);
+        CommentsRecyclerViewAdapter adapter = new CommentsRecyclerViewAdapter(compare);
         mRecyclerView.setAdapter(adapter);
         if (mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);

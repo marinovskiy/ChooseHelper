@@ -3,12 +3,10 @@ package com.geekhub.choosehelper.utils;
 import android.support.annotation.NonNull;
 
 import com.geekhub.choosehelper.ChooseHelperApplication;
-import com.geekhub.choosehelper.models.db.Author;
 import com.geekhub.choosehelper.models.db.Comment;
 import com.geekhub.choosehelper.models.db.Compare;
 import com.geekhub.choosehelper.models.db.User;
 import com.geekhub.choosehelper.models.db.Variant;
-import com.geekhub.choosehelper.models.network.NetworkAuthor;
 import com.geekhub.choosehelper.models.network.NetworkComment;
 import com.geekhub.choosehelper.models.network.NetworkCompare;
 import com.geekhub.choosehelper.models.network.NetworkUser;
@@ -48,23 +46,7 @@ public class ModelConverter {
             }
             compare.setVariants(variants);
         }
-        List<NetworkComment> networkComments = networkCompare.getNetworkComments();
-//        if (networkComments != null && !networkComments.isEmpty()) {
-//            RealmList<Comment> comments = new RealmList<>();
-//            for (NetworkComment networkComment : networkComments) {
-//                comments.add(convertToComment(networkComments));
-//            }
-//            compare.setComments(comments);
-//        }
         return compare;
-    }
-
-    public static Author convertToAuthor(@NonNull NetworkAuthor networkAuthor) {
-        Author author = new Author();
-        author.setId(networkAuthor.getId());
-        author.setFullName(networkAuthor.getFullName());
-        author.setPhotoUrl(networkAuthor.getPhotoUrl());
-        return author;
     }
 
     public static Variant convertToVariant(@NonNull NetworkVariant networkVariant) {
@@ -79,7 +61,7 @@ public class ModelConverter {
                                            NetworkUser author, String authorId) {
         Comment comment = new Comment();
         comment.setId(networkCommentId);
-        comment.setDate(networkComment.getDate());
+        comment.setDate(-1 * networkComment.getDate());
         comment.setAuthor(convertToUser(author, authorId));
         comment.setCommentText(networkComment.getCommentText());
         return comment;

@@ -1,28 +1,13 @@
 package com.geekhub.choosehelper.utils.firebase;
 
-import android.util.Log;
-
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.Query;
-import com.firebase.client.ValueEventListener;
-import com.geekhub.choosehelper.models.db.Compare;
-import com.geekhub.choosehelper.models.network.NetworkAuthor;
 import com.geekhub.choosehelper.models.network.NetworkComment;
 import com.geekhub.choosehelper.models.network.NetworkCompare;
-import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.models.network.NetworkVariant;
-import com.geekhub.choosehelper.utils.ModelConverter;
-import com.geekhub.choosehelper.utils.db.DbComparesManager;
-import com.geekhub.choosehelper.utils.db.DbUsersManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FirebaseComparesManager {
-
-    public static final String TAG = "FirebaseComparesManage";
 
     public static void addCompare(String userId, String question,
                                   List<NetworkVariant> variants, long date) {
@@ -34,7 +19,6 @@ public class FirebaseComparesManager {
         compare.setDate(date);
         compare.setVariants(variants);
         compare.setUserId(userId);
-        //compare.setNetworkComments(null);
         /** push to firebase **/
         firebase.push().setValue(compare);
     }
@@ -61,12 +45,9 @@ public class FirebaseComparesManager {
         });
     }*/
 
-    public static void addCommentToCompare(String compareId, NetworkComment networkComment) {
+    public static void addCommentToCompare(NetworkComment networkComment) {
         Firebase firebase = new Firebase(FirebaseConstants.FB_REFERENCE_MAIN)
-                .child(FirebaseConstants.FB_REFERENCE_COMPARES)
-                .child(compareId)
-                .child("networkComments");
-
+                .child(FirebaseConstants.FB_REFERENCE_COMMENTS);
         firebase.push().setValue(networkComment);
     }
 

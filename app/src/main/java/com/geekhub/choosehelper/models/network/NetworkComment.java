@@ -2,6 +2,8 @@ package com.geekhub.choosehelper.models.network;
 
 public class NetworkComment {
 
+    private String compareId;
+
     private String userId;
 
     private long date;
@@ -10,6 +12,14 @@ public class NetworkComment {
 
     public NetworkComment() {
 
+    }
+
+    public String getCompareId() {
+        return compareId;
+    }
+
+    public void setCompareId(String compareId) {
+        this.compareId = compareId;
     }
 
     public String getUserId() {
