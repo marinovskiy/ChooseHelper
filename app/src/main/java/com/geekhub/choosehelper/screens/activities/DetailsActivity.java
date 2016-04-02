@@ -184,12 +184,9 @@ public class DetailsActivity extends BaseSignInActivity {
                                 Compare compare = ModelConverter.convertToCompare(networkCompare,
                                         compareSnapshot.getKey(),
                                         userSnapshot.getValue(NetworkUser.class),
-                                        networkCompare.getUserId());
+                                        networkCompare.getUserId(),
+                                        0);
                                 fetchCommentsFromNetwork(compare);
-//                                if (compare != null) {
-//                                    DbComparesManager.saveCompare(compare);
-//                                    updateUi(compare);
-//                                }
                             }
 
                             @Override
@@ -249,10 +246,6 @@ public class DetailsActivity extends BaseSignInActivity {
                                 }
                             });
                 }
-//                Log.i("commentslogtags", "2)comments.size=" + comments.size());
-//                compare.setComments(comments);
-//                DbComparesManager.saveCompare(compare);
-//                updateUi(compare);
             }
 
             @Override

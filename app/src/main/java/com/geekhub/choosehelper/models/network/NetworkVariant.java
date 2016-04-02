@@ -6,6 +6,8 @@ public class NetworkVariant {
 
     private String description;
 
+    private long likes;
+
     public NetworkVariant() {
 
     }
@@ -29,5 +31,13 @@ public class NetworkVariant {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public long getLikes() {
+        return likes;
+    }
+
+    public void setLikes(long likes) {
+        this.likes = likes;
     }
 }

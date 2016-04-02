@@ -43,4 +43,10 @@ public class Utils {
     public static void showErrorMessage(Context context, String message) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
+
+
+    public static int getOtherVariantNumber(int currentVariantNumber) {
+        return currentVariantNumber == 0 ? 1 : 0;
+    }
+
 }

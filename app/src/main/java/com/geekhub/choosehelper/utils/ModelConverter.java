@@ -5,10 +5,12 @@ import android.support.annotation.NonNull;
 import com.geekhub.choosehelper.ChooseHelperApplication;
 import com.geekhub.choosehelper.models.db.Comment;
 import com.geekhub.choosehelper.models.db.Compare;
+import com.geekhub.choosehelper.models.db.Like;
 import com.geekhub.choosehelper.models.db.User;
 import com.geekhub.choosehelper.models.db.Variant;
 import com.geekhub.choosehelper.models.network.NetworkComment;
 import com.geekhub.choosehelper.models.network.NetworkCompare;
+import com.geekhub.choosehelper.models.network.NetworkLike;
 import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.models.network.NetworkVariant;
 
@@ -32,7 +34,8 @@ public class ModelConverter {
     }
 
     public static Compare convertToCompare(NetworkCompare networkCompare, String networkCompareId,
-                                           NetworkUser author, String authorId) {
+                                           NetworkUser author, String authorId,
+                                           int likedVariant) {
         Compare compare = new Compare();
         compare.setId(networkCompareId);
         compare.setDate(-1 * networkCompare.getDate());
@@ -46,12 +49,14 @@ public class ModelConverter {
             }
             compare.setVariants(variants);
         }
+        compare.setLikedVariant(likedVariant);
         return compare;
     }
 
     public static Variant convertToVariant(@NonNull NetworkVariant networkVariant) {
         Variant variant = new Variant();
         variant.setId(ChooseHelperApplication.sPrimaryKey.incrementAndGet());
+        variant.setLikes(networkVariant.getLikes());
         variant.setImageUrl(networkVariant.getImageUrl());
         variant.setDescription(networkVariant.getDescription());
         return variant;
@@ -65,7 +70,16 @@ public class ModelConverter {
         comment.setAuthor(convertToUser(author, authorId));
         comment.setCommentText(networkComment.getCommentText());
         return comment;
+    }
 
+    public static Like convertToLike(NetworkLike networkLike, String networkLikeId) {
+        Like like = new Like();
+        like.setId(networkLikeId);
+        like.setUserId(networkLike.getUserId());
+        like.setCompareId(networkLike.getCompareId());
+        like.setVariantNumber(networkLike.getVariantNumber());
+        like.setIsLike(networkLike.isLike());
+        return like;
     }
 
 }

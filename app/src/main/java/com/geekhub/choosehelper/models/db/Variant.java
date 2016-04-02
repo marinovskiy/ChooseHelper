@@ -12,6 +12,8 @@ public class Variant extends RealmObject {
 
     private String description;
 
+    private long likes;
+
     public Variant() {
     }
 
@@ -37,5 +39,13 @@ public class Variant extends RealmObject {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public long getLikes() {
+        return likes;
+    }
+
+    public void setLikes(long likes) {
+        this.likes = likes;
     }
 }

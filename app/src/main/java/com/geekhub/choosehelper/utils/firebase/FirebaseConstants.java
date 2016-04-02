@@ -14,6 +14,9 @@ public final class FirebaseConstants {
     public static final String FB_REFERENCE_USER_PLACE_LIVE = "placeLive";
     public static final String FB_REFERENCE_USER_ABOUT = "about";
 
+
+    public static final String FB_REFERENCE_VARIANTS = "variants";
+
     // compares' firebase references
     public static final String FB_REFERENCE_COMPARES = "compares";
     public static final String FB_REFERENCE_COMPARES_DATE = "date";

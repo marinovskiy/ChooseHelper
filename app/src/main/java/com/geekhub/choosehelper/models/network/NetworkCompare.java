@@ -1,10 +1,8 @@
 package com.geekhub.choosehelper.models.network;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+//@JsonIgnoreProperties(ignoreUnknown = true)
 public class NetworkCompare {
 
     private String question;
@@ -15,7 +13,7 @@ public class NetworkCompare {
 
     private List<NetworkVariant> variants;
 
-    private List<NetworkComment> networkComments;
+    //private List<NetworkComment> networkComments;
 
     public NetworkCompare() {
 
@@ -51,13 +49,5 @@ public class NetworkCompare {
 
     public void setVariants(List<NetworkVariant> variants) {
         this.variants = variants;
-    }
-
-    public List<NetworkComment> getNetworkComments() {
-        return networkComments;
-    }
-
-    public void setNetworkComments(List<NetworkComment> networkComments) {
-        this.networkComments = networkComments;
     }
 }
