@@ -1,12 +1,10 @@
 package com.geekhub.choosehelper.utils.db;
 
-import com.geekhub.choosehelper.models.db.Compare;
 import com.geekhub.choosehelper.models.db.User;
 
 import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmResults;
 
 public class DbUsersManager {
 
@@ -26,7 +24,7 @@ public class DbUsersManager {
     public static User getUserById(String userId) {
         return Realm.getDefaultInstance()
                 .where(User.class)
-                .equalTo("userId", userId)
+                .equalTo(DbFields.DB_ID, userId)
                 .findFirstAsync();
     }
 

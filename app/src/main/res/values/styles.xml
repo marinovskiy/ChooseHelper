@@ -8,18 +8,6 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="AppTheme.Button" parent="Base.Widget.AppCompat.Button">
-        <item name="android:textAllCaps">false</item>
-        <item name="android:textColor">#FFFFFF</item>
-    </style>
-
-    <style name="AppTheme.Button.Sign" parent="AppTheme.Button">
-        <item name="android:textStyle">bold</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:background">@drawable/sign_button</item>
-        <item name="android:textSize">@dimen/text_size_sign_button</item>
-    </style>
-
     <!-- Profile -->
     <style name="AppTheme.Profile.Toolbar" parent="Base.Widget.AppCompat.Toolbar">
         <item name="titleTextColor">@android:color/white</item>

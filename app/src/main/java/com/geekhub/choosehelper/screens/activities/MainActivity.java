@@ -92,7 +92,9 @@ public class MainActivity extends BaseSignInActivity
         switch (item.getItemId()) {
             case R.id.action_nav_profile:
                 mDrawerLayout.closeDrawers();
-                startActivity(new Intent(this, ProfileActivity.class));
+                Intent userIntent = new Intent(this, ProfileActivity.class);
+                userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID, Prefs.getUserId());
+                startActivity(userIntent);
                 return true;
             case R.id.action_nav_about:
                 mDrawerLayout.closeDrawers();

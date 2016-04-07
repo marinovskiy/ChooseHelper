@@ -1,33 +1,37 @@
 package com.geekhub.choosehelper.screens.activities;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.MutableData;
 import com.firebase.client.Query;
+import com.firebase.client.Transaction;
 import com.firebase.client.ValueEventListener;
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.db.Comment;
 import com.geekhub.choosehelper.models.db.Compare;
 import com.geekhub.choosehelper.models.network.NetworkComment;
 import com.geekhub.choosehelper.models.network.NetworkCompare;
+import com.geekhub.choosehelper.models.network.NetworkLike;
 import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.screens.fragments.AllComparesFragment;
-import com.geekhub.choosehelper.ui.adapters.CommentsRecyclerViewAdapter;
+import com.geekhub.choosehelper.ui.adapters.DetailsRecyclerViewAdapter;
+import com.geekhub.choosehelper.ui.adapters.SimpleDividerItemDecoration;
 import com.geekhub.choosehelper.utils.ModelConverter;
 import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.Utils;
@@ -41,16 +45,13 @@ import io.realm.RealmList;
 
 public class DetailsActivity extends BaseSignInActivity {
 
-    @Bind(R.id.details_ll_main)
-    RelativeLayout mLinearLayout;
-
     @Bind(R.id.toolbar_details)
     Toolbar mToolbar;
 
     @Bind(R.id.toolbar_shadow_details)
     View mToolbarShadow;
 
-    @Bind(R.id.details_swipe_to_refresh)
+    @Bind(R.id.swipe_to_refresh_details)
     SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Bind(R.id.details_rv)
@@ -59,11 +60,14 @@ public class DetailsActivity extends BaseSignInActivity {
     @Bind(R.id.details_et_comment_text)
     EditText mDetailsEtCommentText;
 
-    private Snackbar mSnackbar;
+    private CheckBox mClickedCheckBox;
+    private CheckBox mOtherCheckBox;
+
+    private Firebase mFirebaseRefLikes;
 
     private Firebase mFirebaseCompare;
     private Firebase mFirebaseComments;
-    private Query mQuearyCompareComments;
+    private Query mQueryCompareComments;
 
     private String mCompareId;
 
@@ -84,21 +88,28 @@ public class DetailsActivity extends BaseSignInActivity {
         /** recycler view **/
         mRecyclerView.setNestedScrollingEnabled(false);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
 
-        /** get current compare's id and create firebase reference **/
+        /** get current compare id and create firebase references **/
         if (getIntent() != null) {
             mCompareId = getIntent().getStringExtra(AllComparesFragment.INTENT_KEY_COMPARE_ID);
         }
-        mFirebaseCompare = new Firebase(FirebaseConstants.FB_REFERENCE_MAIN)
-                .child(FirebaseConstants.FB_REFERENCE_COMPARES)
+
+        mFirebaseCompare = new Firebase(FirebaseConstants.FB_REF_MAIN)
+                .child(FirebaseConstants.FB_REF_COMPARES)
                 .child(mCompareId);
-        mFirebaseComments = new Firebase(FirebaseConstants.FB_REFERENCE_MAIN)
-                .child(FirebaseConstants.FB_REFERENCE_COMMENTS);
-        mQuearyCompareComments = mFirebaseComments.orderByChild(FirebaseConstants.FB_REFERENCE_COMMENTS_CID).equalTo(mCompareId);
 
-        /** get compare from database and network **/
+        mFirebaseComments = new Firebase(FirebaseConstants.FB_REF_MAIN)
+                .child(FirebaseConstants.FB_REF_COMMENTS);
+
+        mQueryCompareComments = mFirebaseComments.orderByChild(FirebaseConstants.FB_REF_COMPARE_ID)
+                .equalTo(mCompareId);
+
+        mFirebaseRefLikes = new Firebase(FirebaseConstants.FB_REF_MAIN)
+                .child(FirebaseConstants.FB_REF_LIKES);
+
+        /** requests **/
         fetchCompareFromDb();
-
         if (Utils.hasInternet(getApplicationContext())) {
             fetchCompareFromNetwork();
         }
@@ -136,17 +147,24 @@ public class DetailsActivity extends BaseSignInActivity {
         mCompare.removeChangeListener(mComparesListener);
     }
 
-    //    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_more, menu);
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
+                return true;
+            case R.id.action_more:
+                if (mCompare.getId().equals(Prefs.getUserId())) {
+                    //Utils.showOwnerPopupMenu(getApplicationContext(), mCompare, );
+                } else {
+
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -165,61 +183,87 @@ public class DetailsActivity extends BaseSignInActivity {
         }
     }
 
+
+    /**
+     * get information about compare from local database
+     **/
     private void fetchCompareFromDb() {
         mCompare = DbComparesManager.getCompareById(mCompareId);
         mCompare.addChangeListener(mComparesListener);
     }
 
+
+    /**
+     * get information about compare from firebase
+     **/
     private void fetchCompareFromNetwork() {
         mFirebaseCompare.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot compareSnapshot) {
                 NetworkCompare networkCompare = compareSnapshot.getValue(NetworkCompare.class);
-                new Firebase(FirebaseConstants.FB_REFERENCE_MAIN)
-                        .child(FirebaseConstants.FB_REFERENCE_USERS)
+                new Firebase(FirebaseConstants.FB_REF_MAIN)
+                        .child(FirebaseConstants.FB_REF_USERS)
                         .child(networkCompare.getUserId())
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot userSnapshot) {
-                                Compare compare = ModelConverter.convertToCompare(networkCompare,
-                                        compareSnapshot.getKey(),
-                                        userSnapshot.getValue(NetworkUser.class),
-                                        networkCompare.getUserId(),
-                                        0);
-                                fetchCommentsFromNetwork(compare);
+                                mFirebaseRefLikes.orderByChild(FirebaseConstants.FB_REF_COMPARE_ID)
+                                        .equalTo(mCompareId)
+                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot likeSnapshot) {
+                                                int likedVariant = -1;
+                                                for (DataSnapshot snapshot : likeSnapshot.getChildren()) {
+                                                    if (snapshot.getValue(NetworkLike.class).getUserId().equals(Prefs.getUserId())) {
+                                                        likedVariant = snapshot.getValue(NetworkLike.class).getVariantNumber();
+                                                    }
+                                                }
+                                                Compare compare = ModelConverter.convertToCompare(networkCompare,
+                                                        compareSnapshot.getKey(),
+                                                        userSnapshot.getValue(NetworkUser.class),
+                                                        networkCompare.getUserId(),
+                                                        likedVariant);
+                                                fetchCommentsFromNetwork(compare);
+                                            }
+
+                                            @Override
+                                            public void onCancelled(FirebaseError firebaseError) {
+                                                hideRefreshing();
+                                                Toast.makeText(getApplicationContext(), "Error! Please, try later", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
                             }
 
                             @Override
                             public void onCancelled(FirebaseError firebaseError) {
-                                if (mSwipeRefreshLayout.isRefreshing()) {
-                                    mSwipeRefreshLayout.setRefreshing(false);
-                                }
-                                showSnackbar(firebaseError.getMessage() + " " + firebaseError.getCode());
+                                hideRefreshing();
+                                Toast.makeText(getApplicationContext(), "Error! Please, try later", Toast.LENGTH_SHORT).show();
                             }
                         });
             }
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-                if (mSwipeRefreshLayout.isRefreshing()) {
-                    mSwipeRefreshLayout.setRefreshing(false);
-                }
-                showSnackbar(firebaseError.getMessage() + " " + firebaseError.getCode());
+                hideRefreshing();
+                Toast.makeText(getApplicationContext(), "Error! Please, try later", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    /**
+     * get comment and their authors for current compare
+     **/
     private void fetchCommentsFromNetwork(Compare compare) {
-        mQuearyCompareComments.addListenerForSingleValueEvent(new ValueEventListener() {
+        /** comments **/
+        mQueryCompareComments.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.i("commentslogtags", "size=" + dataSnapshot.getChildrenCount());
                 RealmList<Comment> comments = new RealmList<>();
                 for (DataSnapshot commentsSnapshot : dataSnapshot.getChildren()) {
-                    Log.i("commentslogtags", "id=" + commentsSnapshot.getKey());
                     NetworkComment networkComment = commentsSnapshot.getValue(NetworkComment.class);
-                    new Firebase(FirebaseConstants.FB_REFERENCE_MAIN)
-                            .child(FirebaseConstants.FB_REFERENCE_USERS)
+                    /** their authors **/
+                    new Firebase(FirebaseConstants.FB_REF_MAIN)
+                            .child(FirebaseConstants.FB_REF_USERS)
                             .child(networkComment.getUserId())
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
@@ -228,10 +272,8 @@ public class DetailsActivity extends BaseSignInActivity {
                                             commentsSnapshot.getKey(),
                                             userSnapshot.getValue(NetworkUser.class),
                                             networkComment.getUserId()));
-                                    Log.i("commentslogtags", "1)comments,size=" + comments.size());
                                     if (comments.size() == dataSnapshot.getChildrenCount()) {
                                         compare.setComments(comments);
-                                        Log.i("commentslogtags", "compare.comment=" + compare.getComments().get(0).getCommentText());
                                         DbComparesManager.saveCompare(compare);
                                         updateUi(compare);
                                     }
@@ -239,10 +281,8 @@ public class DetailsActivity extends BaseSignInActivity {
 
                                 @Override
                                 public void onCancelled(FirebaseError firebaseError) {
-                                    if (mSwipeRefreshLayout.isRefreshing()) {
-                                        mSwipeRefreshLayout.setRefreshing(false);
-                                    }
-                                    showSnackbar(firebaseError.getMessage() + " " + firebaseError.getCode());
+                                    hideRefreshing();
+                                    Toast.makeText(getApplicationContext(), "Error! Please, try later", Toast.LENGTH_SHORT).show();
                                 }
                             });
                 }
@@ -250,30 +290,121 @@ public class DetailsActivity extends BaseSignInActivity {
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-                if (mSwipeRefreshLayout.isRefreshing()) {
-                    mSwipeRefreshLayout.setRefreshing(false);
-                }
-                showSnackbar(firebaseError.getMessage() + " " + firebaseError.getCode());
+                hideRefreshing();
+                Toast.makeText(getApplicationContext(), "Error! Please, try later", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void updateUi(Compare compare) {
-        Log.i("commentslogtags", "updateUi");
-        Log.i("commentslogtags", "compare.id=" + compare.getId());
-        Log.i("commentslogtags", "compare.comment=" + compare.getComments().size());
-        CommentsRecyclerViewAdapter adapter = new CommentsRecyclerViewAdapter(compare);
+        DetailsRecyclerViewAdapter adapter = new DetailsRecyclerViewAdapter(compare);
         mRecyclerView.setAdapter(adapter);
+        adapter.setOnHeaderClickListener(() -> {
+            Intent userIntent = new Intent(this, ProfileActivity.class);
+            userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID, compare.getAuthor().getId());
+            startActivity(userIntent);
+        });
+        adapter.setOnItemClickListener((view, position) -> {
+            Intent userIntent = new Intent(this, ProfileActivity.class);
+            userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID, compare.getComments().get(position).getAuthor().getId());
+            startActivity(userIntent);
+        });
+        adapter.setOnLikeDetailsListener((clickedCheckBox, otherCheckBox, position, variantNumber) -> {
+            mClickedCheckBox = clickedCheckBox;
+            mOtherCheckBox = otherCheckBox;
+            Utils.blockViews(mClickedCheckBox, mOtherCheckBox);
+            updateLike(mCompare.getId(), variantNumber);
+        });
         if (mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);
         }
     }
 
-    private void showSnackbar(String message) {
-        mSnackbar = Snackbar
-                .make(mLinearLayout, message, Snackbar.LENGTH_INDEFINITE)
-                .setAction("RETRY", v -> fetchCompareFromNetwork());
-        mSnackbar.show();
+    private void updateLike(String compareId, int variantNumber) {
+        Query queryLike = mFirebaseRefLikes.orderByChild(FirebaseConstants.FB_REF_COMPARE_ID)
+                .equalTo(compareId);
+        queryLike.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot likeSnapshot) {
+                String likeId = null;
+                NetworkLike networkLike = null;
+                for (DataSnapshot snapshot : likeSnapshot.getChildren()) {
+                    if (snapshot.getValue(NetworkLike.class).getUserId().equals(Prefs.getUserId())) {
+                        networkLike = snapshot.getValue(NetworkLike.class);
+                        likeId = snapshot.getKey();
+                    }
+                }
+                /** did not liked before - just like this variant **/
+                if (networkLike == null) {
+                    likeVariant(compareId, variantNumber);
+                }
+                /** liked before (true) - just unlike this variant **/
+                else if (networkLike.getVariantNumber() == variantNumber && networkLike.isLike()) {
+                    unLikeVariant(compareId, variantNumber, likeId);
+                }
+                /** other variant liked before - just like this variant and unlike other **/
+                else {
+                    likeVariant(compareId, variantNumber);
+                    unLikeVariant(compareId, Utils.getOtherVariantNumber(variantNumber), likeId);
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Toast.makeText(getApplicationContext(), "Error! Please, try later", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void likeVariant(String compareId, int variantNumber) {
+        Firebase firebaseLike = mFirebaseCompare.child(FirebaseConstants.FB_REF_VARIANTS)
+                .child(String.valueOf(variantNumber))
+                .child(FirebaseConstants.FB_REF_LIKES);
+        firebaseLike.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData currentData) {
+                if (currentData.getValue() == null) {
+                    currentData.setValue(1);
+                } else {
+                    currentData.setValue((Long) currentData.getValue() + 1);
+                }
+                return Transaction.success(currentData);
+            }
+
+            @Override
+            public void onComplete(FirebaseError firebaseError, boolean b,
+                                   DataSnapshot dataSnapshot) {
+                NetworkLike networkLike = new NetworkLike();
+                networkLike.setCompareId(compareId);
+                networkLike.setVariantNumber(variantNumber);
+                networkLike.setUserId(Prefs.getUserId());
+                networkLike.setIsLike(true);
+                mFirebaseRefLikes.push().setValue(networkLike);
+                Utils.unBlockViews(mClickedCheckBox, mOtherCheckBox);
+            }
+        });
+    }
+
+    private void unLikeVariant(String compareId, int variantNumber, String likeId) {
+        Firebase firebaseLike = mFirebaseCompare.child(FirebaseConstants.FB_REF_VARIANTS)
+                .child(String.valueOf(variantNumber))
+                .child(FirebaseConstants.FB_REF_LIKES);
+        firebaseLike.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData currentData) {
+                if (currentData.getValue() != null && (Long) currentData.getValue() != 0) {
+                    currentData.setValue((Long) currentData.getValue() - 1);
+                }
+                return Transaction.success(currentData);
+            }
+
+            @Override
+            public void onComplete(FirebaseError firebaseError, boolean b,
+                                   DataSnapshot dataSnapshot) {
+                mFirebaseRefLikes.child(likeId).setValue(null);
+                Utils.unBlockViews(mClickedCheckBox, mOtherCheckBox);
+            }
+        });
     }
 
     private void addComment(String commentText) {
@@ -284,11 +415,16 @@ public class DetailsActivity extends BaseSignInActivity {
         networkComment.setCommentText(commentText);
         mFirebaseComments.push().setValue(networkComment, (firebaseError, firebase) -> {
             if (firebaseError != null) {
-                showSnackbar(firebaseError.getMessage() + " " + firebaseError.getCode());
+                Toast.makeText(getApplicationContext(), "Error! Please, try later", Toast.LENGTH_SHORT).show();
             } else {
-                Log.i("commentslogtags", "onComplete: " + firebase);
                 fetchCompareFromNetwork();
             }
         });
+    }
+
+    private void hideRefreshing() {
+        if (mSwipeRefreshLayout.isRefreshing()) {
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
     }
 }

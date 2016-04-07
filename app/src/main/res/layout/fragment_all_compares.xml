@@ -1,11 +1,11 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackgroundPrimary"
+    android:background="@color/colorBackgroundLists"
     android:orientation="vertical">
 
     <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/all_compares_swipe_to_refresh"
+        android:id="@+id/swipe_to_refresh_all_compares"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -14,12 +14,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/colorBackgroundPrimary"
-            android:scrollbars="vertical" />
+            android:scrollbars="none" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <ProgressBar
-        android:id="@+id/all_compares_progress_bar"
+        android:id="@+id/progress_bar_all_compares"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

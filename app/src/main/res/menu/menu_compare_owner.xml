@@ -6,4 +6,10 @@
     <item
         android:id="@+id/action_share_compare"
         android:title="Share" />
+    <item
+        android:id="@+id/action_edit_compare"
+        android:title="Edit" />
+    <item
+        android:id="@+id/action_delete_compare"
+        android:title="Delete" />
 </menu>

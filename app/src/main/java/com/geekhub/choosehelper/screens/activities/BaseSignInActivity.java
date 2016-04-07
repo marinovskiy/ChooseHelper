@@ -118,7 +118,7 @@ public class BaseSignInActivity extends AppCompatActivity
 
         /** GENERAL **/
 
-        mFirebase = new Firebase(FirebaseConstants.FB_REFERENCE_MAIN);
+        mFirebase = new Firebase(FirebaseConstants.FB_REF_MAIN);
 
         mAuthStateListener = authData -> {
             if (authData != null) {

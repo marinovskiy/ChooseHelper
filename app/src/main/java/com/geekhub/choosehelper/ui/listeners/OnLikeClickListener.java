@@ -6,8 +6,6 @@ import android.widget.CheckBox;
 
 public interface OnLikeClickListener {
 
-    //void onLike(View view, int position, int variantNumber);
-
     void onLike(CardView mainView, CheckBox clickedCheckBox, CheckBox otherCheckBox, int position, int variantNumber);
 
 }

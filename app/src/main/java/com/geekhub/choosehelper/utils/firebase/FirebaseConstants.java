@@ -2,31 +2,22 @@ package com.geekhub.choosehelper.utils.firebase;
 
 public final class FirebaseConstants {
 
-    // base firebase reference
-    public static final String FB_REFERENCE_MAIN = "https://choosehelper.firebaseio.com/";
+    public static final String FB_REF_MAIN = "https://choosehelper.firebaseio.com/";
 
-    // users' firebase references
-    public static final String FB_REFERENCE_USERS = "users";
-    public static final String FB_REFERENCE_USER_EMAIL = "email";
-    public static final String FB_REFERENCE_USER_FULL_NAME = "fullName";
-    public static final String FB_REFERENCE_USER_PHOTO_URL = "photoUrl";
-    public static final String FB_REFERENCE_USER_BIRTHDAY = "birthday";
-    public static final String FB_REFERENCE_USER_PLACE_LIVE = "placeLive";
-    public static final String FB_REFERENCE_USER_ABOUT = "about";
+    public static final String FB_REF_USERS = "users";
+    public static final String FB_REF_LIKES = "likes";
+    public static final String FB_REF_COMPARES = "compares";
+    public static final String FB_REF_COMMENTS = "comments";
+    public static final String FB_REF_VARIANTS = "variants";
+
+    public static final String FB_REF_DATE = "date";
+    public static final String FB_REF_COMPARE_ID = "compareId";
+    public static final String FB_REF_EMAIL = "email";
+    public static final String FB_REF_FULL_NAME = "fullName";
+    public static final String FB_REF_PHOTO_URL = "photoUrl";
 
 
-    public static final String FB_REFERENCE_VARIANTS = "variants";
 
-    // compares' firebase references
-    public static final String FB_REFERENCE_COMPARES = "compares";
-    public static final String FB_REFERENCE_COMPARES_DATE = "date";
 
-    // comments' firebase references
-    public static final String FB_REFERENCE_COMMENTS = "comments";
-    public static final String FB_REFERENCE_COMMENTS_CID = "compareId";
-
-    // likes' firebase references
-    public static final String FB_REFERENCE_LIKES = "likes";
-    public static final String FB_REFERENCE_LIKES_CID = "compareId";
 
 }

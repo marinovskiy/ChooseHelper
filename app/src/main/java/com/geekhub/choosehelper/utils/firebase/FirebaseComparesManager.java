@@ -1,6 +1,10 @@
 package com.geekhub.choosehelper.utils.firebase;
 
+import android.util.Log;
+import android.widget.Toast;
+
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
 import com.geekhub.choosehelper.models.network.NetworkComment;
 import com.geekhub.choosehelper.models.network.NetworkCompare;
 import com.geekhub.choosehelper.models.network.NetworkVariant;
@@ -11,8 +15,8 @@ public class FirebaseComparesManager {
 
     public static void addCompare(String userId, String question,
                                   List<NetworkVariant> variants, long date) {
-        Firebase firebase = new Firebase(FirebaseConstants.FB_REFERENCE_MAIN)
-                .child(FirebaseConstants.FB_REFERENCE_COMPARES);
+        Firebase firebase = new Firebase(FirebaseConstants.FB_REF_MAIN)
+                .child(FirebaseConstants.FB_REF_COMPARES);
         /** create compare variable **/
         NetworkCompare compare = new NetworkCompare();
         compare.setQuestion(question);
@@ -23,32 +27,23 @@ public class FirebaseComparesManager {
         firebase.push().setValue(compare);
     }
 
-    /*public static void getCompareById(String id) {
-        Firebase firebase = new Firebase(FirebaseConstants.FB_REFERENCE_MAIN)
-                .child(FirebaseConstants.FB_REFERENCE_COMPARES)
-                .child(id);
+    public static void addCommentToCompare(NetworkComment networkComment) {
+        Firebase firebase = new Firebase(FirebaseConstants.FB_REF_MAIN)
+                .child(FirebaseConstants.FB_REF_COMMENTS);
+        firebase.push().setValue(networkComment);
+    }
 
-        firebase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                NetworkCompare networkCompare = dataSnapshot.getValue(NetworkCompare.class);
-                List<Compare> compareList = new ArrayList<>();
-                compareList.add(ModelConverter.convertToCompare(networkCompare, dataSnapshot.getKey()));
-                DbComparesManager.saveCompares(compareList);
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                Log.i(TAG, "getCompareById: firebase = error details:" + firebaseError.getDetails()
-                        + "message: " + firebaseError.getMessage() + " code: " + firebaseError.getCode());
+    public static void deleteCompare(String compareId) {
+        Firebase firebase = new Firebase(FirebaseConstants.FB_REF_MAIN)
+                .child(FirebaseConstants.FB_REF_COMPARES)
+                .child(compareId);
+        firebase.setValue(null, (firebaseError, firebase1) -> {
+            if (firebaseError != null) {
+                Log.i("FirebaseComparesManager", "deleteCompare: error: " + firebaseError);
+            } else {
+                Log.i("FirebaseComparesManager", "deleteCompare: complete");
             }
         });
-    }*/
-
-    public static void addCommentToCompare(NetworkComment networkComment) {
-        Firebase firebase = new Firebase(FirebaseConstants.FB_REFERENCE_MAIN)
-                .child(FirebaseConstants.FB_REFERENCE_COMMENTS);
-        firebase.push().setValue(networkComment);
     }
 
 }

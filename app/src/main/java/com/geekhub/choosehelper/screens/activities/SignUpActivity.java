@@ -150,7 +150,7 @@ public class SignUpActivity extends BaseSignInActivity {
 
     private void signUp() {
         showProgressDialog();
-        Firebase firebase = new Firebase(FirebaseConstants.FB_REFERENCE_MAIN);
+        Firebase firebase = new Firebase(FirebaseConstants.FB_REF_MAIN);
         firebase.createUser(mEmail, mPassword, new Firebase.ValueResultHandler<Map<String, Object>>() {
             @Override
             public void onSuccess(Map<String, Object> stringObjectMap) {

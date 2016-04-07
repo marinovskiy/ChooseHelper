@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.geekhub.choosehelper.screens.activities.EditCompareActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_edit_compare"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        app:elevation="4dp"
+        app:title="Edit"
+        app:titleTextColor="@android:color/white" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar_details"
+        android:background="@color/colorBackgroundPrimary">
+
+        <!--content here-->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/edit_compare_et_question"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <EditText
+                    android:id="@+id/edit_compare_et_v1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <ImageView
+                    android:id="@+id/edit_compare_iv_v1"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:src="@drawable/stand_photo" />
+
+                <EditText
+                    android:id="@+id/edit_compare_et_v2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <ImageView
+                    android:id="@+id/edit_compare_iv_v2"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:src="@drawable/stand_photo" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+        <View
+            android:id="@+id/toolbar_shadow_edit"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:background="@drawable/toolbar_shadow" />
+
+    </FrameLayout>
+
+</LinearLayout>

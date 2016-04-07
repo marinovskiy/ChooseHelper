@@ -1,7 +1,32 @@
 <resources>
+
+    <!--text-->
+    <dimen name="medium_text_size">16sp</dimen>
+    
+    <!--images-->
+    <dimen name="small_avatar_size">45dp</dimen>
+    <dimen name="small_image_size">100dp</dimen>
+
+    <!--card view-->
+    <dimen name="card_margin_horizontal">-3dp</dimen>
+    <dimen name="card_margin_vertical">2dp</dimen>
+    <dimen name="card_elevation">2dp</dimen>
+    <dimen name="card_container_margin_bottom">-2dp</dimen>
+
+    <!--card view content-->
+    <dimen name="card_content_large_margin">12dp</dimen>
+    <dimen name="card_content_medium_margin">10dp</dimen>
+    <dimen name="card_content_small_margin">6dp</dimen>
+
+    <dimen name="card_content_large_padding">8dp</dimen>
+    <dimen name="card_content_small_padding">4dp</dimen>
+
+
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+
+
 
     <dimen name="social_button_corner_radius">2dp</dimen>
     <dimen name="margin_left_right_edit_text_login">45dp</dimen>

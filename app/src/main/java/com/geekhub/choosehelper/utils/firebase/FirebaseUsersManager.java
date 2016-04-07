@@ -20,8 +20,8 @@ public class FirebaseUsersManager {
 
     public static boolean isUserExist(String id) {
         final boolean[] result = new boolean[1];
-        Firebase firebase = new Firebase(FirebaseConstants.FB_REFERENCE_MAIN)
-                .child(FirebaseConstants.FB_REFERENCE_USERS)
+        Firebase firebase = new Firebase(FirebaseConstants.FB_REF_MAIN)
+                .child(FirebaseConstants.FB_REF_USERS)
                 .child(id);
         firebase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -38,8 +38,8 @@ public class FirebaseUsersManager {
     }
 
     public static void saveUserFromFirebase(String id) {
-        Firebase firebase = new Firebase(FirebaseConstants.FB_REFERENCE_MAIN)
-                .child(FirebaseConstants.FB_REFERENCE_USERS)
+        Firebase firebase = new Firebase(FirebaseConstants.FB_REF_MAIN)
+                .child(FirebaseConstants.FB_REF_USERS)
                 .child(id);
 
         firebase.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -58,14 +58,14 @@ public class FirebaseUsersManager {
     }
 
     public static void saveUserToFirebase(NetworkUser networkUser) {
-        Firebase firebase = new Firebase(FirebaseConstants.FB_REFERENCE_MAIN)
-                .child(FirebaseConstants.FB_REFERENCE_USERS)
+        Firebase firebase = new Firebase(FirebaseConstants.FB_REF_MAIN)
+                .child(FirebaseConstants.FB_REF_USERS)
                 .child(Prefs.getUserId());
 
         Map<String, Object> userInfo = new HashMap<>();
-        userInfo.put(FirebaseConstants.FB_REFERENCE_USER_EMAIL, networkUser.getEmail());
-        userInfo.put(FirebaseConstants.FB_REFERENCE_USER_FULL_NAME, networkUser.getFullName());
-        userInfo.put(FirebaseConstants.FB_REFERENCE_USER_PHOTO_URL, networkUser.getPhotoUrl());
+        userInfo.put(FirebaseConstants.FB_REF_EMAIL, networkUser.getEmail());
+        userInfo.put(FirebaseConstants.FB_REF_FULL_NAME, networkUser.getFullName());
+        userInfo.put(FirebaseConstants.FB_REF_PHOTO_URL, networkUser.getPhotoUrl());
 
         if (isUserExist(Prefs.getUserId())) {
             firebase.updateChildren(userInfo);

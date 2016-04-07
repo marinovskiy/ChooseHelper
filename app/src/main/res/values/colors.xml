@@ -1,14 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!--main colors-->
     <color name="colorLightPrimary">#37474F</color>
     <color name="colorPrimary">#263238</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#03A9F4</color>
 
+    <!--background colors-->
+    <color name="colorBackgroundLists">#EEEEEE</color>
+    <color name="colorBackgroundPrimary">#F5F5F5</color>
+    <color name="colorBackgroundComment">#FFFFFF</color>
+
+    <!--text colors-->
+    <color name="colorTextToolbar">#FFFFFF</color>
+    <color name="colorTextPrimary">#000000</color>
+    <color name="colorTextSecondary">#727272</color>
+    <color name="colorTextLink">#05C5CF</color>
+
     <!--SIGN IN ACTIVITY-->
 
-
-    <color name="colorBackgroundPrimary">#FFFFFF</color>
 
     <!--social-->
     <color name="colorSignInUp">#03A9F4</color>

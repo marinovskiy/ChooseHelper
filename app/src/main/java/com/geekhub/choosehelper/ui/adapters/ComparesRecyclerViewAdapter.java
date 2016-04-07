@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.geekhub.choosehelper.R;
@@ -17,7 +18,6 @@ import com.geekhub.choosehelper.ui.listeners.OnItemClickListener;
 import com.geekhub.choosehelper.ui.listeners.OnLikeClickListener;
 import com.geekhub.choosehelper.utils.DateUtil;
 import com.geekhub.choosehelper.utils.ImageUtil;
-import com.geekhub.choosehelper.utils.Utils;
 
 import java.util.List;
 
@@ -31,6 +31,7 @@ public class ComparesRecyclerViewAdapter extends RecyclerView.Adapter<ComparesRe
 
     private OnItemClickListener mOnItemClickListener;
     private OnItemClickListener mOnItemClickListenerPopup;
+    private OnItemClickListener mOnItemClickListenerAuthor;
 
     private OnLikeClickListener mOnLikeClickListener;
 
@@ -57,38 +58,54 @@ public class ComparesRecyclerViewAdapter extends RecyclerView.Adapter<ComparesRe
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @Bind(R.id.compare_item_card_view)
+        @Bind(R.id.compare_card_view)
         CardView mCardView;
+
+        @Bind(R.id.compare_ll_author)
+        LinearLayout mLlAuthor;
+
+        @Bind(R.id.compare_iv_avatar)
+        ImageView mIvAvatar;
+
+        @Bind(R.id.compare_tv_author)
+        TextView mTvAuthor;
 
         @Bind(R.id.rv_img_more)
         ImageView mImgMore;
 
-        @Bind(R.id.rv_tv_title)
-        TextView mTvTitle;
+        @Bind(R.id.compare_tv_question)
+        TextView mTvQuestion;
 
-        @Bind(R.id.rv_iv_img_one)
-        ImageView mIvOne;
+        @Bind(R.id.compare_iv_first)
+        ImageView mIvFirst;
 
-        @Bind(R.id.rv_ch_like_first)
+        @Bind(R.id.compare_tv_first)
+        TextView mTvFirst;
+
+        @Bind(R.id.compare_ch_like_first)
         CheckBox mChLikeFirst;
 
-        @Bind(R.id.rv_iv_img_two)
-        ImageView mIvTwo;
+        @Bind(R.id.compare_iv_second)
+        ImageView mIvSecond;
 
-        @Bind(R.id.rv_ch_like_second)
+        @Bind(R.id.compare_tv_second)
+        TextView mTvSecond;
+
+        @Bind(R.id.compare_ch_like_second)
         CheckBox mChLikeSecond;
 
-        @Bind(R.id.rv_tv_author)
-        TextView mTvAuthor;
-
-        @Bind(R.id.rv_tv_date)
+        @Bind(R.id.compare_tv_date)
         TextView mTvDate;
+
+        @Bind(R.id.compare_tv_comments_count)
+        TextView mTvCommentsCount;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
             mImgMore.setOnClickListener(this);
+            mLlAuthor.setOnClickListener(this);
             mChLikeFirst.setOnClickListener(this);
             mChLikeSecond.setOnClickListener(this);
         }
@@ -106,75 +123,64 @@ public class ComparesRecyclerViewAdapter extends RecyclerView.Adapter<ComparesRe
                 }
             } else if (id == mChLikeFirst.getId()) {
                 if (mOnLikeClickListener != null) {
-                    //mChLikeFirst.setText(String.valueOf(mCompares.get(getAdapterPosition()).getVariants().get(0).getLikes() + 1));
+                    updateLikeView(mChLikeFirst, mChLikeSecond);
                     mOnLikeClickListener.onLike(mCardView, mChLikeFirst, mChLikeSecond, getAdapterPosition(), 0);
-                    updateLikeView(mChLikeFirst, mChLikeSecond, getAdapterPosition(), 0);
-                    /*if (mChLikeSecond.isChecked()) {
-                        mChLikeSecond.setChecked(false);
-                    }*/
                 }
             } else if (id == mChLikeSecond.getId()) {
                 if (mOnLikeClickListener != null) {
-                    //mChLikeSecond.setText(String.valueOf(mCompares.get(getAdapterPosition()).getVariants().get(1).getLikes() + 1));
+                    updateLikeView(mChLikeSecond, mChLikeFirst);
                     mOnLikeClickListener.onLike(mCardView, mChLikeSecond, mChLikeFirst, getAdapterPosition(), 1);
-                    updateLikeView(mChLikeSecond, mChLikeFirst, getAdapterPosition(), 1);
-                    /*if (mChLikeFirst.isChecked()) {
-                        mChLikeFirst.setChecked(false);
-                    }*/
+                }
+            } else if (id == mLlAuthor.getId()) {
+                if (mOnItemClickListenerAuthor != null) {
+                    mOnItemClickListenerAuthor.onItemClick(v, getAdapterPosition());
                 }
             }
         }
 
         private void bindCompare(Compare compare) {
-            // TODO: set view by layout inflater. Number depends on number of compares variants
-            if (getAdapterPosition() == mCompares.size()) {
-                RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                layoutParams.setMargins(0, 0, 0, 50);
-                mCardView.setLayoutParams(layoutParams);
-            }
-            mTvTitle.setText(compare.getQuestion());
-            if (compare.getVariants().get(0).getImageUrl() != null) {
-                ImageUtil.loadImage(mIvOne, compare.getVariants().get(0).getImageUrl());
-            } else {
-                mIvOne.setImageDrawable(ContextCompat.getDrawable(mIvOne.getContext(),
-                        R.drawable.icon_photo));
-            }
-            if (compare.getVariants().get(1).getImageUrl() != null) {
-                ImageUtil.loadImage(mIvTwo, compare.getVariants().get(1).getImageUrl());
-            } else {
-                mIvTwo.setImageDrawable(ContextCompat.getDrawable(mIvOne.getContext(),
-                        R.drawable.icon_photo));
+            if (compare.getAuthor().getPhotoUrl() != null) {
+                ImageUtil.loadCircleImage(mIvAvatar, compare.getAuthor().getPhotoUrl());
             }
             mTvAuthor.setText(compare.getAuthor().getFullName());
-            mTvDate.setText(DateUtil.convertDateTime(compare.getDate()));
+
+            mTvQuestion.setText(compare.getQuestion());
+
+            if (compare.getVariants().get(0).getImageUrl() != null) {
+                ImageUtil.loadImage(mIvFirst, compare.getVariants().get(0).getImageUrl());
+            }
+            mTvFirst.setText(compare.getVariants().get(0).getDescription());
             mChLikeFirst.setText(String.valueOf(compare.getVariants().get(0).getLikes()));
+
+            if (compare.getVariants().get(1).getImageUrl() != null) {
+                ImageUtil.loadImage(mIvSecond, compare.getVariants().get(1).getImageUrl());
+            }
+            mTvSecond.setText(compare.getVariants().get(1).getDescription());
             mChLikeSecond.setText(String.valueOf(compare.getVariants().get(1).getLikes()));
+
             if (compare.getLikedVariant() == 0) {
                 mChLikeFirst.setChecked(true);
             } else if (compare.getLikedVariant() == 1) {
                 mChLikeSecond.setChecked(true);
             }
+
+            mTvDate.setText(DateUtil.convertDateTime(compare.getDate()));
+            mTvCommentsCount.setText("12"); // TODO comments count
         }
     }
 
-    private void updateLikeView(CheckBox clickedCheckBox, CheckBox otherCheckBox, int position, int currentVariantNumber) {
-        int otherVariantNumber = Utils.getOtherVariantNumber(currentVariantNumber);
-        Log.i("!!!UNLIKE!!!", "updateLikeView: currentVariantNumber=" + currentVariantNumber);
-        Log.i("!!!UNLIKE!!!", "updateLikeView: otherVariantNumber=" + otherVariantNumber);
-        if (clickedCheckBox.isChecked()) {
-            //clickedCheckBox.setText(String.valueOf(mCompares.get(position).getVariants().get(currentVariantNumber).getLikes() + 1));
-            int newValue = Integer.parseInt(clickedCheckBox.getText().toString()) + 1;
-            clickedCheckBox.setText(String.valueOf(newValue));
-        } else {
-            //clickedCheckBox.setText(String.valueOf(mCompares.get(position).getVariants().get(currentVariantNumber).getLikes() - 1));
-            int newValue = Integer.parseInt(clickedCheckBox.getText().toString()) - 1;
-            clickedCheckBox.setText(String.valueOf(newValue));
-        }
+    private void updateLikeView(CheckBox clickedCheckBox, CheckBox otherCheckBox) {
         if (otherCheckBox.isChecked()) {
             otherCheckBox.setChecked(false);
             int newValue = Integer.parseInt(otherCheckBox.getText().toString()) - 1;
-            //clickedCheckBox.setText(String.valueOf(mCompares.get(position).getVariants().get(otherVariantNumber).getLikes() - 1));
             otherCheckBox.setText(String.valueOf(newValue));
+        }
+        if (clickedCheckBox.isChecked()) {
+            int newValue = Integer.parseInt(clickedCheckBox.getText().toString()) + 1;
+            clickedCheckBox.setText(String.valueOf(newValue));
+        } else {
+            int newValue = Integer.parseInt(clickedCheckBox.getText().toString()) - 1;
+            clickedCheckBox.setText(String.valueOf(newValue));
         }
     }
 
@@ -197,6 +203,13 @@ public class ComparesRecyclerViewAdapter extends RecyclerView.Adapter<ComparesRe
      **/
     public void setOnItemClickListenerPopup(OnItemClickListener onItemClickListenerPopup) {
         mOnItemClickListenerPopup = onItemClickListenerPopup;
+    }
+
+    /**
+     * click listener for author
+     **/
+    public void setOnItemClickListenerAuthor(OnItemClickListener onItemClickListenerAuthor) {
+        mOnItemClickListenerAuthor = onItemClickListenerAuthor;
     }
 
 }

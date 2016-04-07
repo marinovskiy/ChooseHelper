@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/details_ll_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -10,27 +9,29 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar_details"
-        style="@style/AppTheme.Profile.Toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
         app:elevation="4dp"
-        app:title="Details" />
+        app:title="Details"
+        app:titleTextColor="@color/colorTextToolbar" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar_details"
-        android:background="@color/colorBackgroundPrimary">
+        android:background="@color/colorBackgroundComment">
 
         <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/details_swipe_to_refresh"
+            android:id="@+id/swipe_to_refresh_details"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/details_rv"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="50dp"
                 android:scrollbars="none" />
 
         </android.support.v4.widget.SwipeRefreshLayout>
@@ -43,25 +44,25 @@
 
     </FrameLayout>
 
-    <LinearLayout
+    <android.support.percent.PercentRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@android:color/darker_gray"
-        android:orientation="horizontal">
+        android:background="@drawable/shadow_layout">
 
         <EditText
             android:id="@+id/details_et_comment_text"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Enter your comment" />
+            android:hint="Enter your comment"
+            app:layout_widthPercent="75%" />
 
         <Button
             android:id="@+id/details_btn_add_comment"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add" />
+            android:layout_alignParentRight="true"
+            android:text="Add"
+            app:layout_widthPercent="25%" />
 
-    </LinearLayout>
+    </android.support.percent.PercentRelativeLayout>
 
 </RelativeLayout>
