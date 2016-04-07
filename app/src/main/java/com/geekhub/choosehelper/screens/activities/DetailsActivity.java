@@ -237,7 +237,7 @@ public class DetailsActivity extends BaseSignInActivity {
         setProgressVisibility(false);
 
         DetailsRecyclerViewAdapter adapter;
-        if (mRecyclerView.getAdapter() == null && compare.isValid()) {
+        if (mRecyclerView.getAdapter() == null) {
             adapter = new DetailsRecyclerViewAdapter(compare);
             mRecyclerView.setAdapter(adapter);
 
@@ -271,7 +271,7 @@ public class DetailsActivity extends BaseSignInActivity {
                     updateLike(mCompare.getId(), variantNumber);
                 }
             });
-        } else if (mRecyclerView.getAdapter() != null) {
+        } else {
             adapter = (DetailsRecyclerViewAdapter) mRecyclerView.getAdapter();
             adapter.updateCompare(compare);
             adapter.notifyDataSetChanged();
@@ -375,8 +375,10 @@ public class DetailsActivity extends BaseSignInActivity {
                                 compare.setComments(comments);
                                 DbComparesManager.saveCompare(compare);
                                 try {
-                                    updateUi(compare);
-                                    hideRefreshing();
+                                    if (compare.isValid()) {
+                                        updateUi(compare);
+                                        hideRefreshing();
+                                    }
                                 } catch (NullPointerException e) {
                                     Toast.makeText(DetailsActivity.this, "NULLPOINTEREXCEPTION", Toast.LENGTH_SHORT).show();
                                 }

@@ -34,7 +34,7 @@ public class DetailsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     private OnLikeDetailsListener mOnLikeDetailsListener;
 
     public DetailsRecyclerViewAdapter(Compare compare) {
-        mCompare = compare;
+        mCompare = Realm.getDefaultInstance().copyFromRealm(compare);
 //        mCompare.setId(compare.getId());
 //        mCompare.setDate(compare.getDate());
 //        mCompare.setQuestion(compare.getQuestion());
@@ -45,7 +45,7 @@ public class DetailsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
     public void updateCompare(Compare compare) {
-        mCompare = compare;
+        mCompare = Realm.getDefaultInstance().copyFromRealm(compare);
 //        mCompare.setId(compare.getId());
 //        mCompare.setDate(compare.getDate());
 //        mCompare.setQuestion(compare.getQuestion());

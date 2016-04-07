@@ -6,6 +6,7 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class DbComparesManager {
 
@@ -21,7 +22,8 @@ public class DbComparesManager {
 
     public static RealmResults<Compare> getCompares() {
         return Realm.getDefaultInstance().where(Compare.class)
-                .findAllSortedAsync(DbFields.DB_COMPARES_DATE, false);
+                .findAllSortedAsync(DbFields.DB_COMPARES_DATE, Sort.DESCENDING);
+                //.findAllSortedAsync(DbFields.DB_COMPARES_DATE, false);
     }
 
     public static Compare getCompareById(String id) {
