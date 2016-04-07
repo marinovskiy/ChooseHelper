@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_settings"
-        android:icon="@drawable/icon_settings"
-        android:title="Done"
+        android:id="@+id/action_done"
+        android:icon="@drawable/ic_done_white"
+        android:title="Share"
         app:showAsAction="always" />
 </menu>

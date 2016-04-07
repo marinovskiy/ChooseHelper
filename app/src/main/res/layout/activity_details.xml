@@ -36,6 +36,14 @@
 
         </android.support.v4.widget.SwipeRefreshLayout>
 
+        <!--<ProgressBar-->
+            <!--android:id="@+id/progress_bar_details"-->
+            <!--style="?android:attr/progressBarStyleSmall"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:visibility="gone" />-->
+
         <View
             android:id="@+id/toolbar_shadow_details"
             android:layout_width="match_parent"

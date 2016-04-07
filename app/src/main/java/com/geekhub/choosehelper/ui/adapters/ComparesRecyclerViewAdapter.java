@@ -162,7 +162,9 @@ public class ComparesRecyclerViewAdapter extends RecyclerView.Adapter<ComparesRe
 
             if (compare.getLikedVariant() == 0) {
                 mChLikeFirst.setChecked(true);
+                mChLikeSecond.setChecked(false);
             } else if (compare.getLikedVariant() == 1) {
+                mChLikeFirst.setChecked(false);
                 mChLikeSecond.setChecked(true);
             }
 

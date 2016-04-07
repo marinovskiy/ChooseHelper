@@ -154,7 +154,6 @@ public class AllComparesFragment extends BaseFragment {
      **/
     private void updateUi(List<Compare> compares) {
         setProgressVisibility(false);
-        hideRefreshing();
 
         ComparesRecyclerViewAdapter adapter;
         if (mRecyclerView.getAdapter() == null) {
@@ -208,8 +207,8 @@ public class AllComparesFragment extends BaseFragment {
      * get information about compare from local database
      **/
     private void fetchComparesFromDb() {
-        mCompares = DbComparesManager.getCompares();
         setProgressVisibility(true);
+        mCompares = DbComparesManager.getCompares();
         mCompares.addChangeListener(mComparesListener);
     }
 
@@ -279,6 +278,7 @@ public class AllComparesFragment extends BaseFragment {
                                     });
                                     DbComparesManager.saveCompares(compares);
                                     updateUi(compares);
+                                    hideRefreshing();
                                 }
                             }
 

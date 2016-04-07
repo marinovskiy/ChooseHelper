@@ -36,6 +36,7 @@ import com.geekhub.choosehelper.utils.ModelConverter;
 import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.Utils;
 import com.geekhub.choosehelper.utils.db.DbComparesManager;
+import com.geekhub.choosehelper.utils.firebase.FirebaseComparesManager;
 import com.geekhub.choosehelper.utils.firebase.FirebaseConstants;
 
 import java.util.Collections;
@@ -61,6 +62,9 @@ public class DetailsActivity extends BaseSignInActivity {
 
     @Bind(R.id.details_et_comment_text)
     EditText mDetailsEtCommentText;
+
+    /*@Bind(R.id.progress_bar_details)
+    ProgressBar mCommentsProgressBar;*/
 
     /**
      * freezing views when like variant
@@ -176,7 +180,9 @@ public class DetailsActivity extends BaseSignInActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_more, menu);
+        /*if (mCompare.getAuthor().getId().equals(Prefs.getUserId())) {
+            getMenuInflater().inflate(R.menu.menu_compare_settings, menu);
+        }*/
         return true;
     }
 
@@ -186,12 +192,26 @@ public class DetailsActivity extends BaseSignInActivity {
             case android.R.id.home:
                 onBackPressed();
                 return true;
-            case R.id.action_more:
-                if (mCompare.getId().equals(Prefs.getUserId())) {
-                    //Utils.showOwnerPopupMenu(getApplicationContext(), mCompare, );
-                } else {
-
-                }
+            case R.id.action_share_compare:
+                // TODO share
+                return true;
+            case R.id.action_edit_compare:
+                Intent intentEdit = new Intent(this, EditCompareActivity.class);
+                intentEdit.putExtra(AllComparesFragment.INTENT_KEY_COMPARE_ID, mCompareId);
+                startActivity(intentEdit);
+                return true;
+            case R.id.action_delete_compare:
+                Utils.showCompareDeleteDialog(this, (dialog, which) -> {
+                    switch (which) {
+                        case -2:
+                            dialog.cancel();
+                            break;
+                        case -1:
+                            FirebaseComparesManager.deleteCompare(mCompareId);
+                            finish();
+                            break;
+                    }
+                });
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -215,36 +235,43 @@ public class DetailsActivity extends BaseSignInActivity {
      **/
     private void updateUi(Compare compare) {
         setProgressVisibility(false);
-        hideRefreshing();
 
         DetailsRecyclerViewAdapter adapter;
-        if (mRecyclerView.getAdapter() == null) {
+        if (mRecyclerView.getAdapter() == null && compare.isValid()) {
             adapter = new DetailsRecyclerViewAdapter(compare);
             mRecyclerView.setAdapter(adapter);
 
             /** click listener for compare's author **/
             adapter.setOnHeaderClickListener(() -> {
-                Intent userIntent = new Intent(this, ProfileActivity.class);
-                userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID, compare.getAuthor().getId());
-                startActivity(userIntent);
+                if (compare.isValid()) {
+                    Intent userIntent = new Intent(this, ProfileActivity.class);
+                    userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID,
+                            compare.getAuthor().getId());
+                    startActivity(userIntent);
+                }
             });
 
             /** click listener for comment's author **/
             adapter.setOnItemClickListener((view, position) -> {
-                Intent userIntent = new Intent(this, ProfileActivity.class);
-                userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID,
-                        compare.getComments().get(position).getAuthor().getId());
-                startActivity(userIntent);
+                if (compare.isValid()) {
+                    Intent userIntent = new Intent(this, ProfileActivity.class);
+                    userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID,
+                            compare.getComments().get(position).getAuthor().getId());
+                    startActivity(userIntent);
+                }
             });
 
             /** click listener for likes **/
-            adapter.setOnLikeDetailsListener((clickedCheckBox, otherCheckBox, position, variantNumber) -> {
-                mClickedCheckBox = clickedCheckBox;
-                mOtherCheckBox = otherCheckBox;
-                Utils.blockViews(mClickedCheckBox, mOtherCheckBox);
-                updateLike(mCompare.getId(), variantNumber);
+            adapter.setOnLikeDetailsListener((clickedCheckBox, otherCheckBox,
+                                              position, variantNumber) -> {
+                if (compare.isValid()) {
+                    mClickedCheckBox = clickedCheckBox;
+                    mOtherCheckBox = otherCheckBox;
+                    Utils.blockViews(mClickedCheckBox, mOtherCheckBox);
+                    updateLike(mCompare.getId(), variantNumber);
+                }
             });
-        } else {
+        } else if (mRecyclerView.getAdapter() != null) {
             adapter = (DetailsRecyclerViewAdapter) mRecyclerView.getAdapter();
             adapter.updateCompare(compare);
             adapter.notifyDataSetChanged();
@@ -259,6 +286,7 @@ public class DetailsActivity extends BaseSignInActivity {
      * get information about compare from local database
      **/
     private void fetchCompareFromDb() {
+        setProgressVisibility(true);
         mCompare = DbComparesManager.getCompareById(mCompareId);
         mCompare.addChangeListener(mComparesListener);
     }
@@ -346,7 +374,12 @@ public class DetailsActivity extends BaseSignInActivity {
                                 });
                                 compare.setComments(comments);
                                 DbComparesManager.saveCompare(compare);
-                                updateUi(compare);
+                                try {
+                                    updateUi(compare);
+                                    hideRefreshing();
+                                } catch (NullPointerException e) {
+                                    Toast.makeText(DetailsActivity.this, "NULLPOINTEREXCEPTION", Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }
 
@@ -486,12 +519,12 @@ public class DetailsActivity extends BaseSignInActivity {
      * methods for show progress
      **/
     private void hideRefreshing() {
-        if (mSwipeRefreshLayout != null && mSwipeRefreshLayout.isRefreshing()) {
+        if (mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);
         }
     }
 
     private void setProgressVisibility(boolean visible) {
-        //mProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
+//        mCommentsProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 }

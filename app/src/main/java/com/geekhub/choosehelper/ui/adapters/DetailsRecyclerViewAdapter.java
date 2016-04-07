@@ -20,13 +20,14 @@ import com.geekhub.choosehelper.utils.ImageUtil;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.realm.Realm;
 
 public class DetailsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
 
-    private Compare mCompare;
+    private Compare mCompare = new Compare();
 
     private OnHeaderClickListener mOnHeaderClickListener;
     private OnItemClickListener mOnItemClickListener;
@@ -34,10 +35,24 @@ public class DetailsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     public DetailsRecyclerViewAdapter(Compare compare) {
         mCompare = compare;
+//        mCompare.setId(compare.getId());
+//        mCompare.setDate(compare.getDate());
+//        mCompare.setQuestion(compare.getQuestion());
+//        mCompare.setLikedVariant(compare.getLikedVariant());
+//        mCompare.setAuthor(compare.getAuthor());
+//        mCompare.setComments(compare.getComments());
+//        mCompare.setVariants(compare.getVariants());
     }
 
     public void updateCompare(Compare compare) {
         mCompare = compare;
+//        mCompare.setId(compare.getId());
+//        mCompare.setDate(compare.getDate());
+//        mCompare.setQuestion(compare.getQuestion());
+//        mCompare.setLikedVariant(compare.getLikedVariant());
+//        mCompare.setAuthor(compare.getAuthor());
+//        mCompare.setComments(compare.getComments());
+//        mCompare.setVariants(compare.getVariants());
     }
 
     @Override
@@ -65,6 +80,14 @@ public class DetailsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     @Override
     public int getItemCount() {
         return mCompare.getComments() != null ? mCompare.getComments().size() + 1 : 1;
+//        try {
+//            return mCompare.getComments() != null ? mCompare.getComments().size() + 1 : 1;
+//        } catch (IllegalStateException e) {
+//            Log.i("logi", "IllegalStateException: ");
+//            e.printStackTrace();
+//            Log.i("logi", "IllegalStateException: ");
+//            return 1;
+//        }
     }
 
     @Override
