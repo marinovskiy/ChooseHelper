@@ -7,6 +7,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,8 @@ import com.geekhub.choosehelper.utils.firebase.FirebaseComparesManager;
 import com.geekhub.choosehelper.utils.firebase.FirebaseConstants;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.Bind;
@@ -57,6 +60,24 @@ public class AllComparesFragment extends BaseFragment {
     @Bind(R.id.progress_bar_all_compares)
     ProgressBar mProgressBar;
 
+    /**
+     * freezing views when like variant
+     **/
+    private CardView mMainView;
+    private CheckBox mClickedCheckBox;
+    private CheckBox mOtherCheckBox;
+
+    /**
+     * firebase references and queries
+     **/
+    private Firebase mFirebaseCompares;
+    private Query mQueryCompares;
+
+    private Firebase mFirebaseLikes;
+
+    /**
+     * realm
+     **/
     private RealmResults<Compare> mCompares;
 
     private RealmChangeListener mComparesListener = () -> {
@@ -64,15 +85,6 @@ public class AllComparesFragment extends BaseFragment {
             updateUi(mCompares);
         }
     };
-
-    private Query mQueryCompares;
-    private Firebase mFirebaseRefCompares;
-    private Firebase mFirebaseRefDetails;
-    private Firebase mFirebaseRefLikes;
-
-    private CardView mMainView;
-    private CheckBox mClickedCheckBox;
-    private CheckBox mOtherCheckBox;
 
     public AllComparesFragment() {
 
@@ -94,17 +106,13 @@ public class AllComparesFragment extends BaseFragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         /** firebase references **/
-        mFirebaseRefCompares = new Firebase(FirebaseConstants.FB_REF_MAIN)
+        mFirebaseCompares = new Firebase(FirebaseConstants.FB_REF_MAIN)
                 .child(FirebaseConstants.FB_REF_COMPARES);
-        mQueryCompares = mFirebaseRefCompares.orderByChild(FirebaseConstants.FB_REF_DATE)
-                .limitToFirst(20);
+        mQueryCompares = mFirebaseCompares.orderByChild(FirebaseConstants.FB_REF_DATE)
+                .limitToFirst(20); // TODO settings user choose number of compares (20, 50 etc.)
 
-        mFirebaseRefDetails = new Firebase(FirebaseConstants.FB_REF_MAIN)
+        mFirebaseLikes = new Firebase(FirebaseConstants.FB_REF_MAIN)
                 .child(FirebaseConstants.FB_REF_LIKES);
-
-        mFirebaseRefLikes = new Firebase(FirebaseConstants.FB_REF_MAIN)
-                .child(FirebaseConstants.FB_REF_LIKES);
-
 
         /** requests **/
         fetchComparesFromDb();
@@ -116,7 +124,7 @@ public class AllComparesFragment extends BaseFragment {
         mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
+                android.R.color.holo_red_light); // TODO create colors array
 
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
             mSwipeRefreshLayout.setRefreshing(true);
@@ -142,13 +150,66 @@ public class AllComparesFragment extends BaseFragment {
     }
 
     /**
+     * update UI method
+     **/
+    private void updateUi(List<Compare> compares) {
+        setProgressVisibility(false);
+        hideRefreshing();
+
+        ComparesRecyclerViewAdapter adapter;
+        if (mRecyclerView.getAdapter() == null) {
+            adapter = new ComparesRecyclerViewAdapter(compares.subList(0, compares.size() < 19
+                    ? compares.size() : 19));
+            mRecyclerView.setAdapter(adapter);
+
+            /** click listener for details **/
+            adapter.setOnItemClickListener((view, position) -> {
+                Intent intent = new Intent(getActivity(), DetailsActivity.class);
+                intent.putExtra(INTENT_KEY_COMPARE_ID, compares.get(position).getId());
+                startActivity(intent);
+            });
+
+            /** click listener for likes **/
+            adapter.setOnLikeClickListener((mainView, clickedCheckBox, otherCheckBox,
+                                            position, variantNumber) -> {
+                mMainView = mainView;
+                mClickedCheckBox = clickedCheckBox;
+                mOtherCheckBox = otherCheckBox;
+                Utils.blockViews(mMainView, mClickedCheckBox, mOtherCheckBox);
+                updateLike(compares.get(position).getId(), variantNumber);
+            });
+
+            /** click listener for popup menu **/
+            adapter.setOnItemClickListenerPopup((view, position) -> {
+                String compareId = compares.get(position).getId();
+                if (compares.get(position).getAuthor().getId().equals(Prefs.getUserId())) {
+                    showOwnerPopupMenu(view, compareId);
+                } else {
+                    showUserPopupMenu(view, compareId);
+                }
+            });
+
+            /** click listener for author **/
+            adapter.setOnItemClickListenerAuthor((view, position) -> {
+                Intent userIntent = new Intent(getActivity(), ProfileActivity.class);
+                userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID,
+                        compares.get(position).getAuthor().getId());
+                startActivity(userIntent);
+            });
+        } else {
+            adapter = (ComparesRecyclerViewAdapter) mRecyclerView.getAdapter();
+            adapter.updateList(compares.subList(0, compares.size() < 19
+                    ? compares.size() : 19));
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    /**
      * get information about compare from local database
      **/
     private void fetchComparesFromDb() {
         mCompares = DbComparesManager.getCompares();
-        if (mCompares.size() == 0) {
-            setProgressVisibility(true);
-        }
+        setProgressVisibility(true);
         mCompares.addChangeListener(mComparesListener);
     }
 
@@ -162,12 +223,13 @@ public class AllComparesFragment extends BaseFragment {
                 List<Compare> compares = new ArrayList<>();
                 int snapshotSize = (int) dataSnapshot.getChildrenCount();
                 if (snapshotSize == 0) {
+                    // TODO show empty view
+                    setProgressVisibility(true);
                     hideRefreshing();
                 }
                 for (DataSnapshot compareSnapshot : dataSnapshot.getChildren()) {
                     NetworkCompare networkCompare = compareSnapshot.getValue(NetworkCompare.class);
-                    fetchDetailsFromNetwork(compares, networkCompare,
-                            compareSnapshot.getKey(), snapshotSize);
+                    fetchDetailsFromNetwork(compares, networkCompare, compareSnapshot.getKey(), snapshotSize);
                 }
             }
 
@@ -180,12 +242,12 @@ public class AllComparesFragment extends BaseFragment {
     }
 
     /**
-     * get details information from firebase
+     * get details information about compares from firebase
      **/
     private void fetchDetailsFromNetwork(List<Compare> compares, NetworkCompare networkCompare,
                                          String compareId, int size) {
         /** likes **/
-        Query queryDetails = mFirebaseRefDetails.orderByChild(FirebaseConstants.FB_REF_COMPARE_ID)
+        Query queryDetails = mFirebaseLikes.orderByChild(FirebaseConstants.FB_REF_COMPARE_ID)
                 .equalTo(compareId);
         queryDetails.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -210,6 +272,11 @@ public class AllComparesFragment extends BaseFragment {
                                         networkCompare.getUserId(),
                                         tempLikedVariant));
                                 if (compares.size() == size) {
+                                    Collections.sort(compares, (lhs, rhs) -> {
+                                        if (lhs.getDate() < rhs.getDate()) return 1;
+                                        if (lhs.getDate() > rhs.getDate()) return -1;
+                                        return 0;
+                                    });
                                     DbComparesManager.saveCompares(compares);
                                     updateUi(compares);
                                 }
@@ -230,51 +297,11 @@ public class AllComparesFragment extends BaseFragment {
         });
     }
 
-    private void updateUi(List<Compare> compares) {
-        setProgressVisibility(false);
-
-        ComparesRecyclerViewAdapter adapter = new ComparesRecyclerViewAdapter(compares.subList(0,
-                compares.size() < 19 ? compares.size() : 19));
-        mRecyclerView.setAdapter(adapter);
-
-        /** click listener for details **/
-        adapter.setOnItemClickListener((view, position) -> {
-            Intent intent = new Intent(getActivity(), DetailsActivity.class);
-            intent.putExtra(INTENT_KEY_COMPARE_ID, compares.get(position).getId());
-            startActivity(intent);
-        });
-
-        /** click listener for likes **/
-        adapter.setOnLikeClickListener((mainView, clickedCheckBox, otherCheckBox,
-                                        position, variantNumber) -> {
-            mMainView = mainView;
-            mClickedCheckBox = clickedCheckBox;
-            mOtherCheckBox = otherCheckBox;
-            blockViews(mMainView, mClickedCheckBox, mOtherCheckBox);
-            updateLike(compares.get(position).getId(), variantNumber);
-        });
-
-        /** click listener for popup menu **/
-        adapter.setOnItemClickListenerPopup((view, position) -> {
-            if (compares.get(position).getAuthor().getId().equals(Prefs.getUserId())) {
-                showOwnerPopupMenu(compares, view, position);
-            } else {
-                showUsualPopupMenu(compares, view, position);
-            }
-        });
-
-        adapter.setOnItemClickListenerAuthor((view, position) -> {
-            Intent userIntent = new Intent(getActivity(), ProfileActivity.class);
-            userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID, compares.get(position).getAuthor().getId());
-            startActivity(userIntent);
-        });
-
-        hideRefreshing();
-
-    }
-
+    /**
+     * methods for update likes
+     **/
     private void updateLike(String compareId, int variantNumber) {
-        Query queryLike = mFirebaseRefLikes.orderByChild(FirebaseConstants.FB_REF_COMPARE_ID)
+        Query queryLike = mFirebaseLikes.orderByChild(FirebaseConstants.FB_REF_COMPARE_ID)
                 .equalTo(compareId);
         queryLike.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -287,15 +314,15 @@ public class AllComparesFragment extends BaseFragment {
                         likeId = snapshot.getKey();
                     }
                 }
-                /** did not liked before - just like this variant **/
+                /** did not liked before - like this variant **/
                 if (networkLike == null) {
                     likeVariant(compareId, variantNumber);
                 }
-                /** liked before (true) - just unlike this variant **/
+                /** liked before - unlike this variant **/
                 else if (networkLike.getVariantNumber() == variantNumber && networkLike.isLike()) {
                     unLikeVariant(compareId, variantNumber, likeId);
                 }
-                /** other variant liked before - just like this variant and unlike other **/
+                /** other variant liked before - like this variant and unlike other **/
                 else {
                     likeVariant(compareId, variantNumber);
                     unLikeVariant(compareId, Utils.getOtherVariantNumber(variantNumber), likeId);
@@ -310,7 +337,7 @@ public class AllComparesFragment extends BaseFragment {
     }
 
     private void likeVariant(String compareId, int variantNumber) {
-        Firebase firebaseLike = mFirebaseRefCompares.child(compareId)
+        Firebase firebaseLike = mFirebaseCompares.child(compareId)
                 .child(FirebaseConstants.FB_REF_VARIANTS)
                 .child(String.valueOf(variantNumber))
                 .child(FirebaseConstants.FB_REF_LIKES);
@@ -326,21 +353,22 @@ public class AllComparesFragment extends BaseFragment {
             }
 
             @Override
-            public void onComplete(FirebaseError firebaseError, boolean b,
-                                   DataSnapshot dataSnapshot) {
-                NetworkLike networkLike = new NetworkLike();
-                networkLike.setCompareId(compareId);
-                networkLike.setVariantNumber(variantNumber);
-                networkLike.setUserId(Prefs.getUserId());
-                networkLike.setIsLike(true);
-                mFirebaseRefLikes.push().setValue(networkLike);
-                unBlockViews(mMainView, mClickedCheckBox, mOtherCheckBox);
+            public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot snapshot) {
+                if (firebaseError == null) {
+                    NetworkLike networkLike = new NetworkLike();
+                    networkLike.setCompareId(compareId);
+                    networkLike.setVariantNumber(variantNumber);
+                    networkLike.setUserId(Prefs.getUserId());
+                    networkLike.setIsLike(true);
+                    mFirebaseLikes.push().setValue(networkLike);
+                }
+                Utils.unBlockViews(mMainView, mClickedCheckBox, mOtherCheckBox);
             }
         });
     }
 
     private void unLikeVariant(String compareId, int variantNumber, String likeId) {
-        Firebase firebaseLike = mFirebaseRefCompares.child(compareId)
+        Firebase firebaseLike = mFirebaseCompares.child(compareId)
                 .child(FirebaseConstants.FB_REF_VARIANTS)
                 .child(String.valueOf(variantNumber))
                 .child(FirebaseConstants.FB_REF_LIKES);
@@ -354,22 +382,26 @@ public class AllComparesFragment extends BaseFragment {
             }
 
             @Override
-            public void onComplete(FirebaseError firebaseError, boolean b,
-                                   DataSnapshot dataSnapshot) {
-                mFirebaseRefLikes.child(likeId).setValue(null);
-                unBlockViews(mMainView, mClickedCheckBox, mOtherCheckBox);
+            public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot snapshot) {
+                if (firebaseError == null) {
+                    mFirebaseLikes.child(likeId).setValue(null);
+                }
+                Utils.unBlockViews(mMainView, mClickedCheckBox, mOtherCheckBox);
             }
         });
     }
 
-    private void showUsualPopupMenu(List<Compare> compares, View view, int position) {
+    /**
+     * popup menu methods
+     **/
+    private void showUserPopupMenu(View view, String compareId) {
         PopupMenu popupMenu = new PopupMenu(getContext(), view);
         popupMenu.inflate(R.menu.menu_compare);
         popupMenu.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_details_compare:
                     Intent intent = new Intent(getActivity(), DetailsActivity.class);
-                    intent.putExtra(INTENT_KEY_COMPARE_ID, compares.get(position).getId());
+                    intent.putExtra(INTENT_KEY_COMPARE_ID, compareId);
                     startActivity(intent);
                     return true;
                 case R.id.action_share_compare:
@@ -382,14 +414,14 @@ public class AllComparesFragment extends BaseFragment {
         popupMenu.show();
     }
 
-    private void showOwnerPopupMenu(List<Compare> compares, View view, int position) {
+    private void showOwnerPopupMenu(View view, String compareId) {
         PopupMenu popupMenu = new PopupMenu(getContext(), view);
         popupMenu.inflate(R.menu.menu_compare_owner);
         popupMenu.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_details_compare:
                     Intent intent = new Intent(getActivity(), DetailsActivity.class);
-                    intent.putExtra(INTENT_KEY_COMPARE_ID, compares.get(position).getId());
+                    intent.putExtra(INTENT_KEY_COMPARE_ID, compareId);
                     startActivity(intent);
                     return true;
                 case R.id.action_share_compare:
@@ -397,18 +429,17 @@ public class AllComparesFragment extends BaseFragment {
                     return true;
                 case R.id.action_edit_compare:
                     Intent intentEdit = new Intent(getActivity(), EditCompareActivity.class);
-                    intentEdit.putExtra(INTENT_KEY_COMPARE_ID, compares.get(position).getId());
+                    intentEdit.putExtra(INTENT_KEY_COMPARE_ID, compareId);
                     startActivity(intentEdit);
                     return true;
                 case R.id.action_delete_compare:
                     Utils.showCompareDeleteDialog(getContext(), (dialog, which) -> {
-                        Toast.makeText(getContext(), "which = " + which, Toast.LENGTH_SHORT).show();
                         switch (which) {
                             case -2:
                                 dialog.cancel();
                                 break;
                             case -1:
-                                FirebaseComparesManager.deleteCompare(compares.get(position).getId());
+                                FirebaseComparesManager.deleteCompare(compareId);
                                 break;
                         }
                     });
@@ -421,22 +452,7 @@ public class AllComparesFragment extends BaseFragment {
     }
 
     /**
-     * methods for block and unblock views when like is transacting to server
-     **/
-    private void blockViews(CardView cardView, CheckBox checkBox1, CheckBox checkBox2) {
-        cardView.setClickable(false);
-        checkBox1.setClickable(false);
-        checkBox2.setClickable(false);
-    }
-
-    private void unBlockViews(CardView cardView, CheckBox checkBox1, CheckBox checkBox2) {
-        cardView.setClickable(true);
-        checkBox1.setClickable(true);
-        checkBox2.setClickable(true);
-    }
-
-    /**
-     * methods for show and hide progress
+     * methods for show progress
      **/
     private void hideRefreshing() {
         if (mSwipeRefreshLayout.isRefreshing()) {

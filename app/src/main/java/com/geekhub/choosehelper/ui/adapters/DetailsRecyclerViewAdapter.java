@@ -1,15 +1,12 @@
 package com.geekhub.choosehelper.ui.adapters;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.geekhub.choosehelper.R;
@@ -17,12 +14,9 @@ import com.geekhub.choosehelper.models.db.Comment;
 import com.geekhub.choosehelper.models.db.Compare;
 import com.geekhub.choosehelper.ui.listeners.OnHeaderClickListener;
 import com.geekhub.choosehelper.ui.listeners.OnItemClickListener;
-import com.geekhub.choosehelper.ui.listeners.OnLikeClickListener;
 import com.geekhub.choosehelper.ui.listeners.OnLikeDetailsListener;
 import com.geekhub.choosehelper.utils.DateUtil;
 import com.geekhub.choosehelper.utils.ImageUtil;
-
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -33,15 +27,17 @@ public class DetailsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     private static final int TYPE_ITEM = 1;
 
     private Compare mCompare;
-    private List<Comment> mComments;
 
     private OnHeaderClickListener mOnHeaderClickListener;
     private OnItemClickListener mOnItemClickListener;
     private OnLikeDetailsListener mOnLikeDetailsListener;
 
-    public DetailsRecyclerViewAdapter(Compare compare/*, List<Comment> comments*/) {
+    public DetailsRecyclerViewAdapter(Compare compare) {
         mCompare = compare;
-        mComments = compare.getComments();
+    }
+
+    public void updateCompare(Compare compare) {
+        mCompare = compare;
     }
 
     @Override
@@ -60,7 +56,7 @@ public class DetailsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ItemViewHolder) {
-            ((ItemViewHolder) holder).bindItem(mComments.get(position - 1));
+            ((ItemViewHolder) holder).bindComment(mCompare.getComments().get(position - 1));
         } else if (holder instanceof HeaderViewHolder) {
             ((HeaderViewHolder) holder).bindHeader(mCompare);
         }
@@ -68,7 +64,7 @@ public class DetailsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public int getItemCount() {
-        return mComments != null ? mComments.size() + 1 : 1;
+        return mCompare.getComments() != null ? mCompare.getComments().size() + 1 : 1;
     }
 
     @Override
@@ -217,7 +213,7 @@ public class DetailsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             }
         }
 
-        private void bindItem(Comment comment) {
+        private void bindComment(Comment comment) {
             ImageUtil.loadCircleImage(mIvAvatar, comment.getAuthor().getPhotoUrl());
             mTvAuthor.setText(comment.getAuthor().getFullName());
             mTvCommentText.setText(comment.getCommentText());

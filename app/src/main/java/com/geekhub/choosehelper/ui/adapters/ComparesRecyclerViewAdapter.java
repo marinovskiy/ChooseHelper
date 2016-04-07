@@ -1,6 +1,5 @@
 package com.geekhub.choosehelper.ui.adapters;
 
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,7 +14,7 @@ import android.widget.TextView;
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.db.Compare;
 import com.geekhub.choosehelper.ui.listeners.OnItemClickListener;
-import com.geekhub.choosehelper.ui.listeners.OnLikeClickListener;
+import com.geekhub.choosehelper.ui.listeners.OnLikeListListener;
 import com.geekhub.choosehelper.utils.DateUtil;
 import com.geekhub.choosehelper.utils.ImageUtil;
 
@@ -33,10 +32,13 @@ public class ComparesRecyclerViewAdapter extends RecyclerView.Adapter<ComparesRe
     private OnItemClickListener mOnItemClickListenerPopup;
     private OnItemClickListener mOnItemClickListenerAuthor;
 
-    private OnLikeClickListener mOnLikeClickListener;
+    private OnLikeListListener mOnLikeListListener;
 
     public ComparesRecyclerViewAdapter(List<Compare> compares) {
-        Log.i("logtags", "compares.size=" + compares.size());
+        mCompares = compares;
+    }
+
+    public void updateList(List<Compare> compares) {
         mCompares = compares;
     }
 
@@ -122,14 +124,14 @@ public class ComparesRecyclerViewAdapter extends RecyclerView.Adapter<ComparesRe
                     mOnItemClickListenerPopup.onItemClick(v, getAdapterPosition());
                 }
             } else if (id == mChLikeFirst.getId()) {
-                if (mOnLikeClickListener != null) {
+                if (mOnLikeListListener != null) {
                     updateLikeView(mChLikeFirst, mChLikeSecond);
-                    mOnLikeClickListener.onLike(mCardView, mChLikeFirst, mChLikeSecond, getAdapterPosition(), 0);
+                    mOnLikeListListener.onLike(mCardView, mChLikeFirst, mChLikeSecond, getAdapterPosition(), 0);
                 }
             } else if (id == mChLikeSecond.getId()) {
-                if (mOnLikeClickListener != null) {
+                if (mOnLikeListListener != null) {
                     updateLikeView(mChLikeSecond, mChLikeFirst);
-                    mOnLikeClickListener.onLike(mCardView, mChLikeSecond, mChLikeFirst, getAdapterPosition(), 1);
+                    mOnLikeListListener.onLike(mCardView, mChLikeSecond, mChLikeFirst, getAdapterPosition(), 1);
                 }
             } else if (id == mLlAuthor.getId()) {
                 if (mOnItemClickListenerAuthor != null) {
@@ -194,8 +196,8 @@ public class ComparesRecyclerViewAdapter extends RecyclerView.Adapter<ComparesRe
     /**
      * click listener for like
      **/
-    public void setOnLikeClickListener(OnLikeClickListener onLikeClickListener) {
-        mOnLikeClickListener = onLikeClickListener;
+    public void setOnLikeClickListener(OnLikeListListener onLikeListListener) {
+        mOnLikeListListener = onLikeListListener;
     }
 
     /**
