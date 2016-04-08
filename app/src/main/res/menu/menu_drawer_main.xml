@@ -8,7 +8,7 @@
         android:id="@+id/action_nav_about"
         android:title="About" />
 
-    <!--<item-->
+    <!--<profile_item_layout-->
     <!--android:id="@+id/action_nav_help"-->
     <!--android:title="Logout" />-->
     <item

@@ -6,11 +6,13 @@ import com.geekhub.choosehelper.ChooseHelperApplication;
 import com.geekhub.choosehelper.models.db.Comment;
 import com.geekhub.choosehelper.models.db.Compare;
 import com.geekhub.choosehelper.models.db.Follower;
+import com.geekhub.choosehelper.models.db.Following;
 import com.geekhub.choosehelper.models.db.User;
 import com.geekhub.choosehelper.models.db.Variant;
 import com.geekhub.choosehelper.models.network.NetworkComment;
 import com.geekhub.choosehelper.models.network.NetworkCompare;
 import com.geekhub.choosehelper.models.network.NetworkFollower;
+import com.geekhub.choosehelper.models.network.NetworkFollowing;
 import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.models.network.NetworkVariant;
 
@@ -27,8 +29,13 @@ public class ModelConverter {
         user.setEmail(networkUser.getEmail());
         user.setFullName(networkUser.getFullName());
         user.setPhotoUrl(networkUser.getPhotoUrl());
-        if (networkUser.getFollowings() != null) {
-            user.setFollowings(networkUser.getFollowings());
+        List<NetworkFollowing> networkFollowings = networkUser.getFollowings();
+        if (networkFollowings != null && !networkFollowings.isEmpty()) {
+            RealmList<Following> followings = new RealmList<>();
+            for (NetworkFollowing networkFollowing : networkFollowings) {
+                followings.add(convertToFollowing(networkFollowing));
+            }
+            user.setFollowings(followings);
         }
         return user;
     }
@@ -77,5 +84,12 @@ public class ModelConverter {
         follower.setId(ChooseHelperApplication.sFollowerPrimaryKey.incrementAndGet());
         follower.setFollowerId(networkFollower.getFollowerId());
         return follower;
+    }
+
+    public static Following convertToFollowing(NetworkFollowing networkFollowing) {
+        Following following = new Following();
+        following.setId(ChooseHelperApplication.sFollowingPrimaryKey.incrementAndGet());
+        following.setUserId(networkFollowing.getUserId());
+        return following;
     }
 }

@@ -54,7 +54,7 @@
     <style name="AppTheme.Drawer.Email" parent="AppTheme.Profile.TextView">
         <item name="android:textSize">@dimen/text_size_pre_normal</item>
         <item name="android:padding">2dp</item>
-        <!--<item name="android:textStyle">bold</item>-->
+        <!--<profile_item_layout name="android:textStyle">bold</profile_item_layout>-->
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

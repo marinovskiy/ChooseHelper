@@ -2,6 +2,7 @@ package com.geekhub.choosehelper.models.db;
 
 import java.util.List;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -16,9 +17,9 @@ public class User extends RealmObject {
 
     private String photoUrl;
 
-    private List<String> followings;
+    private RealmList<Following> followings;
 
-    private List<Follower> followers;
+    private RealmList<Follower> followers;
 
     public User() {
 
@@ -56,19 +57,19 @@ public class User extends RealmObject {
         this.photoUrl = photoUrl;
     }
 
-    public List<String> getFollowings() {
+    public RealmList<Following> getFollowings() {
         return followings;
     }
 
-    public void setFollowings(List<String> followings) {
+    public void setFollowings(RealmList<Following> followings) {
         this.followings = followings;
     }
 
-    public List<Follower> getFollowers() {
+    public RealmList<Follower> getFollowers() {
         return followers;
     }
 
-    public void setFollowers(List<Follower> followers) {
+    public void setFollowers(RealmList<Follower> followers) {
         this.followers = followers;
     }
 }

@@ -54,9 +54,13 @@ public class FollowersActivity extends BaseSignInActivity {
             mToolbarTitle = getIntent().getStringExtra(INTENT_KEY_FOLLOWERS_TITLE);
             mToolbar.setTitle(mToolbarTitle);
 
-            if (mToolbarTitle.equals("Followings")) {
+            try {
+                if (mToolbarTitle.equals("Followings")) {
 
-            } else if (mToolbarTitle.equals("Followers")) {
+                } else if (mToolbarTitle.equals("Followers")) {
+
+                }
+            } catch (NullPointerException e) {
 
             }
         }

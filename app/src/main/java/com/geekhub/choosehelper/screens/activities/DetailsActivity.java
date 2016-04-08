@@ -256,7 +256,7 @@ public class DetailsActivity extends BaseSignInActivity {
                 if (compare.isValid()) {
                     Intent userIntent = new Intent(this, ProfileActivity.class);
                     userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID,
-                            compare.getComments().get(position).getAuthor().getId());
+                            compare.getComments().get(position-1).getAuthor().getId());
                     startActivity(userIntent);
                 }
             });
@@ -375,10 +375,7 @@ public class DetailsActivity extends BaseSignInActivity {
                                 compare.setComments(comments);
                                 DbComparesManager.saveCompare(compare);
                                 try {
-                                    if (compare.isValid()) {
-                                        //updateUi(compare);
-                                        hideRefreshing();
-                                    }
+                                    hideRefreshing();
                                 } catch (NullPointerException e) {
                                     Toast.makeText(DetailsActivity.this, "NULLPOINTEREXCEPTION", Toast.LENGTH_SHORT).show();
                                 }

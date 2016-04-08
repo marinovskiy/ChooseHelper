@@ -2,12 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/darker_gray"
     android:orientation="horizontal"
-    android:padding="12dp">
+    android:padding="16dp">
 
     <TextView
-        android:id="@+id/profile_tv_count"
+        android:id="@+id/profile_rv_tv_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/colorTextPrimary"
@@ -15,7 +16,7 @@
         tools:text="104" />
 
     <TextView
-        android:id="@+id/profile_tv_title"
+        android:id="@+id/profile_rv_tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="12dp"

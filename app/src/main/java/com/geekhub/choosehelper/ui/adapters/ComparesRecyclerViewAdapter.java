@@ -23,7 +23,6 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-
 public class ComparesRecyclerViewAdapter extends RecyclerView.Adapter<ComparesRecyclerViewAdapter.ViewHolder> {
 
     private List<Compare> mCompares;
@@ -189,7 +188,7 @@ public class ComparesRecyclerViewAdapter extends RecyclerView.Adapter<ComparesRe
     }
 
     /**
-     * click listener for item
+     * click listener for profile_item_layout
      **/
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         mOnItemClickListener = onItemClickListener;

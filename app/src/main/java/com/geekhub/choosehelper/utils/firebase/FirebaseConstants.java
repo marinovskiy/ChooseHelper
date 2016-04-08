@@ -10,6 +10,7 @@ public final class FirebaseConstants {
     public static final String FB_REF_COMMENTS = "comments";
     public static final String FB_REF_VARIANTS = "variants";
     public static final String FB_REF_FOLLOWERS = "followers";
+    public static final String FB_REF_FOLLOWINGS = "followings";
 
     public static final String FB_REF_DATE = "date";
     public static final String FB_REF_USER_ID = "userId";
