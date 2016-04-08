@@ -1,7 +1,6 @@
 package com.geekhub.choosehelper.screens.activities;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -23,7 +22,9 @@ import com.geekhub.choosehelper.screens.fragments.FriendsComparesFragment;
 import com.geekhub.choosehelper.ui.adapters.ComparesViewPagerAdapter;
 import com.geekhub.choosehelper.utils.ImageUtil;
 import com.geekhub.choosehelper.utils.Prefs;
+import com.geekhub.choosehelper.utils.Utils;
 import com.geekhub.choosehelper.utils.db.DbUsersManager;
+import com.geekhub.choosehelper.utils.firebase.FirebaseUsersManager;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -57,7 +58,11 @@ public class MainActivity extends BaseSignInActivity
 
     private User mCurrentUser;
 
-    private RealmChangeListener mUserListener;
+    private RealmChangeListener mUserListener = () -> {
+        if (mCurrentUser != null && mCurrentUser.isLoaded()) {
+            updateNavDrawerHeader(mCurrentUser);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,12 +75,15 @@ public class MainActivity extends BaseSignInActivity
         mNavigationView.setNavigationItemSelectedListener(this);
 
         /** work with realm **/
-        mUserListener = () -> {
+        /*mUserListener = () -> {
             if (mCurrentUser != null && mCurrentUser.isLoaded()) {
-                setupNavDrawerHeader(mCurrentUser);
+                updateNavDrawerHeader(mCurrentUser);
             }
-        };
-        getCurrentUserInfo();
+        };*/
+        fetchCurrentUserFromDb();
+        if (Utils.hasInternet(getApplicationContext())) {
+            FirebaseUsersManager.saveUserFromFirebase(Prefs.getUserId());
+        }
     }
 
     @OnClick(R.id.fab_add_main)
@@ -156,7 +164,7 @@ public class MainActivity extends BaseSignInActivity
 //        }
     }
 
-    private void setupNavDrawerHeader(User user) {
+    private void updateNavDrawerHeader(User user) {
         View headerView = mNavigationView.inflateHeaderView(R.layout.navigation_header_layout);
         ImageView ivAvatar = (ImageView) headerView.findViewById(R.id.nav_header_avatar);
         TextView tvFullName = (TextView) headerView.findViewById(R.id.nav_header_name);
@@ -179,7 +187,7 @@ public class MainActivity extends BaseSignInActivity
         viewPager.setAdapter(adapter);
     }
 
-    private void getCurrentUserInfo() {
+    private void fetchCurrentUserFromDb() {
         mCurrentUser = DbUsersManager.getUserAsync(Prefs.getUserId());
         mCurrentUser.addChangeListener(mUserListener);
     }

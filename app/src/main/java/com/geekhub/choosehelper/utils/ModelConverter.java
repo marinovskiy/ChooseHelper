@@ -5,12 +5,12 @@ import android.support.annotation.NonNull;
 import com.geekhub.choosehelper.ChooseHelperApplication;
 import com.geekhub.choosehelper.models.db.Comment;
 import com.geekhub.choosehelper.models.db.Compare;
-import com.geekhub.choosehelper.models.db.Like;
+import com.geekhub.choosehelper.models.db.Follower;
 import com.geekhub.choosehelper.models.db.User;
 import com.geekhub.choosehelper.models.db.Variant;
 import com.geekhub.choosehelper.models.network.NetworkComment;
 import com.geekhub.choosehelper.models.network.NetworkCompare;
-import com.geekhub.choosehelper.models.network.NetworkLike;
+import com.geekhub.choosehelper.models.network.NetworkFollower;
 import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.models.network.NetworkVariant;
 
@@ -27,9 +27,9 @@ public class ModelConverter {
         user.setEmail(networkUser.getEmail());
         user.setFullName(networkUser.getFullName());
         user.setPhotoUrl(networkUser.getPhotoUrl());
-        /*user.setBirthday(networkUser.getBirthday());
-        user.setPlaceLive(networkUser.getPlaceLive());
-        user.setAbout(networkUser.getAbout());*/
+        if (networkUser.getFollowings() != null) {
+            user.setFollowings(networkUser.getFollowings());
+        }
         return user;
     }
 
@@ -55,7 +55,7 @@ public class ModelConverter {
 
     public static Variant convertToVariant(@NonNull NetworkVariant networkVariant) {
         Variant variant = new Variant();
-        variant.setId(ChooseHelperApplication.sPrimaryKey.incrementAndGet());
+        variant.setId(ChooseHelperApplication.sVariantPrimaryKey.incrementAndGet());
         variant.setLikes(networkVariant.getLikes());
         variant.setImageUrl(networkVariant.getImageUrl());
         variant.setDescription(networkVariant.getDescription());
@@ -72,14 +72,10 @@ public class ModelConverter {
         return comment;
     }
 
-    public static Like convertToLike(NetworkLike networkLike, String networkLikeId) {
-        Like like = new Like();
-        like.setId(networkLikeId);
-        like.setUserId(networkLike.getUserId());
-        like.setCompareId(networkLike.getCompareId());
-        like.setVariantNumber(networkLike.getVariantNumber());
-        like.setIsLike(networkLike.isLike());
-        return like;
+    public static Follower convertToFollower(NetworkFollower networkFollower) {
+        Follower follower = new Follower();
+        follower.setId(ChooseHelperApplication.sFollowerPrimaryKey.incrementAndGet());
+        follower.setFollowerId(networkFollower.getFollowerId());
+        return follower;
     }
-
 }

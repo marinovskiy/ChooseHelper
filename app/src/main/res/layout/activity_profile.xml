@@ -5,13 +5,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/profile_toolbar"
-        style="@style/AppTheme.Profile.Toolbar"
-        android:layout_width="match_parent"
-        app:elevation="4dp"
-        android:layout_height="?attr/actionBarSize"
-        app:title="@string/profile_toolbar_title" />
+    <!--<android.support.v7.widget.Toolbar-->
+        <!--android:id="@+id/profile_toolbar"-->
+        <!--style="@style/AppTheme.Profile.Toolbar"-->
+        <!--android:layout_width="match_parent"-->
+        <!--app:elevation="4dp"-->
+        <!--android:layout_height="?attr/actionBarSize"-->
+        <!--app:title="@string/profile_toolbar_title" />-->
 
     <FrameLayout
         android:layout_width="match_parent"

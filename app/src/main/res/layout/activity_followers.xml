@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.geekhub.choosehelper.screens.activities.FollowersActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_followers"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:elevation="4dp"
+        app:title=""
+        app:titleTextColor="@color/colorTextToolbar" />
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_to_refresh_followers"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view_followers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical" />
+
+            <View
+                android:id="@+id/toolbar_shadow_followers"
+                android:layout_width="match_parent"
+                android:layout_height="6dp"
+                android:background="@drawable/toolbar_shadow" />
+
+        </FrameLayout>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+</LinearLayout>

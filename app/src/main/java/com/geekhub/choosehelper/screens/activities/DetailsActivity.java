@@ -367,16 +367,16 @@ public class DetailsActivity extends BaseSignInActivity {
                                     userSnapshot.getValue(NetworkUser.class),
                                     networkComment.getUserId()));
                             if (comments.size() == dataSnapshot.getChildrenCount()) {
-                                Collections.sort(comments, (lhs, rhs) -> {
-                                    if (lhs.getDate() < rhs.getDate()) return -1;
-                                    if (lhs.getDate() > rhs.getDate()) return 1;
-                                    return 0;
-                                });
+//                                Collections.sort(comments, (lhs, rhs) -> {
+//                                    if (lhs.getDate() < rhs.getDate()) return -1;
+//                                    if (lhs.getDate() > rhs.getDate()) return 1;
+//                                    return 0;
+//                                });
                                 compare.setComments(comments);
                                 DbComparesManager.saveCompare(compare);
                                 try {
                                     if (compare.isValid()) {
-                                        updateUi(compare);
+                                        //updateUi(compare);
                                         hideRefreshing();
                                     }
                                 } catch (NullPointerException e) {

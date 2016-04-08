@@ -271,13 +271,13 @@ public class AllComparesFragment extends BaseFragment {
                                         networkCompare.getUserId(),
                                         tempLikedVariant));
                                 if (compares.size() == size) {
-                                    Collections.sort(compares, (lhs, rhs) -> {
-                                        if (lhs.getDate() < rhs.getDate()) return 1;
-                                        if (lhs.getDate() > rhs.getDate()) return -1;
-                                        return 0;
-                                    });
+//                                    Collections.sort(compares, (lhs, rhs) -> {
+//                                        if (lhs.getDate() < rhs.getDate()) return 1;
+//                                        if (lhs.getDate() > rhs.getDate()) return -1;
+//                                        return 0;
+//                                    });
                                     DbComparesManager.saveCompares(compares);
-                                    updateUi(compares);
+                                    //updateUi(compares);
                                     hideRefreshing();
                                 }
                             }

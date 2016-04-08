@@ -11,7 +11,7 @@ import io.realm.Sort;
 public class DbComparesManager {
 
     public static void saveCompares(List<Compare> compares) {
-        cleanCompares();
+        clearCompares();
         Realm.getDefaultInstance().executeTransaction(realm1 ->
                 realm1.copyToRealmOrUpdate(compares));
     }
@@ -23,7 +23,6 @@ public class DbComparesManager {
     public static RealmResults<Compare> getCompares() {
         return Realm.getDefaultInstance().where(Compare.class)
                 .findAllSortedAsync(DbFields.DB_COMPARES_DATE, Sort.DESCENDING);
-                //.findAllSortedAsync(DbFields.DB_COMPARES_DATE, false);
     }
 
     public static Compare getCompareById(String id) {
@@ -33,7 +32,7 @@ public class DbComparesManager {
                 .findFirstAsync();
     }
 
-    private static void cleanCompares() {
+    public static void clearCompares() {
         Realm realm = Realm.getDefaultInstance();
         RealmResults<Compare> compares = realm.where(Compare.class).findAll();
         realm.beginTransaction();
@@ -41,5 +40,4 @@ public class DbComparesManager {
         realm.commitTransaction();
         realm.close();
     }
-
 }

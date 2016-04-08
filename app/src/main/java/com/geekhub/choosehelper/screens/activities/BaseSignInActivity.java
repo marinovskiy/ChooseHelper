@@ -25,6 +25,7 @@ import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.utils.ModelConverter;
 import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.Utils;
+import com.geekhub.choosehelper.utils.db.DbComparesManager;
 import com.geekhub.choosehelper.utils.db.DbUsersManager;
 import com.geekhub.choosehelper.utils.firebase.FirebaseConstants;
 import com.geekhub.choosehelper.utils.firebase.FirebaseUsersManager;
@@ -296,7 +297,7 @@ public class BaseSignInActivity extends AppCompatActivity
         }
     }
 
-    private void setAuthenticatedUser(AuthData authData) {
+    private void setAuthenticatedUser(AuthData authData) { // TODO check if user exist if login throw social network
         if (authData != null) {
             Prefs.setUserId(authData.getUid());
             int loggedType = Prefs.getLoggedType();
@@ -326,6 +327,7 @@ public class BaseSignInActivity extends AppCompatActivity
                         Log.i(LOG_TAG, "onResult: " + status.getStatusMessage()));
             }
         }
+        DbComparesManager.clearCompares();
         Prefs.setLoggedType(Prefs.NOT_LOGIN);
     }
 
