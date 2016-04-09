@@ -19,6 +19,9 @@ public final class FirebaseConstants {
     public static final String FB_REF_FULL_NAME = "fullName";
     public static final String FB_REF_PHOTO_URL = "photoUrl";
 
+    public static final String FB_REF_DESCRIPTION = "description";
+    public static final String FB_REF_QUESTION = "question";
+
 
 
 

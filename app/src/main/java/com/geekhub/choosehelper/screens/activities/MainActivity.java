@@ -1,5 +1,7 @@
 package com.geekhub.choosehelper.screens.activities;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -12,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -210,17 +213,32 @@ public class MainActivity extends BaseSignInActivity
     private void search(String textToSearch) {
         if (isSearchActive) {
             searchInNetwork(textToSearch);
+            hideSoftKeyboard();
+
+            mEtSearch.setText("");
             mEtSearch.setVisibility(View.GONE);
             isSearchActive = false;
         } else {
             mEtSearch.setVisibility(View.VISIBLE);
-            mEtSearch.setFocusable(true);
-            mEtSearch.setCursorVisible(true);
+            mEtSearch.requestFocusFromTouch();
+            showSoftKeyboard();
             isSearchActive = true;
         }
     }
 
     private void searchInNetwork(String str) {
         setupViewPager(mViewPager, str);
+    }
+
+    private void hideSoftKeyboard() {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    private void showSoftKeyboard() {
+        InputMethodManager imm = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(mEtSearch, InputMethodManager.SHOW_IMPLICIT);
     }
 }
