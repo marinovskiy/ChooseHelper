@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,6 +39,8 @@ public class MainActivity extends BaseSignInActivity
 
     public static final String INTENT_KEY_USER_NAME = "intent_key_user_name";
 
+    private static boolean isSearchActive = false;
+
     @Bind(R.id.drawer_main)
     DrawerLayout mDrawerLayout;
 
@@ -56,6 +59,9 @@ public class MainActivity extends BaseSignInActivity
     @Bind(R.id.view_pager_main)
     ViewPager mViewPager;
 
+    @Bind(R.id.et_search_main)
+    EditText mEtSearch;
+
     private User mCurrentUser;
 
     private RealmChangeListener mUserListener = () -> {
@@ -70,7 +76,7 @@ public class MainActivity extends BaseSignInActivity
         setContentView(R.layout.activity_main);
         /** setup UI elements **/
         setupToolbar();
-        setupViewPager(mViewPager);
+        setupViewPager(mViewPager, null);
         mTabLayout.setupWithViewPager(mViewPager);
         mNavigationView.setNavigationItemSelectedListener(this);
 
@@ -121,6 +127,11 @@ public class MainActivity extends BaseSignInActivity
     protected void onPause() {
         super.onPause();
         Realm.getDefaultInstance().removeAllChangeListeners();
+
+        if (isSearchActive) {
+            isSearchActive = false;
+            mEtSearch.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -142,12 +153,16 @@ public class MainActivity extends BaseSignInActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_search:
-                // TODO: search
+            case R.id.action_search: {
+
+                //  Searching
+                search(mEtSearch.getText().toString());
                 return true;
-            case android.R.id.home:
+            }
+            case android.R.id.home: {
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
+            }
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -179,9 +194,9 @@ public class MainActivity extends BaseSignInActivity
         }
     }
 
-    private void setupViewPager(ViewPager viewPager) {
+    private void setupViewPager(ViewPager viewPager, String str) {
         ComparesViewPagerAdapter adapter = new ComparesViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(AllComparesFragment.newInstance(), "All");
+        adapter.addFragment(AllComparesFragment.newInstance(str), "All");
         adapter.addFragment(FriendsComparesFragment.newInstance(), "Friend's");
         //adapter.addFragment(MyComparesFragment.newInstance(), "My");
         viewPager.setAdapter(adapter);
@@ -190,5 +205,22 @@ public class MainActivity extends BaseSignInActivity
     private void fetchCurrentUserFromDb() {
         mCurrentUser = DbUsersManager.getUserAsync(Prefs.getUserId());
         mCurrentUser.addChangeListener(mUserListener);
+    }
+
+    private void search(String textToSearch) {
+        if (isSearchActive) {
+            searchInNetwork(textToSearch);
+            mEtSearch.setVisibility(View.GONE);
+            isSearchActive = false;
+        } else {
+            mEtSearch.setVisibility(View.VISIBLE);
+            mEtSearch.setFocusable(true);
+            mEtSearch.setCursorVisible(true);
+            isSearchActive = true;
+        }
+    }
+
+    private void searchInNetwork(String str) {
+        setupViewPager(mViewPager, str);
     }
 }

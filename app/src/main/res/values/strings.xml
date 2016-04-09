@@ -36,6 +36,7 @@
     <!--hints-->
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
+    <string name="hint_search">Search</string>
 
     <!--Profile-->
     <string name="profile_toolbar_title">Profile</string>

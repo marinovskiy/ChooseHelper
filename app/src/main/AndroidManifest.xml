@@ -38,6 +38,7 @@
         <activity
             android:name=".screens.activities.MainActivity"
             android:label="Compares"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".screens.activities.AddCompareActivity"

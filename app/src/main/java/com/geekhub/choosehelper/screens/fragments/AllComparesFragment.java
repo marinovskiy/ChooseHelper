@@ -27,6 +27,7 @@ import com.geekhub.choosehelper.models.db.Compare;
 import com.geekhub.choosehelper.models.network.NetworkCompare;
 import com.geekhub.choosehelper.models.network.NetworkLike;
 import com.geekhub.choosehelper.models.network.NetworkUser;
+import com.geekhub.choosehelper.models.network.NetworkVariant;
 import com.geekhub.choosehelper.screens.activities.DetailsActivity;
 import com.geekhub.choosehelper.screens.activities.EditCompareActivity;
 import com.geekhub.choosehelper.screens.activities.ProfileActivity;
@@ -39,8 +40,6 @@ import com.geekhub.choosehelper.utils.firebase.FirebaseComparesManager;
 import com.geekhub.choosehelper.utils.firebase.FirebaseConstants;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import butterknife.Bind;
@@ -48,6 +47,8 @@ import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
 public class AllComparesFragment extends BaseFragment {
+
+    private static final String TAG = AllComparesFragment.class.getName();
 
     public static final String INTENT_KEY_COMPARE_ID = "intent_key_compare_id";
 
@@ -75,6 +76,8 @@ public class AllComparesFragment extends BaseFragment {
 
     private Firebase mFirebaseLikes;
 
+    private static String mTextToSearch;
+
     /**
      * realm
      **/
@@ -90,7 +93,15 @@ public class AllComparesFragment extends BaseFragment {
 
     }
 
-    public static AllComparesFragment newInstance() {
+    public static AllComparesFragment newInstance(String str) {
+        Log.d(TAG, "IN >> newInstance(). STR = " + str);
+
+        if ((str != null) && !(str.equals(""))) {
+            mTextToSearch = str;
+            Log.d(TAG, "Fragment with search. Text to search: " + mTextToSearch);
+        } else {
+            mTextToSearch = null;
+        }
         return new AllComparesFragment();
     }
 
@@ -117,7 +128,14 @@ public class AllComparesFragment extends BaseFragment {
         /** requests **/
         fetchComparesFromDb();
         if (Utils.hasInternet(getContext())) {
-            fetchComparesFromNetwork();
+
+            Log.d(TAG, "case: " + mTextToSearch);
+
+            if (mTextToSearch != null) {
+                searchComparesInNetwork(mTextToSearch);
+            } else {
+                fetchComparesFromNetwork();
+            }
         }
 
         /** swipe refresh layout **/
@@ -140,6 +158,7 @@ public class AllComparesFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        mTextToSearch = null;
         fetchComparesFromNetwork();
     }
 
@@ -216,6 +235,8 @@ public class AllComparesFragment extends BaseFragment {
      * get information about compare from firebase
      **/
     private void fetchComparesFromNetwork() {
+        Log.d(TAG, "IN >> fetchComparesFromNetwork()");
+
         mQueryCompares.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -226,9 +247,58 @@ public class AllComparesFragment extends BaseFragment {
                     setProgressVisibility(true);
                     hideRefreshing();
                 }
+                int iteration = 1;
                 for (DataSnapshot compareSnapshot : dataSnapshot.getChildren()) {
                     NetworkCompare networkCompare = compareSnapshot.getValue(NetworkCompare.class);
-                    fetchDetailsFromNetwork(compares, networkCompare, compareSnapshot.getKey(), snapshotSize);
+                    fetchDetailsFromNetwork(compares, networkCompare, compareSnapshot.getKey(),
+                            snapshotSize, iteration++);
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                hideRefreshing();
+                Toast.makeText(getContext(), "Error! Please, try later", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void searchComparesInNetwork(String str) {
+        Log.d(TAG, "IN >> searchComparesInNetwork()");
+
+        mFirebaseCompares.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                // Flag to know is compare contain variant
+                // that contain 'str' in his description
+                boolean isFound;
+
+                List<Compare> compares = new ArrayList<>();
+                int snapshotSize = (int) dataSnapshot.getChildrenCount();
+                if (snapshotSize == 0) {
+                    // TODO show empty view
+                    setProgressVisibility(true);
+                    hideRefreshing();
+                }
+                int iteration = 1;
+                for (DataSnapshot compareSnapshot : dataSnapshot.getChildren()) {
+                    NetworkCompare networkCompare = compareSnapshot.getValue(NetworkCompare.class);
+                    isFound = false;
+
+                    for (NetworkVariant v : networkCompare.getVariants()) {
+                        if (v.getDescription().contains(str)) {
+                            Log.d(TAG, "Variant description: " + v.getDescription()
+                                    + " || text to search: " + str);
+                            isFound = true;
+                            break;
+                        }
+                    }
+                    if (isFound) {
+                        fetchDetailsFromNetwork(compares, networkCompare, compareSnapshot.getKey(),
+                                snapshotSize, iteration);
+                    }
+                    iteration++;
                 }
             }
 
@@ -244,7 +314,7 @@ public class AllComparesFragment extends BaseFragment {
      * get details information about compares from firebase
      **/
     private void fetchDetailsFromNetwork(List<Compare> compares, NetworkCompare networkCompare,
-                                         String compareId, int size) {
+                                         String compareId, int size, int iteration) {
         /** likes **/
         Query queryDetails = mFirebaseLikes.orderByChild(FirebaseConstants.FB_REF_COMPARE_ID)
                 .equalTo(compareId);
@@ -270,7 +340,10 @@ public class AllComparesFragment extends BaseFragment {
                                         authorSnapshot.getValue(NetworkUser.class),
                                         networkCompare.getUserId(),
                                         tempLikedVariant));
-                                if (compares.size() == size) {
+
+                                Log.d(TAG, "ADD NEW COMPARES. Size: " + compares.size());
+
+                                if (iteration == size) {
 //                                    Collections.sort(compares, (lhs, rhs) -> {
 //                                        if (lhs.getDate() < rhs.getDate()) return 1;
 //                                        if (lhs.getDate() > rhs.getDate()) return -1;
