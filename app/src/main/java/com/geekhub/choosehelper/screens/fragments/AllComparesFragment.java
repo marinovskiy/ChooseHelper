@@ -226,12 +226,33 @@ public class AllComparesFragment extends BaseFragment {
      * get information about compare from firebase
      **/
     private void fetchComparesFromNetwork() {
-        Log.d(TAG, "in fetchComparesFromNetwork()/ mTextToSearch: " + mTextToSearch);
-        if (mTextToSearch == null) {
+        /*if (mTextToSearch == null) {
             mQueryCompares.addListenerForSingleValueEvent(new ComparesValueEventListener());
         } else {
             mFirebaseCompares.addValueEventListener(new ComparesValueEventListener());
-        }
+        }*/
+        mQueryCompares.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<Compare> compares = new ArrayList<>();
+                int snapshotSize = (int) dataSnapshot.getChildrenCount();
+                if (snapshotSize == 0) {
+                    setProgressVisibility(true);
+                    hideRefreshing();
+                }
+                for (DataSnapshot compareSnapshot : dataSnapshot.getChildren()) {
+                    NetworkCompare networkCompare = compareSnapshot.getValue(NetworkCompare.class);
+                    fetchDetailsFromNetwork(compares, networkCompare,
+                            compareSnapshot.getKey(), snapshotSize);
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                hideRefreshing();
+                Toast.makeText(getContext(), "Error! Please, try later", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     /**
@@ -265,16 +286,8 @@ public class AllComparesFragment extends BaseFragment {
                                         networkCompare.getUserId(),
                                         tempLikedVariant));
 
-                                Log.d(TAG, "ADD NEW COMPARES. Size: " + compares.size());
-
                                 if (compares.size() == size) {
-//                                    Collections.sort(compares, (lhs, rhs) -> {
-//                                        if (lhs.getDate() < rhs.getDate()) return 1;
-//                                        if (lhs.getDate() > rhs.getDate()) return -1;
-//                                        return 0;
-//                                    });
                                     DbComparesManager.saveCompares(compares);
-                                    //updateUi(compares);
                                     hideRefreshing();
                                 }
                             }
@@ -448,62 +461,64 @@ public class AllComparesFragment extends BaseFragment {
         popupMenu.show();
     }
 
-    private class ComparesValueEventListener implements ValueEventListener {
-        @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-            List<Compare> compares = new ArrayList<>();
-            int snapshotSize = 0;
+    /*private void search() {
+        private class ComparesValueEventListener implements ValueEventListener {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<Compare> compares = new ArrayList<>();
+                int snapshotSize = 0;
 
-            if (mTextToSearch == null) {
-                snapshotSize = (int) dataSnapshot.getChildrenCount();
-            } else {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    NetworkCompare compare = snapshot.getValue(NetworkCompare.class);
-                    for (NetworkVariant v : compare.getVariants()) {
-                        if (v.getDescription().contains(mTextToSearch)) {
-                            snapshotSize++;
-                            break;
+                if (mTextToSearch == null) {
+                    snapshotSize = (int) dataSnapshot.getChildrenCount();
+                } else {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        NetworkCompare compare = snapshot.getValue(NetworkCompare.class);
+                        for (NetworkVariant v : compare.getVariants()) {
+                            if (v.getDescription().contains(mTextToSearch)) {
+                                snapshotSize++;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                Log.d(TAG, "SNAPSHOT_SIZE: " + snapshotSize);
+                if (snapshotSize == 0) {
+                    // TODO show empty view
+                    setProgressVisibility(true);
+                    hideRefreshing();
+                }
+                if (mTextToSearch == null) {
+                    for (DataSnapshot compareSnapshot : dataSnapshot.getChildren()) {
+                        NetworkCompare networkCompare = compareSnapshot.getValue(NetworkCompare.class);
+                        fetchDetailsFromNetwork(compares, networkCompare, compareSnapshot.getKey(), snapshotSize);
+                    }
+                } else {
+                    boolean isFound;
+                    for (DataSnapshot c : dataSnapshot.getChildren()) {
+                        NetworkCompare networkCompare = c.getValue(NetworkCompare.class);
+
+                        isFound = false;
+                        for (NetworkVariant v : networkCompare.getVariants()) {
+                            if (v.getDescription().contains(mTextToSearch)) {
+                                isFound = true;
+                                break;
+                            }
+                        }
+                        if (isFound) {
+                            fetchDetailsFromNetwork(compares, networkCompare, c.getKey(), snapshotSize);
                         }
                     }
                 }
             }
 
-            Log.d(TAG, "SNAPSHOT_SIZE: " + snapshotSize);
-            if (snapshotSize == 0) {
-                // TODO show empty view
-                setProgressVisibility(true);
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
                 hideRefreshing();
-            }
-            if (mTextToSearch == null) {
-                for (DataSnapshot compareSnapshot : dataSnapshot.getChildren()) {
-                    NetworkCompare networkCompare = compareSnapshot.getValue(NetworkCompare.class);
-                    fetchDetailsFromNetwork(compares, networkCompare, compareSnapshot.getKey(), snapshotSize);
-                }
-            } else {
-                boolean isFound;
-                for (DataSnapshot c : dataSnapshot.getChildren()) {
-                    NetworkCompare networkCompare = c.getValue(NetworkCompare.class);
-
-                    isFound = false;
-                    for (NetworkVariant v : networkCompare.getVariants()) {
-                        if (v.getDescription().contains(mTextToSearch)) {
-                            isFound = true;
-                            break;
-                        }
-                    }
-                    if (isFound) {
-                        fetchDetailsFromNetwork(compares, networkCompare, c.getKey(), snapshotSize);
-                    }
-                }
+                Toast.makeText(getContext(), "Error! Please, try later", Toast.LENGTH_SHORT).show();
             }
         }
-
-        @Override
-        public void onCancelled(FirebaseError firebaseError) {
-            hideRefreshing();
-            Toast.makeText(getContext(), "Error! Please, try later", Toast.LENGTH_SHORT).show();
-        }
-    }
+    }*/
 
     /**
      * methods for show progress

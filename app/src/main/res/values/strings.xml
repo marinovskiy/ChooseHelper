@@ -44,7 +44,14 @@
     <string name="compare_dialog_photo_title">Select picture for variant</string>
     <string name="qwe">You did not fill all fields</string>
     <string name="toast_no_internet">No internet connection</string>
+
     <string name="img_description_avatar">Avatar</string>
     <string name="img_description_icon_more">Icon more</string>
+
+    <string name="btn_label_follow">Follow</string>
+    <string name="btn_label_unfollow">UnFollow</string>
+    <string name="followings">Followings</string>
+    <string name="followers">Followers</string>
+    <string name="compares">Compares</string>
 
 </resources>

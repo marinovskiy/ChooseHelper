@@ -4,60 +4,61 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.geekhub.choosehelper.R;
-import com.geekhub.choosehelper.models.ui.UserInfo;
+import com.geekhub.choosehelper.models.db.User;
 import com.geekhub.choosehelper.ui.listeners.OnItemClickListener;
+import com.geekhub.choosehelper.utils.ImageUtil;
 
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class UserInfoRecyclerViewAdapter extends RecyclerView.Adapter<UserInfoRecyclerViewAdapter.ViewHolder> {
+public class UserRecyclerViewAdapter extends RecyclerView.Adapter<UserRecyclerViewAdapter.ViewHolder> {
 
-    private List<UserInfo> mList;
+    private List<User> mUserList;
 
     private OnItemClickListener mOnItemClickListener;
 
-    public UserInfoRecyclerViewAdapter(List<UserInfo> list) {
-        mList = list;
+    public UserRecyclerViewAdapter(List<User> userList) {
+        mUserList = userList;
     }
 
-    public void updateList(List<UserInfo> list) {
-        mList = list;
+    public void updateList(List<User> userList) {
+        mUserList = userList;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.profile_item_layout, parent, false));
+                .inflate(R.layout.user_item_layout, parent, false));
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.bindItem(mList.get(position));
+        holder.bindUser(mUserList.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return mList != null ? mList.size() : 0;
+        return mUserList != null ? mUserList.size() : 0;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @Bind(R.id.profile_rv_tv_count)
-        TextView mTvCount;
+        @Bind(R.id.user_rv_iv_avatar)
+        ImageView mIvUserAvatar;
 
-        @Bind(R.id.profile_rv_tv_title)
-        TextView mTvTitle;
+        @Bind(R.id.user_rv_tv_name)
+        TextView mTvUserName;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            if (getAdapterPosition() != mList.size() - 1)
-                itemView.setOnClickListener(this);
+            itemView.setOnClickListener(this);
         }
 
         @Override
@@ -67,9 +68,9 @@ public class UserInfoRecyclerViewAdapter extends RecyclerView.Adapter<UserInfoRe
             }
         }
 
-        private void bindItem(UserInfo userInfo) {
-            mTvCount.setText(String.valueOf(userInfo.getCount()));
-            mTvTitle.setText(userInfo.getTitle());
+        private void bindUser(User user) {
+            ImageUtil.loadCircleImage(mIvUserAvatar, user.getPhotoUrl());
+            mTvUserName.setText(user.getFullName());
         }
     }
 

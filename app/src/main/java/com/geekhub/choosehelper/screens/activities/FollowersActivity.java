@@ -1,5 +1,6 @@
 package com.geekhub.choosehelper.screens.activities;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -10,10 +11,19 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.geekhub.choosehelper.R;
+import com.geekhub.choosehelper.models.db.Follower;
+import com.geekhub.choosehelper.models.db.Following;
 import com.geekhub.choosehelper.models.db.User;
+import com.geekhub.choosehelper.ui.adapters.UserInfoRecyclerViewAdapter;
+import com.geekhub.choosehelper.ui.adapters.UserRecyclerViewAdapter;
+import com.geekhub.choosehelper.utils.db.DbUsersManager;
+
+import java.util.List;
 
 import butterknife.Bind;
 import io.realm.RealmChangeListener;
+import io.realm.RealmList;
+import io.realm.RealmResults;
 
 public class FollowersActivity extends BaseSignInActivity {
 
@@ -33,17 +43,18 @@ public class FollowersActivity extends BaseSignInActivity {
 
     private String mToolbarTitle;
 
-//    /** realm **/
-//    private String mUserId;
-//
-//    private User mUser;
-//
-//    private RealmChangeListener mUserListener = () -> {
-//        if (mUser != null && mUser.isLoaded()) {
-//            Toast.makeText(getApplicationContext(), "yeah!!!", Toast.LENGTH_SHORT).show();
-//            updateUi(mUser);
-//        }
-//    };
+    /**
+     * realm
+     **/
+    private String mUserId;
+
+    private User mUser;
+
+    private RealmChangeListener mUserListener = () -> {
+        if (mUser != null && mUser.isLoaded()) {
+            //updateUi(mUser);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,5 +88,28 @@ public class FollowersActivity extends BaseSignInActivity {
             mToolbarShadow.setVisibility(View.GONE);
         }
     }
+
+    /*private void updateUi(User user) {
+        UserRecyclerViewAdapter adapter;
+        if (mRecyclerView.getAdapter() == null) {
+            adapter = new UserRecyclerViewAdapter();
+            mRecyclerView.setAdapter(adapter);
+            adapter.setOnItemClickListener((view, position) -> {
+                Intent intent = new Intent(this, FollowersActivity.class);
+                intent.putExtra(ProfileActivity.INTENT_KEY_USER_ID, mUserId);
+                startActivity(intent);
+            });
+        } else {
+            adapter = (UserRecyclerViewAdapter) mRecyclerView.getAdapter();
+            adapter.updateList();
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    private void fetchUsersFromDb() {
+        mUserList = DbUsersManager.getUserById(mUserId).getFollowers();
+
+        mUserList.addChangeListener(mUsersListener);
+    }*/
 
 }

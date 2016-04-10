@@ -67,16 +67,17 @@ public class MainActivity extends BaseSignInActivity
 
     private User mCurrentUser;
 
-    private RealmChangeListener mUserListener = () -> {
+    private RealmChangeListener mUserListener;/* = () -> {
         if (mCurrentUser != null && mCurrentUser.isLoaded()) {
             updateNavDrawerHeader(mCurrentUser);
         }
-    };
+    };*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         /** setup UI elements **/
         setupToolbar();
         setupViewPager(mViewPager, null);
@@ -84,11 +85,13 @@ public class MainActivity extends BaseSignInActivity
         mNavigationView.setNavigationItemSelectedListener(this);
 
         /** work with realm **/
-        /*mUserListener = () -> {
+        mUserListener = () -> {
             if (mCurrentUser != null && mCurrentUser.isLoaded()) {
                 updateNavDrawerHeader(mCurrentUser);
             }
-        };*/
+        };
+
+        /** requests **/
         fetchCurrentUserFromDb();
         if (Utils.hasInternet(getApplicationContext())) {
             FirebaseUsersManager.saveUserFromFirebase(Prefs.getUserId());

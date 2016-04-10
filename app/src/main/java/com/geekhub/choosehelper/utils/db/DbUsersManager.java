@@ -5,6 +5,7 @@ import com.geekhub.choosehelper.models.db.User;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 public class DbUsersManager {
 

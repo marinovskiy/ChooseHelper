@@ -60,6 +60,25 @@ public class ModelConverter {
         return compare;
     }
 
+    public static Compare convertToCompare(NetworkCompare networkCompare, String networkCompareId,
+                                           User author, int likedVariant) {
+        Compare compare = new Compare();
+        compare.setId(networkCompareId);
+        compare.setDate(-1 * networkCompare.getDate());
+        compare.setQuestion(networkCompare.getQuestion());
+        compare.setAuthor(author);
+        List<NetworkVariant> networkVariants = networkCompare.getVariants();
+        if (networkVariants != null && !networkVariants.isEmpty()) {
+            RealmList<Variant> variants = new RealmList<>();
+            for (NetworkVariant networkVariant : networkVariants) {
+                variants.add(convertToVariant(networkVariant));
+            }
+            compare.setVariants(variants);
+        }
+        compare.setLikedVariant(likedVariant);
+        return compare;
+    }
+
     public static Variant convertToVariant(@NonNull NetworkVariant networkVariant) {
         Variant variant = new Variant();
         variant.setId(ChooseHelperApplication.sVariantPrimaryKey.incrementAndGet());

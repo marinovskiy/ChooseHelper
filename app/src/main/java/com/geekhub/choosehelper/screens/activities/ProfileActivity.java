@@ -21,12 +21,17 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 import com.geekhub.choosehelper.R;
+import com.geekhub.choosehelper.models.db.Compare;
 import com.geekhub.choosehelper.models.db.Follower;
 import com.geekhub.choosehelper.models.db.User;
+import com.geekhub.choosehelper.models.network.NetworkCompare;
 import com.geekhub.choosehelper.models.network.NetworkFollower;
 import com.geekhub.choosehelper.models.network.NetworkFollowing;
+import com.geekhub.choosehelper.models.network.NetworkLike;
 import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.models.ui.UserInfo;
+import com.geekhub.choosehelper.screens.fragments.AllComparesFragment;
+import com.geekhub.choosehelper.ui.adapters.ComparesRecyclerViewAdapter;
 import com.geekhub.choosehelper.ui.adapters.UserInfoRecyclerViewAdapter;
 import com.geekhub.choosehelper.utils.ImageUtil;
 import com.geekhub.choosehelper.utils.ModelConverter;
@@ -45,6 +50,7 @@ import butterknife.OnClick;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmList;
+import io.realm.RealmResults;
 
 public class ProfileActivity extends BaseSignInActivity {
 
@@ -74,7 +80,10 @@ public class ProfileActivity extends BaseSignInActivity {
     Button mProfileBtnFollow;
 
     @Bind(R.id.recycler_view_profile)
-    RecyclerView mRecyclerView;
+    RecyclerView mRecyclerViewProfile;
+
+    @Bind(R.id.recycler_view_profile_compares)
+    RecyclerView mRecyclerViewCompares;
 
     /**
      * firebase references and quieries
@@ -84,6 +93,10 @@ public class ProfileActivity extends BaseSignInActivity {
     private Firebase mFirebaseFollowers;
     private Query mQueryFollowers;
     private Query mQueryIsFollow;
+
+    private Firebase mFirebaseCompares;
+    private Query mQueryCompares;
+    private Firebase mFirebaseLikes;
 
     /**
      * other
@@ -97,59 +110,72 @@ public class ProfileActivity extends BaseSignInActivity {
 
     private User mUser;
 
-    private RealmChangeListener mUserListener;
+    private RealmChangeListener mUserListener = () -> {
+        Toast.makeText(getApplicationContext(), "yeah123", Toast.LENGTH_SHORT).show();
+        if (mUser != null && mUser.isLoaded()) {
+            Log.i(TAG + "123456", "123 user");
+            Toast.makeText(getApplicationContext(), "!!!yeah!!!", Toast.LENGTH_SHORT).show();
+            updateUi(mUser);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_new);
-        setupToolbar();
-
-        mUserListener = () -> {
-            if (mUser != null && mUser.isLoaded()) {
-                updateUi(mUser);
-            }
-        };
 
         /** get user id from intent **/
-        if (getIntent() != null) {
-            mUserId = getIntent().getStringExtra(INTENT_KEY_USER_ID);
-            if (!mUserId.equals(Prefs.getUserId())) {
-                mProfileBtnFollow.setVisibility(View.VISIBLE);
-            }
+        mUserId = getIntent().getStringExtra(INTENT_KEY_USER_ID);
+        if (!mUserId.equals(Prefs.getUserId())) {
+            mProfileBtnFollow.setVisibility(View.VISIBLE);
+        }
 
-            /** firebase references **/
-            mFirebaseUser = new Firebase(FirebaseConstants.FB_REF_MAIN)
-                    .child(FirebaseConstants.FB_REF_USERS)
-                    .child(mUserId);
+        /** setup toolbar **/
+        setupToolbar();
 
-            mFirebaseFollowings = new Firebase(FirebaseConstants.FB_REF_MAIN)
-                    .child(FirebaseConstants.FB_REF_USERS)
-                    .child(Prefs.getUserId())
-                    .child(FirebaseConstants.FB_REF_FOLLOWINGS);
+        /** firebase references **/
+        // user, following and followers
+        mFirebaseUser = new Firebase(FirebaseConstants.FB_REF_MAIN)
+                .child(FirebaseConstants.FB_REF_USERS)
+                .child(mUserId);
 
-            mFirebaseFollowers = new Firebase(FirebaseConstants.FB_REF_MAIN)
-                    .child(FirebaseConstants.FB_REF_FOLLOWERS);
+        mFirebaseFollowings = new Firebase(FirebaseConstants.FB_REF_MAIN)
+                .child(FirebaseConstants.FB_REF_USERS)
+                .child(Prefs.getUserId())
+                .child(FirebaseConstants.FB_REF_FOLLOWINGS);
 
-            mQueryFollowers = mFirebaseFollowers.orderByChild(FirebaseConstants.FB_REF_USER_ID)
-                    .equalTo(mUserId);
+        mFirebaseFollowers = new Firebase(FirebaseConstants.FB_REF_MAIN)
+                .child(FirebaseConstants.FB_REF_FOLLOWERS);
 
-            mQueryIsFollow = mFirebaseFollowings.orderByChild(FirebaseConstants.FB_REF_USER_ID)
-                    .equalTo(mUserId);
+        mQueryFollowers = mFirebaseFollowers.orderByChild(FirebaseConstants.FB_REF_USER_ID)
+                .equalTo(mUserId);
 
-            isFollow();
+        mQueryIsFollow = mFirebaseFollowings.orderByChild(FirebaseConstants.FB_REF_USER_ID)
+                .equalTo(mUserId);
 
-            /** requests **/
-            fetchProfileFromDb();
-            if (Utils.hasInternet(getApplicationContext())) {
-                fetchProfileFromNetwork();
-            }
-        } else {
-            // TODO show empty or error view
+        // compares
+        mFirebaseCompares = new Firebase(FirebaseConstants.FB_REF_MAIN)
+                .child(FirebaseConstants.FB_REF_COMPARES);
+
+        mQueryCompares = mFirebaseCompares.orderByChild(FirebaseConstants.FB_REF_USER_ID)
+                .equalTo(mUserId);
+
+        // likes
+        mFirebaseLikes = new Firebase(FirebaseConstants.FB_REF_MAIN)
+                .child(FirebaseConstants.FB_REF_LIKES);
+
+        /** check is authenticated user following this user **/
+        isFollow();
+
+        /** requests **/
+        fetchProfileFromDb();
+        if (Utils.hasInternet(getApplicationContext())) {
+            fetchProfileFromNetwork();
         }
 
         /** recycler view **/
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerViewProfile.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerViewCompares.setLayoutManager(new LinearLayoutManager(this));
 
         /** swipe refresh layout **/
         /*mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -172,11 +198,6 @@ public class ProfileActivity extends BaseSignInActivity {
     public void onClick() {
         mProfileBtnFollow.setClickable(false);
         updateFollow();
-        /*if (isFollow()) {
-            unFollowUser();
-        } else {
-            followUser();
-        }*/
     }
 
     private boolean isFollow() {
@@ -188,7 +209,7 @@ public class ProfileActivity extends BaseSignInActivity {
                     NetworkFollowing networkFollowing = snapshot.getValue(NetworkFollowing.class);
                     if (networkFollowing.getUserId().equals(mUserId)) {
                         result[0] = true;
-                        mProfileBtnFollow.setText("UnFollow");
+                        mProfileBtnFollow.setText(R.string.btn_label_unfollow);
                         break;
                     }
                 }
@@ -244,7 +265,7 @@ public class ProfileActivity extends BaseSignInActivity {
                 networkFollower.setFollowerId(Prefs.getUserId());
                 mFirebaseFollowers.push().setValue(networkFollower);
                 /** unfreeze button and change text **/
-                mProfileBtnFollow.setText("UnFollow");
+                mProfileBtnFollow.setText(R.string.btn_label_unfollow);
                 mProfileBtnFollow.setClickable(true);
             }
 
@@ -270,24 +291,21 @@ public class ProfileActivity extends BaseSignInActivity {
                 mFirebaseFollowings.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        int i = 0;
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             NetworkFollowing networkFollowing = snapshot.getValue(NetworkFollowing.class);
                             if (networkFollowing.getUserId().equals(mUserId)) {
                                 snapshot.getRef().setValue(null);
-                                //mFirebaseFollowings.child(String.valueOf(i)).setValue(null);
                                 fetchProfileFromNetwork();
-                                mProfileBtnFollow.setText("Follow");
+                                mProfileBtnFollow.setText(R.string.btn_label_follow);
                                 mProfileBtnFollow.setClickable(true);
                                 break;
                             }
-                            i++;
                         }
                     }
 
                     @Override
                     public void onCancelled(FirebaseError firebaseError) {
-
+                        // TODO toast exception
                     }
                 });
             }
@@ -305,11 +323,18 @@ public class ProfileActivity extends BaseSignInActivity {
         Realm.getDefaultInstance().removeAllChangeListeners();
     }
 
+    /**
+     * get information about user from local database
+     **/
     private void fetchProfileFromDb() {
         mUser = DbUsersManager.getUserById(mUserId);
         mUser.addChangeListener(mUserListener);
     }
 
+
+    /**
+     * get information about user from firebase
+     **/
     private void fetchProfileFromNetwork() {
         mFirebaseUser.addValueEventListener(new ValueEventListener() {
             @Override
@@ -326,7 +351,8 @@ public class ProfileActivity extends BaseSignInActivity {
                         if (!followers.isEmpty()) {
                             user.setFollowers(followers);
                         }
-                        DbUsersManager.saveUser(user);
+                        fetchUserComparesFromNetwork(user);
+                        //DbUsersManager.saveUser(user);
                     }
 
                     @Override
@@ -339,6 +365,66 @@ public class ProfileActivity extends BaseSignInActivity {
             @Override
             public void onCancelled(FirebaseError firebaseError) {
                 Toast.makeText(getApplicationContext(), "Error = " + firebaseError, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * get information about user compares from firebase
+     **/
+    private void fetchUserComparesFromNetwork(User user) {
+        mQueryCompares.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                RealmList<Compare> compares = new RealmList<>();
+                int snapshotSize = (int) dataSnapshot.getChildrenCount();
+                if (snapshotSize == 0) {
+                    //hideRefreshing();
+                }
+                for (DataSnapshot compareSnapshot : dataSnapshot.getChildren()) {
+                    NetworkCompare networkCompare = compareSnapshot.getValue(NetworkCompare.class);
+                    fetchDetailsFromNetwork(user, compares, networkCompare,
+                            compareSnapshot.getKey(), snapshotSize);
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                //hideRefreshing();
+                Toast.makeText(getApplicationContext(), "Error! Please, try later", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * get details information about user compares from firebase
+     **/
+    private void fetchDetailsFromNetwork(User user, RealmList<Compare> compares,
+                                         NetworkCompare networkCompare,
+                                         String compareId, int size) {
+        /** likes **/
+        Query queryDetails = mFirebaseLikes.orderByChild(FirebaseConstants.FB_REF_COMPARE_ID)
+                .equalTo(compareId);
+        queryDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot likeSnapshot) {
+                int likedVariant = -1;
+                for (DataSnapshot snapshot : likeSnapshot.getChildren()) {
+                    if (snapshot.getValue(NetworkLike.class).getUserId().equals(Prefs.getUserId())) {
+                        likedVariant = snapshot.getValue(NetworkLike.class).getVariantNumber();
+                    }
+                }
+                /** compare author **/
+                compares.add(ModelConverter.convertToCompare(networkCompare, compareId, user, likedVariant));
+                if (compares.size() == size) {
+                    user.setCompares(compares);
+                    DbUsersManager.saveUser(user);
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Toast.makeText(getApplicationContext(), "Error! Please, try later", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -375,38 +461,89 @@ public class ProfileActivity extends BaseSignInActivity {
     }
 
     private void updateUi(User user) {
+        Log.i(TAG + "123456", "user.name=" + user.getFullName());
         try {
+            Log.i(TAG + "123456", "user.name=" + user.getFullName());
             ImageUtil.loadImage(mIvUserAvatar, user.getPhotoUrl());
-            if (getSupportActionBar() != null) {
+            mToolbar.setTitle(user.getFullName());
+            /*if (getSupportActionBar() != null) {
+                Log.i(TAG + "123456", "user.name=" + user.getFullName());
                 getSupportActionBar().setTitle(user.getFullName());
-            }
-            //mTvUsername.setText(user.getFullName());
-            //mTvEmail.setText(user.getEmail());
+            }*/
             mUserInfoList.clear();
-            mUserInfoList.add(new UserInfo(user.getFollowers() != null ? user.getFollowers().size() : 0, "Followers"));
-            mUserInfoList.add(new UserInfo(user.getFollowings() != null ? user.getFollowings().size() : 0, "Followings"));
-            mUserInfoList.add(new UserInfo(143, "Compares")); //TODO coutn of compares
+            mUserInfoList.add(new UserInfo(user.getFollowers() != null ? user.getFollowers().size() : 0, getString(R.string.followers)));
+            mUserInfoList.add(new UserInfo(user.getFollowings() != null ? user.getFollowings().size() : 0, getString(R.string.followings)));
+            mUserInfoList.add(new UserInfo(user.getCompares() != null ? user.getCompares().size() : 0, getString(R.string.compares)));
             UserInfoRecyclerViewAdapter adapter;
-            if (mRecyclerView.getAdapter() == null) {
+            if (mRecyclerViewProfile.getAdapter() == null) {
                 adapter = new UserInfoRecyclerViewAdapter(mUserInfoList);
-                mRecyclerView.setAdapter(adapter);
+                mRecyclerViewProfile.setAdapter(adapter);
                 adapter.setOnItemClickListener((view, position) -> {
                     Intent intent = new Intent(this, FollowersActivity.class);
                     if (position == 0) {
-                        intent.putExtra(FollowersActivity.INTENT_KEY_FOLLOWERS_TITLE, "Followings");
+                        intent.putExtra(FollowersActivity.INTENT_KEY_FOLLOWERS_TITLE, getString(R.string.followers));
                     } else if (position == 1) {
-                        intent.putExtra(FollowersActivity.INTENT_KEY_FOLLOWERS_TITLE, "Followers");
+                        intent.putExtra(FollowersActivity.INTENT_KEY_FOLLOWERS_TITLE, getString(R.string.followings));
                     }
+                    intent.putExtra(INTENT_KEY_USER_ID, mUserId);
                     startActivity(intent);
                     // TODO set clickable false for compares profile_item_layout
                 });
             } else {
-                adapter = (UserInfoRecyclerViewAdapter) mRecyclerView.getAdapter();
+                adapter = (UserInfoRecyclerViewAdapter) mRecyclerViewProfile.getAdapter();
                 adapter.updateList(mUserInfoList);
                 adapter.notifyDataSetChanged();
             }
+            updateComparesList(user.getCompares());
         } catch (NullPointerException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void updateComparesList(List<Compare> compares) {
+        ComparesRecyclerViewAdapter adapter;
+        if (mRecyclerViewCompares.getAdapter() == null) {
+            adapter = new ComparesRecyclerViewAdapter(compares);
+            mRecyclerViewCompares.setAdapter(adapter);
+
+            /** click listener for details **/
+            adapter.setOnItemClickListener((view, position) -> {
+                Intent intent = new Intent(this, DetailsActivity.class);
+                intent.putExtra(AllComparesFragment.INTENT_KEY_COMPARE_ID, compares.get(position).getId());
+                startActivity(intent);
+            });
+
+            /** click listener for likes **/
+            adapter.setOnLikeClickListener((mainView, clickedCheckBox, otherCheckBox,
+                                            position, variantNumber) -> {
+                /*mMainView = mainView;
+                mClickedCheckBox = clickedCheckBox;
+                mOtherCheckBox = otherCheckBox;
+                Utils.blockViews(mMainView, mClickedCheckBox, mOtherCheckBox);
+                updateLike(compares.get(position).getId(), variantNumber);*/
+            });
+
+            /** click listener for popup menu **/
+            adapter.setOnItemClickListenerPopup((view, position) -> {
+                String compareId = compares.get(position).getId();
+                if (compares.get(position).getAuthor().getId().equals(Prefs.getUserId())) {
+                    //showOwnerPopupMenu(view, compareId);
+                } else {
+                    //showUserPopupMenu(view, compareId);
+                }
+            });
+
+            /** click listener for author **/
+            adapter.setOnItemClickListenerAuthor((view, position) -> {
+                Intent userIntent = new Intent(this, ProfileActivity.class);
+                userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID,
+                        compares.get(position).getAuthor().getId());
+                startActivity(userIntent);
+            });
+        } else {
+            adapter = (ComparesRecyclerViewAdapter) mRecyclerViewCompares.getAdapter();
+            adapter.updateList(compares);
+            adapter.notifyDataSetChanged();
         }
     }
 }

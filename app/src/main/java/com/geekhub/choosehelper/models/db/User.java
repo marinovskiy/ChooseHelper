@@ -21,6 +21,8 @@ public class User extends RealmObject {
 
     private RealmList<Follower> followers;
 
+    private RealmList<Compare> compares;
+
     public User() {
 
     }
@@ -71,5 +73,13 @@ public class User extends RealmObject {
 
     public void setFollowers(RealmList<Follower> followers) {
         this.followers = followers;
+    }
+
+    public RealmList<Compare> getCompares() {
+        return compares;
+    }
+
+    public void setCompares(RealmList<Compare> compares) {
+        this.compares = compares;
     }
 }
