@@ -23,39 +23,55 @@
             android:textColor="#FFFFFF"
             android:textSize="26sp" />
 
-        <EditText
-            android:id="@+id/sign_in_et_email"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginTop="32dp"
-            android:background="@drawable/sign_in_et_selector"
-            android:hint="@string/hint_email"
-            android:inputType="textEmailAddress"
-            android:paddingBottom="16dp"
-            android:paddingLeft="10dp"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#BDBDBD"
-            android:textCursorDrawable="@null"
-            android:textSize="16sp" />
+            android:layout_marginTop="22dp"
+            android:textColorHint="#BDBDBD">
 
-        <EditText
-            android:id="@+id/sign_in_et_password"
+            <EditText
+                android:id="@+id/sign_in_et_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/sign_in_et_selector"
+                android:hint="@string/hint_email"
+                android:inputType="textEmailAddress"
+                android:paddingBottom="16dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="12dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#BDBDBD"
+                android:textCursorDrawable="@null"
+                android:textSize="16sp" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/sign_in_et_selector"
-            android:hint="@string/hint_password"
-            android:inputType="textPassword"
-            android:paddingBottom="16dp"
-            android:paddingLeft="10dp"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#BDBDBD"
-            android:textCursorDrawable="@null"
-            android:textSize="16sp" />
+            android:layout_marginTop="18dp"
+            android:textColorHint="#BDBDBD">
+
+            <EditText
+                android:id="@+id/sign_in_et_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/sign_in_et_selector"
+                android:hint="@string/hint_password"
+                android:inputType="textPassword"
+                android:paddingBottom="16dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="12dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#BDBDBD"
+                android:textCursorDrawable="@null"
+                android:textSize="16sp" />
+
+        </android.support.design.widget.TextInputLayout>
 
         <Button
             android:id="@+id/sign_in_btn_login"
@@ -64,7 +80,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="24dp"
-            android:background="#03A9F4"
+            android:background="@drawable/button_sign_selector"
             android:text="@string/label_login"
             android:textAllCaps="true"
             android:textColor="#FFFFFF"

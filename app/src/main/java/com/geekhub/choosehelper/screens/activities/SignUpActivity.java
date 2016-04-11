@@ -17,8 +17,8 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.network.NetworkUser;
-import com.geekhub.choosehelper.utils.AmazonUtil;
-import com.geekhub.choosehelper.utils.ImageUtil;
+import com.geekhub.choosehelper.utils.AmazonUtils;
+import com.geekhub.choosehelper.utils.ImageUtils;
 import com.geekhub.choosehelper.utils.ModelConverter;
 import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.Utils;
@@ -99,15 +99,17 @@ public class SignUpActivity extends BaseSignInActivity {
                 mPassword = String.valueOf(mEtSignUpPassword.getText());
                 mRepeatPassword = String.valueOf(mEtSignUpRepeatPassword.getText());
                 if (mFullName.equals("") || mEmail.equals("") || mPassword.equals("") || mRepeatPassword.equals("")) {
-                    Toast.makeText(SignUpActivity.this, R.string.toast_empty_fields, Toast.LENGTH_SHORT).show();
+                    Utils.showMessage(getApplicationContext(), getString(R.string.toast_empty_fields));
                 } else if (!mPassword.equals(mRepeatPassword)) {
-                    Toast.makeText(SignUpActivity.this, "Passwords are different", Toast.LENGTH_SHORT).show();
+                    Utils.showMessage(getApplicationContext(), "Passwords are different");
                 } else {
                     signUp();
                 }
                 break;
             case R.id.tv_already_have_an_account:
-                onBackPressed();
+                //onBackPressed();
+                finish();
+                this.overridePendingTransition(R.anim.slide_in_to_left, R.anim.do_nothing);
                 break;
         }
     }
@@ -126,19 +128,19 @@ public class SignUpActivity extends BaseSignInActivity {
                 case RC_GALLERY:
                     avatarUri = data.getData();
                     try {
-                        mFilePath = ImageUtil.getFilePath(getApplicationContext(), avatarUri);
-                        ImageUtil.loadCircleImage(mIvAvatar, mFilePath);
+                        mFilePath = ImageUtils.getFilePath(getApplicationContext(), avatarUri);
+                        ImageUtils.loadCircleImage(mIvAvatar, mFilePath);
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
                         //TODO toast exception
                     }
                     break;
                 case RC_CAMERA:
-                    avatarUri = ImageUtil.getPhotoUri(getApplicationContext(),
+                    avatarUri = ImageUtils.getPhotoUri(getApplicationContext(),
                             (Bitmap) data.getExtras().get("data"));
                     try {
-                        mFilePath = ImageUtil.getFilePath(getApplicationContext(), avatarUri);
-                        ImageUtil.loadCircleImage(mIvAvatar, mFilePath);
+                        mFilePath = ImageUtils.getFilePath(getApplicationContext(), avatarUri);
+                        ImageUtils.loadCircleImage(mIvAvatar, mFilePath);
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
                         //TODO toast exception
@@ -164,14 +166,14 @@ public class SignUpActivity extends BaseSignInActivity {
                 if (mFilePath != null) {
                     File file = new File(mFilePath);
                     String fileName = file.getName();
-                    TransferObserver transferObserver = AmazonUtil
+                    TransferObserver transferObserver = AmazonUtils
                             .getTransferUtility(getApplicationContext())
-                            .upload(AmazonUtil.BUCKET_NAME + AmazonUtil.FOLDER_AVATARS,
+                            .upload(AmazonUtils.BUCKET_NAME + AmazonUtils.FOLDER_AVATARS,
                                     uid + "-" + fileName,
                                     file);
-                    mAvatarUrl = AmazonUtil.BASE_URL + AmazonUtil.FOLDER_AVATARS + "/"
+                    mAvatarUrl = AmazonUtils.BASE_URL + AmazonUtils.FOLDER_AVATARS + "/"
                             + uid + "-" + fileName;
-                    AmazonUtil.uploadImage(transferObserver);
+                    AmazonUtils.uploadImage(transferObserver);
                 }
 
                 /** save user to firebase and database **/
@@ -189,7 +191,7 @@ public class SignUpActivity extends BaseSignInActivity {
             @Override
             public void onError(FirebaseError firebaseError) {
                 hideProgressDialog();
-                Utils.showErrorMessage(getApplicationContext(), firebaseError.getMessage());
+                Utils.showMessage(getApplicationContext(), firebaseError.getMessage());
                 Log.i(LOG_TAG, "onError! Code: " + firebaseError.getCode() + "Message: "
                         + firebaseError.getMessage() + "Details: " + firebaseError.getDetails());
             }
@@ -197,7 +199,7 @@ public class SignUpActivity extends BaseSignInActivity {
     }
 
     /**
-     * Progress dialog
+     * methods for show progress
      **/
     private void showProgressDialog() {
         if (mProgressDialog == null) {

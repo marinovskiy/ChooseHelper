@@ -13,6 +13,7 @@
     <color name="colorBackgroundComment">#FFFFFF</color>
 
     <!--text colors-->
+    <color name="colorTextNavHeader">#FFFFFF</color>
     <color name="colorTextButton">#FFFFFF</color>
     <color name="colorTextToolbar">#FFFFFF</color>
     <color name="colorTextPrimary">#000000</color>

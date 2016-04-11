@@ -1,6 +1,5 @@
 package com.geekhub.choosehelper.screens.activities;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -8,22 +7,12 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Toast;
 
 import com.geekhub.choosehelper.R;
-import com.geekhub.choosehelper.models.db.Follower;
-import com.geekhub.choosehelper.models.db.Following;
 import com.geekhub.choosehelper.models.db.User;
-import com.geekhub.choosehelper.ui.adapters.UserInfoRecyclerViewAdapter;
-import com.geekhub.choosehelper.ui.adapters.UserRecyclerViewAdapter;
-import com.geekhub.choosehelper.utils.db.DbUsersManager;
-
-import java.util.List;
 
 import butterknife.Bind;
 import io.realm.RealmChangeListener;
-import io.realm.RealmList;
-import io.realm.RealmResults;
 
 public class FollowersActivity extends BaseSignInActivity {
 
@@ -81,7 +70,7 @@ public class FollowersActivity extends BaseSignInActivity {
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
             mToolbar.setNavigationIcon(ContextCompat.getDrawable(getApplicationContext(),
-                    R.drawable.icon_arrow_back_white));
+                    R.drawable.icon_back));
             mToolbar.setNavigationOnClickListener(v -> onBackPressed());
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -90,9 +79,9 @@ public class FollowersActivity extends BaseSignInActivity {
     }
 
     /*private void updateUi(User user) {
-        UserRecyclerViewAdapter adapter;
+        UsersAdapter adapter;
         if (mRecyclerView.getAdapter() == null) {
-            adapter = new UserRecyclerViewAdapter();
+            adapter = new UsersAdapter();
             mRecyclerView.setAdapter(adapter);
             adapter.setOnItemClickListener((view, position) -> {
                 Intent intent = new Intent(this, FollowersActivity.class);
@@ -100,7 +89,7 @@ public class FollowersActivity extends BaseSignInActivity {
                 startActivity(intent);
             });
         } else {
-            adapter = (UserRecyclerViewAdapter) mRecyclerView.getAdapter();
+            adapter = (UsersAdapter) mRecyclerView.getAdapter();
             adapter.updateList();
             adapter.notifyDataSetChanged();
         }

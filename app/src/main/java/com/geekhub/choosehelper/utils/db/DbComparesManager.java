@@ -12,12 +12,13 @@ public class DbComparesManager {
 
     public static void saveCompares(List<Compare> compares) {
         clearCompares();
-        Realm.getDefaultInstance().executeTransaction(realm1 ->
-                realm1.copyToRealmOrUpdate(compares));
+        Realm.getDefaultInstance().executeTransaction(realm ->
+                realm.copyToRealmOrUpdate(compares));
     }
 
     public static void saveCompare(Compare compare) {
-        Realm.getDefaultInstance().executeTransaction(realm1 -> realm1.copyToRealmOrUpdate(compare));
+        Realm.getDefaultInstance().executeTransaction(realm ->
+                realm.copyToRealmOrUpdate(compare));
     }
 
     public static RealmResults<Compare> getCompares() {

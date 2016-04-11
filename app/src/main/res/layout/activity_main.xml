@@ -13,38 +13,26 @@
         android:layout_height="match_parent">
 
         <android.support.design.widget.AppBarLayout
+            android:id="@+id/app_bar_main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-            <RelativeLayout
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_main"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar_main"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/colorPrimary"
-                    app:elevation="4dp"
-                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                    app:titleTextColor="@android:color/white" />
-
-                <EditText
-                    android:layout_below="@id/toolbar_main"
-                    android:id="@+id/et_search_main"
-                    android:visibility="gone"
-                    android:textSize="@dimen/text_size_large"
-                    android:hint="@string/hint_search"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </RelativeLayout>
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:elevation="4dp"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:titleTextColor="@color/colorTextToolbar" />
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/tab_layout_main"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
                 android:background="?attr/colorPrimary"
                 android:fillViewport="false"
                 app:tabIndicatorColor="@android:color/white"
@@ -53,20 +41,41 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/view_pager_main"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            android:layout_height="wrap_content"
+            android:background="@color/colorBackgroundComment"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/view_pager_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <FrameLayout
+                android:id="@+id/main_search_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
+            <View
+                android:id="@+id/toolbar_shadow_main"
+                android:layout_width="match_parent"
+                android:layout_height="6dp"
+                android:background="@drawable/toolbar_shadow" />
+
+        </FrameLayout>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_add_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
-            android:layout_marginBottom="16dp"
-            android:layout_marginRight="16dp"
-            android:src="@drawable/ic_add_white" />
+            android:src="@drawable/icon_add"
+            app:layout_anchor="@+id/view_pager_main"
+            app:layout_anchorGravity="bottom|end"
+            app:layout_behavior="com.geekhub.choosehelper.ui.FabBehavior" />
+
     </android.support.design.widget.CoordinatorLayout>
 
     <android.support.design.widget.NavigationView
@@ -76,6 +85,7 @@
         android:layout_gravity="start"
         android:background="@color/colorPrimary"
         android:fitsSystemWindows="true"
+        app:itemIconTint="@android:color/white"
         app:itemTextColor="@color/colorBackgroundPrimary"
         app:menu="@menu/menu_drawer_main" />
 

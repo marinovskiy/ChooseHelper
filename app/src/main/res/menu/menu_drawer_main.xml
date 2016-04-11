@@ -2,16 +2,27 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/action_nav_profile"
+        android:icon="@drawable/icon_profile"
         android:title="Profile" />
 
     <item
-        android:id="@+id/action_nav_about"
-        android:title="About" />
+        android:id="@+id/action_nav_settings"
+        android:icon="@drawable/icon_settings"
+        android:title="Settings" />
 
-    <!--<profile_item_layout-->
-    <!--android:id="@+id/action_nav_help"-->
-    <!--android:title="Logout" />-->
+    <item
+        android:id="@+id/action_nav_help"
+        android:icon="@drawable/icon_help"
+        android:title="Help" />
+
     <item
         android:id="@+id/action_nav_logout"
+        android:icon="@drawable/icon_logout"
         android:title="Logout" />
+
+    <item
+        android:id="@+id/action_nav_exit"
+        android:icon="@drawable/icon_exit"
+        android:title="Exit" />
+
 </menu>

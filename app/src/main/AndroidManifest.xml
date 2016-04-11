@@ -50,16 +50,24 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".screens.activities.AboutActivity"
+            android:name=".screens.activities.HelpActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".screens.activities.DetailsActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".screens.activities.EditCompareActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".screens.activities.FollowersActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".screens.activities.SearchActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <service

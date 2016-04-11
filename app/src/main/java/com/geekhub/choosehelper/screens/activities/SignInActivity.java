@@ -8,6 +8,7 @@ import android.widget.EditText;
 
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.utils.Prefs;
+import com.geekhub.choosehelper.utils.Utils;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -20,10 +21,6 @@ public class SignInActivity extends BaseSignInActivity {
     @Bind(R.id.sign_in_et_password)
     EditText mEtSignInPassword;
 
-    private String mEmail;
-
-    private String mPassword;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,13 +30,19 @@ public class SignInActivity extends BaseSignInActivity {
         }
     }
 
-    @OnClick({R.id.sign_in_btn_login, R.id.sign_in_tv_forgot_password, R.id.sign_in_google, R.id.sign_in_facebook, R.id.tv_create_an_account})
+    @OnClick({R.id.sign_in_btn_login, R.id.sign_in_tv_forgot_password, R.id.sign_in_google,
+            R.id.sign_in_facebook, R.id.tv_create_an_account})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.sign_in_btn_login:
-                mEmail = mEtSignInEmail.getText().toString();
-                mPassword = mEtSignInPassword.getText().toString();
-                loginEmailPassword(mEmail, mPassword);
+                String email = mEtSignInEmail.getText().toString();
+                String password = mEtSignInPassword.getText().toString();
+
+                if (email.equals("") || password.equals("")) {
+                    Utils.showMessage(getApplicationContext(), "You did not fill all fields");
+                } else {
+                    loginEmailPassword(email, password);
+                }
                 break;
             case R.id.sign_in_tv_forgot_password:
                 //TODO forgot password

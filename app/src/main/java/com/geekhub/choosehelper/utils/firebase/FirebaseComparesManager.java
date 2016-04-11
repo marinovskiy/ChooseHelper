@@ -21,16 +21,11 @@ public class FirebaseComparesManager {
         NetworkCompare compare = new NetworkCompare();
         compare.setQuestion(question);
         compare.setDate(date);
+        compare.setOpen(true);
         compare.setVariants(variants);
         compare.setUserId(userId);
         /** push to firebase **/
         firebase.push().setValue(compare);
-    }
-
-    public static void addCommentToCompare(NetworkComment networkComment) {
-        Firebase firebase = new Firebase(FirebaseConstants.FB_REF_MAIN)
-                .child(FirebaseConstants.FB_REF_COMMENTS);
-        firebase.push().setValue(networkComment);
     }
 
     public static void deleteCompare(String compareId) {

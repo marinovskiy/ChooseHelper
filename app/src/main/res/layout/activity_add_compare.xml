@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorBackgroundPrimary"
     android:orientation="vertical"
     tools:context=".screens.activities.AddCompareActivity">
 
@@ -14,12 +15,11 @@
         android:background="@color/colorPrimary"
         app:elevation="4dp"
         app:title="Add compare"
-        app:titleTextColor="@android:color/white" />
+        app:titleTextColor="@color/colorTextToolbar" />
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white">
+        android:layout_height="wrap_content">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -30,82 +30,79 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginTop="8dp"
-                    android:text="Question"
-                    android:textColor="#BDBDBD"
-                    android:textSize="16sp" />
-
-                <EditText
-                    android:id="@+id/add_compare_et_question"
+                <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginRight="4dp"
-                    android:hint="Type your question"
-                    android:textColorHint="#BDBDBD" />
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="10dp"
+                    android:textColorHint="#BDBDBD">
+
+                    <EditText
+                        android:id="@+id/add_compare_et_question"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Question" />
+
+                </android.support.design.widget.TextInputLayout>
 
                 <TextView
+                    android:id="@+id/add_compare_tv_label_variants"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginTop="12dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
                     android:text="Variants"
-                    android:textColor="#000000"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginTop="8dp"
-                    android:text="Variant"
-                    android:textColor="#BDBDBD"
-                    android:textSize="16sp" />
-
-                <EditText
-                    android:id="@+id/add_compare_et_first_variant"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginRight="4dp"
-                    android:hint="Type your variant"
-                    android:textColorHint="#BDBDBD" />
+                    android:textColor="@color/colorTextPrimary"
+                    android:textSize="@dimen/medium_text_size" />
 
                 <ImageView
                     android:id="@+id/add_compare_first_img"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:layout_marginLeft="4dp"
-                    android:src="@drawable/stand_photo" />
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:src="@drawable/standard_photo" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginTop="8dp"
-                    android:text="Variant"
-                    android:textColor="#BDBDBD"
-                    android:textSize="16sp" />
-
-                <EditText
-                    android:id="@+id/add_compare_et_second_variant"
+                <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginRight="4dp"
-                    android:hint="Type your variant"
-                    android:textColorHint="#BDBDBD" />
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="10dp"
+                    android:textColorHint="#BDBDBD">
+
+                    <EditText
+                        android:id="@+id/add_compare_et_first_variant"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Description" />
+
+                </android.support.design.widget.TextInputLayout>
 
                 <ImageView
                     android:id="@+id/add_compare_second_img"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:layout_marginLeft="4dp"
-                    android:src="@drawable/stand_photo" />
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:src="@drawable/standard_photo" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="10dp"
+                    android:textColorHint="#BDBDBD">
+
+                    <EditText
+                        android:id="@+id/add_compare_et_second_variant"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Description" />
+
+                </android.support.design.widget.TextInputLayout>
 
             </LinearLayout>
 
@@ -118,6 +115,5 @@
             android:background="@drawable/toolbar_shadow" />
 
     </FrameLayout>
-
 
 </LinearLayout>

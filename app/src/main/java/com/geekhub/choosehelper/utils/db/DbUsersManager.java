@@ -9,8 +9,6 @@ import io.realm.RealmResults;
 
 public class DbUsersManager {
 
-    private static final String TAG = DbUsersManager.class.getSimpleName();
-
     // save user to local database
     public static void saveUser(User user) {
         Realm realm = Realm.getDefaultInstance();
@@ -22,10 +20,5 @@ public class DbUsersManager {
                 .where(User.class)
                 .equalTo(DbFields.DB_ID, userId)
                 .findFirstAsync();
-    }
-
-    // Get user to local database
-    public static User getUserAsync(String id) {
-        return Realm.getDefaultInstance().where(User.class).equalTo("id", id).findFirstAsync();
     }
 }

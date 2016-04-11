@@ -19,6 +19,8 @@ public class Compare extends RealmObject {
 
     private long date;
 
+    private boolean isOpen;
+
     private int likedVariant;
 
     public Compare() {
@@ -70,6 +72,14 @@ public class Compare extends RealmObject {
 
     public void setComments(RealmList<Comment> comments) {
         this.comments = comments;
+    }
+
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    public void setOpen(boolean open) {
+        isOpen = open;
     }
 
     public int getLikedVariant() {

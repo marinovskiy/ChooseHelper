@@ -13,10 +13,8 @@ import android.widget.CheckBox;
 import android.widget.Toast;
 
 import com.geekhub.choosehelper.R;
-import com.geekhub.choosehelper.models.db.Compare;
 import com.geekhub.choosehelper.screens.activities.DetailsActivity;
 import com.geekhub.choosehelper.screens.activities.EditCompareActivity;
-import com.geekhub.choosehelper.screens.fragments.AllComparesFragment;
 import com.geekhub.choosehelper.utils.firebase.FirebaseComparesManager;
 
 public class Utils {
@@ -40,7 +38,7 @@ public class Utils {
     public static void showPhotoPickerDialog(Context context,
                                              DialogInterface.OnClickListener onClickListener) {
         AlertDialog alertDialog = new AlertDialog.Builder(context)
-                .setCancelable(false)
+                .setCancelable(true)
                 .setTitle("Photo")
                 .setItems(R.array.photo_variants, onClickListener)
                 .create();
@@ -59,28 +57,31 @@ public class Utils {
     }
 
     /**
-     * other
+     * show message
      **/
-    public static void showErrorMessage(Context context, String message) {
+    public static void showMessage(Context context, String message) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
 
+    /**
+     * get other variant number for operations
+     **/
     public static int getOtherVariantNumber(int currentVariantNumber) {
         return currentVariantNumber == 0 ? 1 : 0;
     }
 
     /**
-     * popup menus
+     * popup menu methods
      **/
-    public static void showUsualPopupMenu(Context context, Compare compare, View view) {
+    public static void showUserPopupMenu(Context context, View view, String compareId) {
         PopupMenu popupMenu = new PopupMenu(context, view);
         popupMenu.inflate(R.menu.menu_compare);
         popupMenu.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_details_compare:
                     Intent intent = new Intent(context, DetailsActivity.class);
-                    intent.putExtra(AllComparesFragment.INTENT_KEY_COMPARE_ID, compare.getId());
+                    intent.putExtra(DetailsActivity.INTENT_KEY_COMPARE_ID, compareId);
                     context.startActivity(intent);
                     return true;
                 case R.id.action_share_compare:
@@ -93,14 +94,14 @@ public class Utils {
         popupMenu.show();
     }
 
-    public static void showOwnerPopupMenu(Context context, Compare compare, View view) {
+    public static void showOwnerPopupMenu(Context context, View view, String compareId) {
         PopupMenu popupMenu = new PopupMenu(context, view);
         popupMenu.inflate(R.menu.menu_compare_owner);
         popupMenu.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_details_compare:
                     Intent intent = new Intent(context, DetailsActivity.class);
-                    intent.putExtra(AllComparesFragment.INTENT_KEY_COMPARE_ID, compare.getId());
+                    intent.putExtra(DetailsActivity.INTENT_KEY_COMPARE_ID, compareId);
                     context.startActivity(intent);
                     return true;
                 case R.id.action_share_compare:
@@ -108,7 +109,7 @@ public class Utils {
                     return true;
                 case R.id.action_edit_compare:
                     Intent intentEdit = new Intent(context, EditCompareActivity.class);
-                    intentEdit.putExtra(AllComparesFragment.INTENT_KEY_COMPARE_ID, compare.getId());
+                    intentEdit.putExtra(DetailsActivity.INTENT_KEY_COMPARE_ID, compareId);
                     context.startActivity(intentEdit);
                     return true;
                 case R.id.action_delete_compare:
@@ -118,7 +119,7 @@ public class Utils {
                                 dialog.cancel();
                                 break;
                             case -1:
-                                FirebaseComparesManager.deleteCompare(compare.getId());
+                                FirebaseComparesManager.deleteCompare(compareId);
                                 break;
                         }
                     });

@@ -1,30 +1,34 @@
 package com.geekhub.choosehelper.screens.activities;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.db.User;
 import com.geekhub.choosehelper.screens.fragments.AllComparesFragment;
-import com.geekhub.choosehelper.screens.fragments.FriendsComparesFragment;
+import com.geekhub.choosehelper.screens.fragments.FollowingsComparesFragment;
+import com.geekhub.choosehelper.screens.fragments.SearchComparesFragment;
 import com.geekhub.choosehelper.ui.adapters.ComparesViewPagerAdapter;
-import com.geekhub.choosehelper.utils.ImageUtil;
+import com.geekhub.choosehelper.utils.ImageUtils;
 import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.Utils;
 import com.geekhub.choosehelper.utils.db.DbUsersManager;
@@ -38,11 +42,7 @@ import io.realm.RealmChangeListener;
 public class MainActivity extends BaseSignInActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
-
     public static final String INTENT_KEY_USER_NAME = "intent_key_user_name";
-
-    private static boolean isSearchActive = false;
 
     @Bind(R.id.drawer_main)
     DrawerLayout mDrawerLayout;
@@ -56,42 +56,47 @@ public class MainActivity extends BaseSignInActivity
     @Bind(R.id.tab_layout_main)
     TabLayout mTabLayout;
 
-//    @Bind(R.id.toolbar_shadow_main)
-//    View mToolbarShadow;
+    @Bind(R.id.toolbar_shadow_main)
+    View mToolbarShadow;
 
     @Bind(R.id.view_pager_main)
     ViewPager mViewPager;
 
-    @Bind(R.id.et_search_main)
-    EditText mEtSearch;
+    @Bind(R.id.main_search_container)
+    FrameLayout mSearchContainer;
 
+    // navigation header view
+    private View mNavHeaderView;
+
+    // realm
     private User mCurrentUser;
-
-    private RealmChangeListener mUserListener;/* = () -> {
+    private RealmChangeListener mUserListener = () -> {
         if (mCurrentUser != null && mCurrentUser.isLoaded()) {
-            updateNavDrawerHeader(mCurrentUser);
+            try {
+                updateNavDrawerHeader(mCurrentUser);
+            } catch (NullPointerException ignored) {
+            }
         }
-    };*/
+    };
+
+    // search fragment
+    private SearchComparesFragment mSearchComparesFragment = new SearchComparesFragment();
+
+    // is need to exit from app
+    private boolean mIsNeedToExit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /** setup UI elements **/
+        // setup UI elements
         setupToolbar();
-        setupViewPager(mViewPager, null);
+        setupViewPager(mViewPager);
         mTabLayout.setupWithViewPager(mViewPager);
         mNavigationView.setNavigationItemSelectedListener(this);
 
-        /** work with realm **/
-        mUserListener = () -> {
-            if (mCurrentUser != null && mCurrentUser.isLoaded()) {
-                updateNavDrawerHeader(mCurrentUser);
-            }
-        };
-
-        /** requests **/
+        // requests
         fetchCurrentUserFromDb();
         if (Utils.hasInternet(getApplicationContext())) {
             FirebaseUsersManager.saveUserFromFirebase(Prefs.getUserId());
@@ -114,15 +119,22 @@ public class MainActivity extends BaseSignInActivity
                 mDrawerLayout.closeDrawers();
                 Intent userIntent = new Intent(this, ProfileActivity.class);
                 userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID, Prefs.getUserId());
+                userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME, mCurrentUser.getFullName());
                 startActivity(userIntent);
                 return true;
-            case R.id.action_nav_about:
+            case R.id.action_nav_settings:
+                // TODO settings
+                return true;
+            case R.id.action_nav_help:
                 mDrawerLayout.closeDrawers();
-                startActivity(new Intent(this, AboutActivity.class));
+                startActivity(new Intent(this, HelpActivity.class));
                 return true;
             case R.id.action_nav_logout:
                 logout();
                 startSignInActivity();
+                return true;
+            case R.id.action_nav_exit:
+                finish();
                 return true;
             default:
                 return false;
@@ -133,115 +145,151 @@ public class MainActivity extends BaseSignInActivity
     protected void onPause() {
         super.onPause();
         Realm.getDefaultInstance().removeAllChangeListeners();
-
-        if (isSearchActive) {
-            isSearchActive = false;
-            mEtSearch.setVisibility(View.GONE);
-        }
     }
 
     @Override
     public void onBackPressed() {
+        // close navigation drawer
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
+            return;
+        }
+        // exit from app
+        if (!mIsNeedToExit) {
+            mIsNeedToExit = true;
+            Utils.showMessage(getApplicationContext(), "Click again for exit");
+            new Handler().postDelayed(() -> mIsNeedToExit = false, 2000);
         } else {
-            //TODO click again for exit
             finish();
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+
+        SearchView searchView = (SearchView)
+                MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        searchView.setQueryHint(getString(R.string.search_hint_compares));
+
+        MenuItemCompat.setOnActionExpandListener(menu.findItem(R.id.action_search),
+                new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                getSupportFragmentManager().beginTransaction()
+                        .remove(mSearchComparesFragment)
+                        .commit();
+                mSearchContainer.setVisibility(View.GONE);
+                mTabLayout.setVisibility(View.VISIBLE);
+                mViewPager.setVisibility(View.VISIBLE);
+                return true;
+            }
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchView.clearFocus();
+                mSearchComparesFragment.searchCompares(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_search: {
-
-                //  Searching
-                search(mEtSearch.getText().toString());
+            case R.id.action_search:
+                if (Utils.hasInternet(getApplicationContext())) {
+                    mTabLayout.setVisibility(View.GONE);
+                    mViewPager.setVisibility(View.GONE);
+                    mSearchContainer.setVisibility(View.VISIBLE);
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.main_search_container,
+                                    mSearchComparesFragment,
+                                    SearchComparesFragment.class.getSimpleName())
+                            .addToBackStack(SearchComparesFragment.class.getSimpleName())
+                            .commit();
+                } else {
+                    Utils.showMessage(getApplicationContext(),
+                            getString(R.string.toast_cannot_search));
+                }
                 return true;
-            }
-            case android.R.id.home: {
-                mDrawerLayout.openDrawer(GravityCompat.START);
+            case android.R.id.home:
+                onBackPressed();
                 return true;
-            }
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    // get information about user from local database
+    private void fetchCurrentUserFromDb() {
+        mCurrentUser = DbUsersManager.getUserById(Prefs.getUserId());
+        mCurrentUser.addChangeListener(mUserListener);
     }
 
     private void setupToolbar() {
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
             mToolbar.setNavigationIcon(R.drawable.icon_drawer);
-            mToolbar.setNavigationOnClickListener(v -> mDrawerLayout.openDrawer(GravityCompat.START));
+            mToolbar.setNavigationOnClickListener(v ->
+                    mDrawerLayout.openDrawer(GravityCompat.START));
         }
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            mToolbarShadow.setVisibility(View.GONE);
-//        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mToolbarShadow.setVisibility(View.GONE);
+        }
     }
 
     private void updateNavDrawerHeader(User user) {
-        View headerView = mNavigationView.inflateHeaderView(R.layout.navigation_header_layout);
-        ImageView ivAvatar = (ImageView) headerView.findViewById(R.id.nav_header_avatar);
-        TextView tvFullName = (TextView) headerView.findViewById(R.id.nav_header_name);
-        TextView tvEmail = (TextView) headerView.findViewById(R.id.nav_header_email);
-        tvFullName.setText(user.getFullName());
-        tvEmail.setText(user.getEmail());
+        if (mNavHeaderView == null) {
+            mNavHeaderView = mNavigationView.inflateHeaderView(R.layout.navigation_header_layout);
+        } else {
+            mNavigationView.removeHeaderView(mNavHeaderView);
+            mNavHeaderView = mNavigationView.inflateHeaderView(R.layout.navigation_header_layout);
+        }
+
+        ImageView ivAvatar = (ImageView) mNavHeaderView.findViewById(R.id.nav_header_avatar);
+        TextView tvFullName = (TextView) mNavHeaderView.findViewById(R.id.nav_header_name);
+        TextView tvEmail = (TextView) mNavHeaderView.findViewById(R.id.nav_header_email);
+
         if (user.getPhotoUrl() != null) {
-            ImageUtil.loadCircleImage(ivAvatar, user.getPhotoUrl());
+            ImageUtils.loadCircleImage(ivAvatar, user.getPhotoUrl());
         } else {
             ivAvatar.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
                     R.drawable.icon_no_avatar));
         }
+
+        ivAvatar.setOnClickListener(v -> {
+            mDrawerLayout.closeDrawers();
+            Intent userIntent = new Intent(this, ProfileActivity.class);
+            userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID, Prefs.getUserId());
+            userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME, mCurrentUser.getFullName());
+            startActivity(userIntent);
+        });
+
+        tvFullName.setText(user.getFullName());
+        tvEmail.setText(user.getEmail());
     }
 
-    private void setupViewPager(ViewPager viewPager, String str) {
+    private void setupViewPager(ViewPager viewPager) {
         ComparesViewPagerAdapter adapter = new ComparesViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(AllComparesFragment.newInstance(str), "All");
-        adapter.addFragment(FriendsComparesFragment.newInstance(), "Friend's");
-        //adapter.addFragment(MyComparesFragment.newInstance(), "My");
+        adapter.addFragment(AllComparesFragment.newInstance(),
+                getString(R.string.tab_label_all));
+        adapter.addFragment(FollowingsComparesFragment.newInstance(),
+                getString(R.string.tab_label_followings));
         viewPager.setAdapter(adapter);
-    }
-
-    private void fetchCurrentUserFromDb() {
-        mCurrentUser = DbUsersManager.getUserAsync(Prefs.getUserId());
-        mCurrentUser.addChangeListener(mUserListener);
-    }
-
-    private void search(String textToSearch) {
-        if (isSearchActive) {
-            searchInNetwork(textToSearch);
-            hideSoftKeyboard();
-
-            mEtSearch.setText("");
-            mEtSearch.setVisibility(View.GONE);
-            isSearchActive = false;
-        } else {
-            mEtSearch.setVisibility(View.VISIBLE);
-            mEtSearch.requestFocusFromTouch();
-            showSoftKeyboard();
-            isSearchActive = true;
-        }
-    }
-
-    private void searchInNetwork(String str) {
-        setupViewPager(mViewPager, str);
-    }
-
-    private void hideSoftKeyboard() {
-        InputMethodManager inputMethodManager =
-                (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
-    }
-
-    private void showSoftKeyboard() {
-        InputMethodManager imm = (InputMethodManager)
-                getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(mEtSearch, InputMethodManager.SHOW_IMPLICIT);
     }
 }

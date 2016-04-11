@@ -2,7 +2,6 @@ package com.geekhub.choosehelper.models.network;
 
 import java.util.List;
 
-//@JsonIgnoreProperties(ignoreUnknown = true)
 public class NetworkCompare {
 
     private String question;
@@ -11,9 +10,9 @@ public class NetworkCompare {
 
     private long date;
 
-    private List<NetworkVariant> variants;
+    private boolean isOpen;
 
-    //private List<NetworkComment> networkComments;
+    private List<NetworkVariant> variants;
 
     public NetworkCompare() {
 
@@ -41,6 +40,14 @@ public class NetworkCompare {
 
     public void setDate(long date) {
         this.date = date;
+    }
+
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    public void setOpen(boolean open) {
+        isOpen = open;
     }
 
     public List<NetworkVariant> getVariants() {

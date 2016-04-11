@@ -23,8 +23,8 @@ import com.firebase.client.ValueEventListener;
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.network.NetworkCompare;
 import com.geekhub.choosehelper.screens.fragments.AllComparesFragment;
-import com.geekhub.choosehelper.utils.AmazonUtil;
-import com.geekhub.choosehelper.utils.ImageUtil;
+import com.geekhub.choosehelper.utils.AmazonUtils;
+import com.geekhub.choosehelper.utils.ImageUtils;
 import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.Utils;
 import com.geekhub.choosehelper.utils.firebase.FirebaseConstants;
@@ -37,6 +37,9 @@ import butterknife.OnClick;
 
 public class EditCompareActivity extends BaseSignInActivity {
 
+    /**
+     * constants for activity result
+     **/
     public static final int RC_GALLERY_FIRST = 1;
     public static final int RC_CAMERA_FIRST = 2;
     public static final int RC_GALLERY_SECOND = 3;
@@ -45,22 +48,22 @@ public class EditCompareActivity extends BaseSignInActivity {
     @Bind(R.id.toolbar_edit_compare)
     Toolbar mToolbar;
 
-    @Bind(R.id.toolbar_shadow_edit)
+    @Bind(R.id.toolbar_shadow_edit_compare)
     View mToolbarShadow;
 
     @Bind(R.id.edit_compare_et_question)
     EditText mEditCompareEtQuestion;
 
-    @Bind(R.id.edit_compare_et_v1)
+    @Bind(R.id.edit_compare_et_first_variant)
     EditText mEditCompareEtV1;
 
-    @Bind(R.id.edit_compare_iv_v1)
+    @Bind(R.id.edit_compare_first_img)
     ImageView mEditCompareIvV1;
 
-    @Bind(R.id.edit_compare_et_v2)
+    @Bind(R.id.edit_compare_et_second_variant)
     EditText mEditCompareEtV2;
 
-    @Bind(R.id.edit_compare_iv_v2)
+    @Bind(R.id.edit_compare_second_img)
     ImageView mEditCompareIvV2;
 
     private String mQuestion;
@@ -75,23 +78,28 @@ public class EditCompareActivity extends BaseSignInActivity {
     private String mCompareId;
     private NetworkCompare mNetworkCompare = new NetworkCompare();
 
+    private Firebase mFirebaseCompare;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_compare);
         setupToolbar();
 
-        /** get current compare id and create firebase references **/
+        /** get current compare id and use for take current compare **/
         if (getIntent() != null) {
-            mCompareId = getIntent().getStringExtra(AllComparesFragment.INTENT_KEY_COMPARE_ID);
+            mCompareId = getIntent().getStringExtra(DetailsActivity.INTENT_KEY_COMPARE_ID);
+            mFirebaseCompare = new Firebase(FirebaseConstants.FB_REF_MAIN)
+                    .child(FirebaseConstants.FB_REF_COMPARES)
+                    .child(mCompareId);
             getCurrentCompare();
         }
     }
 
-    @OnClick({R.id.edit_compare_iv_v1, R.id.edit_compare_iv_v2})
+    @OnClick({R.id.edit_compare_first_img, R.id.edit_compare_second_img})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.edit_compare_iv_v1:
+            case R.id.edit_compare_first_img:
                 Utils.showPhotoPickerDialog(EditCompareActivity.this, (dialog, which) -> {
                     switch (which) {
                         case 0:
@@ -99,7 +107,7 @@ public class EditCompareActivity extends BaseSignInActivity {
                             galleryIntent.setType("image/*");
                             galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
                             startActivityForResult(Intent.createChooser(galleryIntent,
-                                            getString(R.string.compare_dialog_photo_title)),
+                                    getString(R.string.compare_dialog_photo_title)),
                                     RC_GALLERY_FIRST);
                             break;
                         case 1:
@@ -111,7 +119,7 @@ public class EditCompareActivity extends BaseSignInActivity {
                     }
                 });
                 break;
-            case R.id.edit_compare_iv_v2:
+            case R.id.edit_compare_second_img:
                 Utils.showPhotoPickerDialog(EditCompareActivity.this, (dialog, which) -> {
                     switch (which) {
                         case 0:
@@ -119,7 +127,7 @@ public class EditCompareActivity extends BaseSignInActivity {
                             galleryIntent.setType("image/*");
                             galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
                             startActivityForResult(Intent.createChooser(galleryIntent,
-                                            getString(R.string.compare_dialog_photo_title)),
+                                    getString(R.string.compare_dialog_photo_title)),
                                     RC_GALLERY_SECOND);
                             break;
                         case 1:
@@ -142,19 +150,19 @@ public class EditCompareActivity extends BaseSignInActivity {
                 case RC_GALLERY_FIRST:
                     avatarUri = data.getData();
                     try {
-                        mFirstImagePath = ImageUtil.getFilePath(getApplicationContext(), avatarUri);
-                        ImageUtil.loadImage(mEditCompareIvV1, mFirstImagePath);
+                        mFirstImagePath = ImageUtils.getFilePath(getApplicationContext(), avatarUri);
+                        ImageUtils.loadImage(mEditCompareIvV1, mFirstImagePath);
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
                         //TODO toast exception
                     }
                     break;
                 case RC_CAMERA_FIRST:
-                    avatarUri = ImageUtil.getPhotoUri(getApplicationContext(),
+                    avatarUri = ImageUtils.getPhotoUri(getApplicationContext(),
                             (Bitmap) data.getExtras().get("data"));
                     try {
-                        mFirstImagePath = ImageUtil.getFilePath(getApplicationContext(), avatarUri);
-                        ImageUtil.loadImage(mEditCompareIvV1, mFirstImagePath);
+                        mFirstImagePath = ImageUtils.getFilePath(getApplicationContext(), avatarUri);
+                        ImageUtils.loadImage(mEditCompareIvV1, mFirstImagePath);
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
                         //TODO toast exception
@@ -163,19 +171,19 @@ public class EditCompareActivity extends BaseSignInActivity {
                 case RC_GALLERY_SECOND:
                     avatarUri = data.getData();
                     try {
-                        mSecondImagePath = ImageUtil.getFilePath(getApplicationContext(), avatarUri);
-                        ImageUtil.loadImage(mEditCompareIvV2, mSecondImagePath);
+                        mSecondImagePath = ImageUtils.getFilePath(getApplicationContext(), avatarUri);
+                        ImageUtils.loadImage(mEditCompareIvV2, mSecondImagePath);
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
                         //TODO toast exception
                     }
                     break;
                 case RC_CAMERA_SECOND:
-                    avatarUri = ImageUtil.getPhotoUri(getApplicationContext(),
+                    avatarUri = ImageUtils.getPhotoUri(getApplicationContext(),
                             (Bitmap) data.getExtras().get("data"));
                     try {
-                        mSecondImagePath = ImageUtil.getFilePath(getApplicationContext(), avatarUri);
-                        ImageUtil.loadImage(mEditCompareIvV2, mSecondImagePath);
+                        mSecondImagePath = ImageUtils.getFilePath(getApplicationContext(), avatarUri);
+                        ImageUtils.loadImage(mEditCompareIvV2, mSecondImagePath);
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
                         //TODO toast exception
@@ -213,20 +221,26 @@ public class EditCompareActivity extends BaseSignInActivity {
         }
     }
 
+    private void setupToolbar() {
+        if (mToolbar != null) {
+            setSupportActionBar(mToolbar);
+            mToolbar.setNavigationIcon(ContextCompat.getDrawable(getApplicationContext(),
+                    R.drawable.icon_cancel));
+            mToolbar.setNavigationOnClickListener(v -> onBackPressed());
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mToolbarShadow.setVisibility(View.GONE);
+        }
+    }
+
     private void getCurrentCompare() {
-        Firebase mFirebaseCompare = new Firebase(FirebaseConstants.FB_REF_MAIN)
-                .child(FirebaseConstants.FB_REF_COMPARES)
-                .child(mCompareId);
         mFirebaseCompare.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot compareSnapshot) {
                 mNetworkCompare = compareSnapshot.getValue(NetworkCompare.class);
+                mFirstImageUrl = mNetworkCompare.getVariants().get(0).getImageUrl();
+                mSecondImageUrl = mNetworkCompare.getVariants().get(1).getImageUrl();
                 updateUi(mNetworkCompare);
-                /*mEditCompareEtQuestion.setText(mNetworkCompare.getQuestion());
-                mEditCompareEtV1.setText(mNetworkCompare.getVariants().get(0).getDescription());
-                mEditCompareEtV2.setText(mNetworkCompare.getVariants().get(1).getDescription());
-                ImageUtil.loadImage(mEditCompareIvV1, mNetworkCompare.getVariants().get(0).getImageUrl());
-                ImageUtil.loadImage(mEditCompareIvV2, mNetworkCompare.getVariants().get(1).getImageUrl());*/
             }
 
             @Override
@@ -241,22 +255,22 @@ public class EditCompareActivity extends BaseSignInActivity {
         mEditCompareEtQuestion.setText(networkCompare.getQuestion());
         mEditCompareEtV1.setText(networkCompare.getVariants().get(0).getDescription());
         mEditCompareEtV2.setText(networkCompare.getVariants().get(1).getDescription());
+
         if (networkCompare.getVariants().get(0).getImageUrl() != null) {
-            ImageUtil.loadImage(mEditCompareIvV1, networkCompare.getVariants().get(0).getImageUrl());
+            ImageUtils.loadImage(mEditCompareIvV1, networkCompare.getVariants().get(0).getImageUrl());
         } else {
             mEditCompareIvV1.setImageDrawable(ContextCompat.getDrawable(mEditCompareIvV1.getContext(),
-                    R.drawable.icon_photo));
+                    R.drawable.standard_photo));
         }
         if (networkCompare.getVariants().get(1).getImageUrl() != null) {
-            ImageUtil.loadImage(mEditCompareIvV2, networkCompare.getVariants().get(1).getImageUrl());
+            ImageUtils.loadImage(mEditCompareIvV2, networkCompare.getVariants().get(1).getImageUrl());
         } else {
             mEditCompareIvV2.setImageDrawable(ContextCompat.getDrawable(mEditCompareIvV1.getContext(),
-                    R.drawable.icon_photo));
+                    R.drawable.standard_photo));
         }
     }
 
     private void updateCompare() {
-
         /** check if user pick images. If he didn't - will be using standard image **/
         if (mFirstImagePath != null) {
             mFirstImageUrl = getUrlAndStartUpload(mFirstImagePath);
@@ -273,31 +287,21 @@ public class EditCompareActivity extends BaseSignInActivity {
         mNetworkCompare.getVariants().get(1).setImageUrl(mSecondImageUrl);
 
         /** update compare in firebase **/
-        new Firebase(FirebaseConstants.FB_REF_MAIN).child(FirebaseConstants.FB_REF_COMPARES)
-                .child(mCompareId).setValue(mNetworkCompare);
+        mFirebaseCompare.setValue(mNetworkCompare);
+
+        /** when return to all compares - auto load updates **/
+        AllComparesFragment.sIsNeedToAutoUpdate = true;
     }
 
     private String getUrlAndStartUpload(String filePath) {
         File file = new File(filePath);
-        TransferObserver transferObserver = AmazonUtil
+        TransferObserver transferObserver = AmazonUtils
                 .getTransferUtility(getApplicationContext())
-                .upload(AmazonUtil.BUCKET_NAME + AmazonUtil.FOLDER_IMAGES + "/" + Prefs.getUserId(),
+                .upload(AmazonUtils.BUCKET_NAME + AmazonUtils.FOLDER_IMAGES + "/" + Prefs.getUserId(),
                         file.getName(),
                         file);
-        AmazonUtil.uploadImage(transferObserver);
-        return AmazonUtil.BASE_URL + AmazonUtil.FOLDER_IMAGES + "/"
+        AmazonUtils.uploadImage(transferObserver);
+        return AmazonUtils.BASE_URL + AmazonUtils.FOLDER_IMAGES + "/"
                 + Prefs.getUserId() + "/" + file.getName();
-    }
-
-    private void setupToolbar() {
-        if (mToolbar != null) {
-            setSupportActionBar(mToolbar);
-            mToolbar.setNavigationIcon(ContextCompat.getDrawable(getApplicationContext(),
-                    R.drawable.ic_close_white));
-            mToolbar.setNavigationOnClickListener(v -> onBackPressed());
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mToolbarShadow.setVisibility(View.GONE);
-        }
     }
 }

@@ -41,11 +41,11 @@ public class ModelConverter {
     }
 
     public static Compare convertToCompare(NetworkCompare networkCompare, String networkCompareId,
-                                           NetworkUser author, String authorId,
-                                           int likedVariant) {
+                                           NetworkUser author, String authorId, int likedVariant) {
         Compare compare = new Compare();
         compare.setId(networkCompareId);
         compare.setDate(-1 * networkCompare.getDate());
+        compare.setOpen(networkCompare.isOpen());
         compare.setQuestion(networkCompare.getQuestion());
         compare.setAuthor(convertToUser(author, authorId));
         List<NetworkVariant> networkVariants = networkCompare.getVariants();
@@ -79,7 +79,7 @@ public class ModelConverter {
         return compare;
     }
 
-    public static Variant convertToVariant(@NonNull NetworkVariant networkVariant) {
+    public static Variant convertToVariant(NetworkVariant networkVariant) {
         Variant variant = new Variant();
         variant.setId(ChooseHelperApplication.sVariantPrimaryKey.incrementAndGet());
         variant.setLikes(networkVariant.getLikes());

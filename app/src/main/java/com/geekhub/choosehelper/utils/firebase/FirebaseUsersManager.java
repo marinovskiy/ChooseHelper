@@ -53,6 +53,7 @@ public class FirebaseUsersManager {
             public void onCancelled(FirebaseError firebaseError) {
                 Log.i(TAG, "saveUserFromFb: firebase = error details:" + firebaseError.getDetails()
                         + "message: " + firebaseError.getMessage() + " code: " + firebaseError.getCode());
+                // TODO toast or dialog of exception
             }
         });
     }

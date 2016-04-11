@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -30,10 +31,9 @@ import com.geekhub.choosehelper.models.network.NetworkFollowing;
 import com.geekhub.choosehelper.models.network.NetworkLike;
 import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.models.ui.UserInfo;
-import com.geekhub.choosehelper.screens.fragments.AllComparesFragment;
-import com.geekhub.choosehelper.ui.adapters.ComparesRecyclerViewAdapter;
-import com.geekhub.choosehelper.ui.adapters.UserInfoRecyclerViewAdapter;
-import com.geekhub.choosehelper.utils.ImageUtil;
+import com.geekhub.choosehelper.ui.adapters.ComparesAdapter;
+import com.geekhub.choosehelper.ui.adapters.ProfileAdapter;
+import com.geekhub.choosehelper.utils.ImageUtils;
 import com.geekhub.choosehelper.utils.ModelConverter;
 import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.Utils;
@@ -41,6 +41,7 @@ import com.geekhub.choosehelper.utils.db.DbUsersManager;
 import com.geekhub.choosehelper.utils.firebase.FirebaseConstants;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,31 +51,25 @@ import butterknife.OnClick;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmList;
-import io.realm.RealmResults;
 
 public class ProfileActivity extends BaseSignInActivity {
 
     public static final String INTENT_KEY_USER_ID = "intent_key_user_id";
+    public static final String INTENT_KEY_USER_NAME = "intent_key_user_name";
 
     private static final String TAG = ProfileActivity.class.getName();
 
-    /*@Bind(R.id.swipe_to_refresh_profile)
-    SwipeRefreshLayout mSwipeRefreshLayout;*/
+    @Bind(R.id.swipe_to_refresh_profile)
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Bind(R.id.toolbar_profile)
     Toolbar mToolbar;
 
-    /*@Bind(R.id.toolbar_shadow_profile)
-    View mToolbarShadow;*/
+    @Bind(R.id.toolbar_shadow_profile)
+    View mToolbarShadow;
 
     @Bind(R.id.profile_iv_avatar)
     ImageView mIvUserAvatar;
-
-    /*@Bind(R.id.profile_tv_username)
-    TextView mTvUsername;
-
-    @Bind(R.id.profile_tv_email)
-    TextView mTvEmail;*/
 
     @Bind(R.id.profile_btn_follow)
     Button mProfileBtnFollow;
@@ -107,31 +102,33 @@ public class ProfileActivity extends BaseSignInActivity {
      * realm
      **/
     private String mUserId;
+    private String mUserName;
 
     private User mUser;
-
-    private RealmChangeListener mUserListener = () -> {
-        Toast.makeText(getApplicationContext(), "yeah123", Toast.LENGTH_SHORT).show();
-        if (mUser != null && mUser.isLoaded()) {
-            Log.i(TAG + "123456", "123 user");
-            Toast.makeText(getApplicationContext(), "!!!yeah!!!", Toast.LENGTH_SHORT).show();
-            updateUi(mUser);
-        }
-    };
+    private RealmChangeListener mUserListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile_new);
+        setContentView(R.layout.activity_profile);
 
-        /** get user id from intent **/
+        /** get user id and name from intent **/
         mUserId = getIntent().getStringExtra(INTENT_KEY_USER_ID);
+        mUserName = getIntent().getStringExtra(INTENT_KEY_USER_NAME);
+
+        /** setup toolbar **/
+        setupToolbar();
+
         if (!mUserId.equals(Prefs.getUserId())) {
             mProfileBtnFollow.setVisibility(View.VISIBLE);
         }
 
-        /** setup toolbar **/
-        setupToolbar();
+        /** realm change listener **/
+        mUserListener = () -> {
+            if (mUser != null && mUser.isLoaded() && mUser.getId().equals(mUserId)) {
+                updateUi(mUser);
+            }
+        };
 
         /** firebase references **/
         // user, following and followers
@@ -165,7 +162,8 @@ public class ProfileActivity extends BaseSignInActivity {
                 .child(FirebaseConstants.FB_REF_LIKES);
 
         /** check is authenticated user following this user **/
-        isFollow();
+        if (!mUserId.equals(Prefs.getUserId()))
+            isFollow();
 
         /** requests **/
         fetchProfileFromDb();
@@ -178,7 +176,7 @@ public class ProfileActivity extends BaseSignInActivity {
         mRecyclerViewCompares.setLayoutManager(new LinearLayoutManager(this));
 
         /** swipe refresh layout **/
-        /*mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+        mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
@@ -191,13 +189,19 @@ public class ProfileActivity extends BaseSignInActivity {
                 Toast.makeText(getApplicationContext(), R.string.toast_no_internet, Toast.LENGTH_SHORT).show();
                 mSwipeRefreshLayout.setRefreshing(false);
             }
-        });*/
+        });
     }
 
     @OnClick(R.id.profile_btn_follow)
     public void onClick() {
         mProfileBtnFollow.setClickable(false);
         updateFollow();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fetchProfileFromNetwork();
     }
 
     private boolean isFollow() {
@@ -230,7 +234,7 @@ public class ProfileActivity extends BaseSignInActivity {
                 boolean isNeed = true;
                 for (DataSnapshot snapshot : isFollowSnapshot.getChildren()) {
                     NetworkFollowing networkFollowing = snapshot.getValue(NetworkFollowing.class);
-                    if (networkFollowing.getUserId().equals(mUserId)) {
+                    if (networkFollowing.getUserId().equals(Prefs.getUserId())) {
                         isNeed = false;
                         unFollowUser();
                         break;
@@ -318,9 +322,9 @@ public class ProfileActivity extends BaseSignInActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        Realm.getDefaultInstance().removeAllChangeListeners();
+    protected void onDestroy() {
+        super.onDestroy();
+        mUser.removeChangeListener(mUserListener);
     }
 
     /**
@@ -330,7 +334,6 @@ public class ProfileActivity extends BaseSignInActivity {
         mUser = DbUsersManager.getUserById(mUserId);
         mUser.addChangeListener(mUserListener);
     }
-
 
     /**
      * get information about user from firebase
@@ -352,18 +355,18 @@ public class ProfileActivity extends BaseSignInActivity {
                             user.setFollowers(followers);
                         }
                         fetchUserComparesFromNetwork(user);
-                        //DbUsersManager.saveUser(user);
                     }
 
                     @Override
                     public void onCancelled(FirebaseError firebaseError) {
-
+                        hideRefreshing();
                     }
                 });
             }
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
+                hideRefreshing();
                 Toast.makeText(getApplicationContext(), "Error = " + firebaseError, Toast.LENGTH_SHORT).show();
             }
         });
@@ -379,7 +382,7 @@ public class ProfileActivity extends BaseSignInActivity {
                 RealmList<Compare> compares = new RealmList<>();
                 int snapshotSize = (int) dataSnapshot.getChildrenCount();
                 if (snapshotSize == 0) {
-                    //hideRefreshing();
+                    hideRefreshing();
                 }
                 for (DataSnapshot compareSnapshot : dataSnapshot.getChildren()) {
                     NetworkCompare networkCompare = compareSnapshot.getValue(NetworkCompare.class);
@@ -390,7 +393,7 @@ public class ProfileActivity extends BaseSignInActivity {
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-                //hideRefreshing();
+                hideRefreshing();
                 Toast.makeText(getApplicationContext(), "Error! Please, try later", Toast.LENGTH_SHORT).show();
             }
         });
@@ -419,11 +422,13 @@ public class ProfileActivity extends BaseSignInActivity {
                 if (compares.size() == size) {
                     user.setCompares(compares);
                     DbUsersManager.saveUser(user);
+                    hideRefreshing();
                 }
             }
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
+                hideRefreshing();
                 Toast.makeText(getApplicationContext(), "Error! Please, try later", Toast.LENGTH_SHORT).show();
             }
         });
@@ -451,65 +456,64 @@ public class ProfileActivity extends BaseSignInActivity {
     private void setupToolbar() {
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
+            getSupportActionBar().setTitle(mUserName);
             mToolbar.setNavigationIcon(ContextCompat.getDrawable(getApplicationContext(),
-                    R.drawable.icon_arrow_back_white));
+                    R.drawable.icon_back));
             mToolbar.setNavigationOnClickListener(v -> onBackPressed());
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            //mToolbarShadow.setVisibility(View.GONE);
+            mToolbarShadow.setVisibility(View.GONE);
         }
     }
 
     private void updateUi(User user) {
-        Log.i(TAG + "123456", "user.name=" + user.getFullName());
         try {
-            Log.i(TAG + "123456", "user.name=" + user.getFullName());
-            ImageUtil.loadImage(mIvUserAvatar, user.getPhotoUrl());
-            mToolbar.setTitle(user.getFullName());
-            /*if (getSupportActionBar() != null) {
-                Log.i(TAG + "123456", "user.name=" + user.getFullName());
-                getSupportActionBar().setTitle(user.getFullName());
-            }*/
+            ImageUtils.loadImage(mIvUserAvatar, user.getPhotoUrl());
             mUserInfoList.clear();
             mUserInfoList.add(new UserInfo(user.getFollowers() != null ? user.getFollowers().size() : 0, getString(R.string.followers)));
             mUserInfoList.add(new UserInfo(user.getFollowings() != null ? user.getFollowings().size() : 0, getString(R.string.followings)));
             mUserInfoList.add(new UserInfo(user.getCompares() != null ? user.getCompares().size() : 0, getString(R.string.compares)));
-            UserInfoRecyclerViewAdapter adapter;
+            ProfileAdapter adapter;
             if (mRecyclerViewProfile.getAdapter() == null) {
-                adapter = new UserInfoRecyclerViewAdapter(mUserInfoList);
+                adapter = new ProfileAdapter(mUserInfoList);
                 mRecyclerViewProfile.setAdapter(adapter);
                 adapter.setOnItemClickListener((view, position) -> {
                     Intent intent = new Intent(this, FollowersActivity.class);
+                    intent.putExtra(INTENT_KEY_USER_ID, mUserId);
                     if (position == 0) {
                         intent.putExtra(FollowersActivity.INTENT_KEY_FOLLOWERS_TITLE, getString(R.string.followers));
+                        startActivity(intent);
                     } else if (position == 1) {
                         intent.putExtra(FollowersActivity.INTENT_KEY_FOLLOWERS_TITLE, getString(R.string.followings));
+                        startActivity(intent);
                     }
-                    intent.putExtra(INTENT_KEY_USER_ID, mUserId);
-                    startActivity(intent);
-                    // TODO set clickable false for compares profile_item_layout
                 });
             } else {
-                adapter = (UserInfoRecyclerViewAdapter) mRecyclerViewProfile.getAdapter();
+                adapter = (ProfileAdapter) mRecyclerViewProfile.getAdapter();
                 adapter.updateList(mUserInfoList);
                 adapter.notifyDataSetChanged();
             }
-            updateComparesList(user.getCompares());
+            updateComparesList(Realm.getDefaultInstance().copyFromRealm(user.getCompares()));
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
 
     private void updateComparesList(List<Compare> compares) {
-        ComparesRecyclerViewAdapter adapter;
+        Collections.sort(compares, (lhs, rhs) -> {
+            if (lhs.getDate() < rhs.getDate()) return 1;
+            if (lhs.getDate() > rhs.getDate()) return -1;
+            return 0;
+        });
+        ComparesAdapter adapter;
         if (mRecyclerViewCompares.getAdapter() == null) {
-            adapter = new ComparesRecyclerViewAdapter(compares);
+            adapter = new ComparesAdapter(compares);
             mRecyclerViewCompares.setAdapter(adapter);
 
             /** click listener for details **/
             adapter.setOnItemClickListener((view, position) -> {
                 Intent intent = new Intent(this, DetailsActivity.class);
-                intent.putExtra(AllComparesFragment.INTENT_KEY_COMPARE_ID, compares.get(position).getId());
+                intent.putExtra(DetailsActivity.INTENT_KEY_COMPARE_ID, compares.get(position).getId());
                 startActivity(intent);
             });
 
@@ -538,12 +542,27 @@ public class ProfileActivity extends BaseSignInActivity {
                 Intent userIntent = new Intent(this, ProfileActivity.class);
                 userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID,
                         compares.get(position).getAuthor().getId());
+                userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME,
+                        compares.get(position).getAuthor().getFullName());
                 startActivity(userIntent);
             });
         } else {
-            adapter = (ComparesRecyclerViewAdapter) mRecyclerViewCompares.getAdapter();
+            adapter = (ComparesAdapter) mRecyclerViewCompares.getAdapter();
             adapter.updateList(compares);
             adapter.notifyDataSetChanged();
         }
+    }
+
+    /**
+     * methods for show progress
+     **/
+    private void hideRefreshing() {
+        if (mSwipeRefreshLayout != null && mSwipeRefreshLayout.isRefreshing()) {
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
+    }
+
+    private void setProgressVisibility(boolean visible) {
+        //mProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 }

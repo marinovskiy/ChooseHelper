@@ -1,5 +1,6 @@
 package com.geekhub.choosehelper.screens.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,16 +12,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.client.MutableData;
 import com.firebase.client.Query;
-import com.firebase.client.Transaction;
 import com.firebase.client.ValueEventListener;
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.db.Comment;
@@ -30,16 +29,17 @@ import com.geekhub.choosehelper.models.network.NetworkCompare;
 import com.geekhub.choosehelper.models.network.NetworkLike;
 import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.screens.fragments.AllComparesFragment;
-import com.geekhub.choosehelper.ui.adapters.DetailsRecyclerViewAdapter;
-import com.geekhub.choosehelper.ui.adapters.SimpleDividerItemDecoration;
+import com.geekhub.choosehelper.ui.adapters.DetailsAdapter;
+import com.geekhub.choosehelper.ui.dividers.SimpleDividerItemDecoration;
 import com.geekhub.choosehelper.utils.ModelConverter;
 import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.Utils;
 import com.geekhub.choosehelper.utils.db.DbComparesManager;
-import com.geekhub.choosehelper.utils.firebase.FirebaseComparesManager;
 import com.geekhub.choosehelper.utils.firebase.FirebaseConstants;
+import com.geekhub.choosehelper.utils.firebase.FirebaseLikesManager;
 
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -47,6 +47,8 @@ import io.realm.RealmChangeListener;
 import io.realm.RealmList;
 
 public class DetailsActivity extends BaseSignInActivity {
+
+    public static final String INTENT_KEY_COMPARE_ID = "intent_key_compare_id";
 
     @Bind(R.id.toolbar_details)
     Toolbar mToolbar;
@@ -65,12 +67,6 @@ public class DetailsActivity extends BaseSignInActivity {
 
     /*@Bind(R.id.progress_bar_details)
     ProgressBar mCommentsProgressBar;*/
-
-    /**
-     * freezing views when like variant
-     **/
-    private CheckBox mClickedCheckBox;
-    private CheckBox mOtherCheckBox;
 
     /**
      * firebase references and queries
@@ -114,7 +110,7 @@ public class DetailsActivity extends BaseSignInActivity {
 
         /** get current compare id and create firebase references **/
         if (getIntent() != null) {
-            mCompareId = getIntent().getStringExtra(AllComparesFragment.INTENT_KEY_COMPARE_ID);
+            mCompareId = getIntent().getStringExtra(INTENT_KEY_COMPARE_ID);
 
             mFirebaseCompare = new Firebase(FirebaseConstants.FB_REF_MAIN)
                     .child(FirebaseConstants.FB_REF_COMPARES)
@@ -165,7 +161,9 @@ public class DetailsActivity extends BaseSignInActivity {
     @OnClick(R.id.details_btn_add_comment)
     public void onClick() {
         String commentText = mDetailsEtCommentText.getText().toString();
-        if (!commentText.equals("")) {
+        if (!mCompare.isOpen()) {
+            Utils.showMessage(getApplicationContext(), "This compare has been closed. You cannot comment closed compare");
+        } else if (!commentText.equals("")) {
             addComment(commentText);
         } else {
             Toast.makeText(this, "You can't post an empty comment", Toast.LENGTH_SHORT).show();
@@ -180,9 +178,7 @@ public class DetailsActivity extends BaseSignInActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        /*if (mCompare.getAuthor().getId().equals(Prefs.getUserId())) {
-            getMenuInflater().inflate(R.menu.menu_compare_settings, menu);
-        }*/
+        getMenuInflater().inflate(R.menu.menu_compare_settings, menu);
         return true;
     }
 
@@ -192,26 +188,13 @@ public class DetailsActivity extends BaseSignInActivity {
             case android.R.id.home:
                 onBackPressed();
                 return true;
-            case R.id.action_share_compare:
-                // TODO share
-                return true;
-            case R.id.action_edit_compare:
-                Intent intentEdit = new Intent(this, EditCompareActivity.class);
-                intentEdit.putExtra(AllComparesFragment.INTENT_KEY_COMPARE_ID, mCompareId);
-                startActivity(intentEdit);
-                return true;
-            case R.id.action_delete_compare:
-                Utils.showCompareDeleteDialog(this, (dialog, which) -> {
-                    switch (which) {
-                        case -2:
-                            dialog.cancel();
-                            break;
-                        case -1:
-                            FirebaseComparesManager.deleteCompare(mCompareId);
-                            finish();
-                            break;
-                    }
-                });
+            case R.id.action_details_compare_menu:
+                View view = findViewById(R.id.action_details_compare_menu);
+                if (mCompare.getAuthor().getId().equals(Prefs.getUserId())) {
+                    Utils.showOwnerPopupMenu(getApplicationContext(), view, mCompareId);
+                } else {
+                    Utils.showUserPopupMenu(getApplicationContext(), view, mCompareId);
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -222,7 +205,7 @@ public class DetailsActivity extends BaseSignInActivity {
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
             mToolbar.setNavigationIcon(ContextCompat.getDrawable(getApplicationContext(),
-                    R.drawable.icon_arrow_back_white));
+                    R.drawable.icon_back));
             mToolbar.setNavigationOnClickListener(v -> onBackPressed());
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -236,9 +219,9 @@ public class DetailsActivity extends BaseSignInActivity {
     private void updateUi(Compare compare) {
         setProgressVisibility(false);
 
-        DetailsRecyclerViewAdapter adapter;
+        DetailsAdapter adapter;
         if (mRecyclerView.getAdapter() == null) {
-            adapter = new DetailsRecyclerViewAdapter(compare);
+            adapter = new DetailsAdapter(compare);
             mRecyclerView.setAdapter(adapter);
 
             /** click listener for compare's author **/
@@ -247,6 +230,8 @@ public class DetailsActivity extends BaseSignInActivity {
                     Intent userIntent = new Intent(this, ProfileActivity.class);
                     userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID,
                             compare.getAuthor().getId());
+                    userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME,
+                            compare.getAuthor().getFullName());
                     startActivity(userIntent);
                 }
             });
@@ -256,7 +241,9 @@ public class DetailsActivity extends BaseSignInActivity {
                 if (compare.isValid()) {
                     Intent userIntent = new Intent(this, ProfileActivity.class);
                     userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID,
-                            compare.getComments().get(position-1).getAuthor().getId());
+                            compare.getComments().get(position - 1).getAuthor().getId());
+                    userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME,
+                            compare.getComments().get(position - 1).getAuthor().getFullName());
                     startActivity(userIntent);
                 }
             });
@@ -264,15 +251,39 @@ public class DetailsActivity extends BaseSignInActivity {
             /** click listener for likes **/
             adapter.setOnLikeDetailsListener((clickedCheckBox, otherCheckBox,
                                               position, variantNumber) -> {
-                if (compare.isValid()) {
-                    mClickedCheckBox = clickedCheckBox;
-                    mOtherCheckBox = otherCheckBox;
-                    Utils.blockViews(mClickedCheckBox, mOtherCheckBox);
-                    updateLike(mCompare.getId(), variantNumber);
+                if (!compare.isOpen()) {
+                    clickedCheckBox.setChecked(false);
+                    int newValue = Integer.parseInt(clickedCheckBox.getText().toString()) - 1;
+                    clickedCheckBox.setText(String.valueOf(newValue));
+                    Utils.showMessage(getApplicationContext(), "This compare has been closed. You cannot like closed compare");
+                } else if (!Utils.hasInternet(getApplicationContext())) {
+                    clickedCheckBox.setChecked(false);
+                    int newValue = Integer.parseInt(clickedCheckBox.getText().toString()) - 1;
+                    clickedCheckBox.setText(String.valueOf(newValue));
+                    Utils.showMessage(getApplicationContext(), getString(R.string.toast_no_internet));
+                } else if (compare.getAuthor().getId().equals(Prefs.getUserId())) {
+                    clickedCheckBox.setChecked(false);
+                    int newValue = Integer.parseInt(clickedCheckBox.getText().toString()) - 1;
+                    clickedCheckBox.setText(String.valueOf(newValue));
+                    Utils.showMessage(getApplicationContext(), "You cannot like your own compares");
+                } else {
+                    Utils.blockViews(clickedCheckBox, otherCheckBox);
+                    AllComparesFragment.sIsNeedToAutoUpdate = true;
+                    FirebaseLikesManager.updateLike(mCompare.getId(), variantNumber,
+                            null, clickedCheckBox, otherCheckBox);
+                }
+            });
+
+            adapter.setOnSwitchChangeListener(switchCompat -> {
+                AllComparesFragment.sIsNeedToAutoUpdate = true;
+                if (switchCompat.isChecked()) {
+                    updateCompareStatus(true);
+                } else {
+                    updateCompareStatus(false);
                 }
             });
         } else {
-            adapter = (DetailsRecyclerViewAdapter) mRecyclerView.getAdapter();
+            adapter = (DetailsAdapter) mRecyclerView.getAdapter();
             adapter.updateCompare(compare);
             adapter.notifyDataSetChanged();
             if (mIsNeedScroll) {
@@ -280,6 +291,17 @@ public class DetailsActivity extends BaseSignInActivity {
                 mRecyclerView.scrollToPosition(mRecyclerView.getAdapter().getItemCount());
             }
         }
+    }
+
+    private void updateCompareStatus(boolean status) {
+        Firebase firebase = new Firebase(FirebaseConstants.FB_REF_MAIN)
+                .child(FirebaseConstants.FB_REF_COMPARES)
+                .child(mCompareId);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put(FirebaseConstants.FB_REF_STATUS, status);
+        firebase.updateChildren(map);
+        fetchCompareFromNetwork();
     }
 
     /**
@@ -367,18 +389,9 @@ public class DetailsActivity extends BaseSignInActivity {
                                     userSnapshot.getValue(NetworkUser.class),
                                     networkComment.getUserId()));
                             if (comments.size() == dataSnapshot.getChildrenCount()) {
-//                                Collections.sort(comments, (lhs, rhs) -> {
-//                                    if (lhs.getDate() < rhs.getDate()) return -1;
-//                                    if (lhs.getDate() > rhs.getDate()) return 1;
-//                                    return 0;
-//                                });
                                 compare.setComments(comments);
                                 DbComparesManager.saveCompare(compare);
-                                try {
-                                    hideRefreshing();
-                                } catch (NullPointerException e) {
-                                    Toast.makeText(DetailsActivity.this, "NULLPOINTEREXCEPTION", Toast.LENGTH_SHORT).show();
-                                }
+                                hideRefreshing();
                             }
                         }
 
@@ -400,101 +413,7 @@ public class DetailsActivity extends BaseSignInActivity {
     }
 
     /**
-     * methods for update likes
-     **/
-    private void updateLike(String compareId, int variantNumber) {
-        Query queryLike = mFirebaseLikes.orderByChild(FirebaseConstants.FB_REF_COMPARE_ID)
-                .equalTo(compareId);
-        queryLike.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot likeSnapshot) {
-                String likeId = null;
-                NetworkLike networkLike = null;
-                for (DataSnapshot snapshot : likeSnapshot.getChildren()) {
-                    if (snapshot.getValue(NetworkLike.class).getUserId().equals(Prefs.getUserId())) {
-                        networkLike = snapshot.getValue(NetworkLike.class);
-                        likeId = snapshot.getKey();
-                    }
-                }
-                /** did not liked before - just like this variant **/
-                if (networkLike == null) {
-                    likeVariant(compareId, variantNumber);
-                }
-                /** liked before (true) - just unlike this variant **/
-                else if (networkLike.getVariantNumber() == variantNumber && networkLike.isLike()) {
-                    unLikeVariant(compareId, variantNumber, likeId);
-                }
-                /** other variant liked before - just like this variant and unlike other **/
-                else {
-                    likeVariant(compareId, variantNumber);
-                    unLikeVariant(compareId, Utils.getOtherVariantNumber(variantNumber), likeId);
-                }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                Toast.makeText(getApplicationContext(), "Error! Please, try later", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void likeVariant(String compareId, int variantNumber) {
-        Firebase firebaseLike = mFirebaseCompares.child(compareId)
-                .child(FirebaseConstants.FB_REF_VARIANTS)
-                .child(String.valueOf(variantNumber))
-                .child(FirebaseConstants.FB_REF_LIKES);
-        firebaseLike.runTransaction(new Transaction.Handler() {
-            @Override
-            public Transaction.Result doTransaction(MutableData currentData) {
-                if (currentData.getValue() == null) {
-                    currentData.setValue(1);
-                } else {
-                    currentData.setValue((Long) currentData.getValue() + 1);
-                }
-                return Transaction.success(currentData);
-            }
-
-            @Override
-            public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot snapshot) {
-                if (firebaseError == null) {
-                    NetworkLike networkLike = new NetworkLike();
-                    networkLike.setCompareId(compareId);
-                    networkLike.setVariantNumber(variantNumber);
-                    networkLike.setUserId(Prefs.getUserId());
-                    networkLike.setIsLike(true);
-                    mFirebaseLikes.push().setValue(networkLike);
-                }
-                Utils.unBlockViews(mClickedCheckBox, mOtherCheckBox);
-            }
-        });
-    }
-
-    private void unLikeVariant(String compareId, int variantNumber, String likeId) {
-        Firebase firebaseLike = mFirebaseCompares.child(compareId)
-                .child(FirebaseConstants.FB_REF_VARIANTS)
-                .child(String.valueOf(variantNumber))
-                .child(FirebaseConstants.FB_REF_LIKES);
-        firebaseLike.runTransaction(new Transaction.Handler() {
-            @Override
-            public Transaction.Result doTransaction(MutableData currentData) {
-                if (currentData.getValue() != null && (Long) currentData.getValue() != 0) {
-                    currentData.setValue((Long) currentData.getValue() - 1);
-                }
-                return Transaction.success(currentData);
-            }
-
-            @Override
-            public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot snapshot) {
-                if (firebaseError == null) {
-                    mFirebaseLikes.child(likeId).setValue(null);
-                }
-                Utils.unBlockViews(mClickedCheckBox, mOtherCheckBox);
-            }
-        });
-    }
-
-    /**
-     * methods for add comment
+     * method for add comment
      **/
     private void addComment(String commentText) {
         NetworkComment networkComment = new NetworkComment();
@@ -508,6 +427,8 @@ public class DetailsActivity extends BaseSignInActivity {
             } else {
                 mDetailsEtCommentText.setText("");
                 mDetailsEtCommentText.clearFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                 mIsNeedScroll = true;
                 fetchCompareFromNetwork();
             }
@@ -518,7 +439,7 @@ public class DetailsActivity extends BaseSignInActivity {
      * methods for show progress
      **/
     private void hideRefreshing() {
-        if (mSwipeRefreshLayout.isRefreshing()) {
+        if (mSwipeRefreshLayout != null && mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);
         }
     }

@@ -2,19 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_details_compare"
-        android:title="Details"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_share_compare"
-        android:title="Share"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_edit_compare"
-        android:title="Edit"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_delete_compare"
-        android:title="Delete"
-        app:showAsAction="never" />
+        android:id="@+id/action_details_compare_menu"
+        android:icon="@drawable/icon_more_white"
+        android:title="Menu"
+        app:showAsAction="always" />
 </menu>

@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:layout_marginBottom="16dp">
+    android:layout_marginBottom="16dp"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -17,7 +17,7 @@
             android:id="@+id/details_ll_author"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ll_selector"
+            android:background="@drawable/author_layout_selector"
             android:orientation="horizontal">
 
             <ImageView
@@ -63,10 +63,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:lines="2"
-            android:text="Closed"
+            android:lines="1"
             android:textColor="@android:color/black"
             android:textSize="@dimen/medium_text_size" />
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/details_switch_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/details_tv_status"
+            android:layout_marginTop="4dp"
+            android:visibility="gone" />
 
     </RelativeLayout>
 
@@ -99,7 +107,7 @@
                 android:layout_width="110dp"
                 android:layout_height="110dp"
                 android:padding="8dp"
-                android:src="@drawable/stand_photo" />
+                android:src="@drawable/standard_photo" />
 
             <TextView
                 android:id="@+id/details_tv_first_variant"
@@ -118,9 +126,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:button="@drawable/like_selector"
-                android:gravity="center"
                 android:layout_marginTop="4dp"
+                android:button="@drawable/icon_like_selector"
+                android:gravity="center"
                 android:paddingLeft="4dp"
                 android:textColor="@color/colorTextPrimary"
                 android:textSize="@dimen/medium_text_size"
@@ -139,7 +147,7 @@
                 android:layout_width="110dp"
                 android:layout_height="110dp"
                 android:padding="8dp"
-                android:src="@drawable/stand_photo" />
+                android:src="@drawable/standard_photo" />
 
             <TextView
                 android:id="@+id/details_tv_second_variant"
@@ -158,9 +166,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:button="@drawable/like_selector"
-                android:gravity="center"
                 android:layout_marginTop="4dp"
+                android:button="@drawable/icon_like_selector"
+                android:gravity="center"
                 android:paddingLeft="4dp"
                 android:textColor="@color/colorTextPrimary"
                 android:textSize="@dimen/medium_text_size"

@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -49,13 +48,17 @@ public class BaseSignInActivity extends AppCompatActivity
     private static final String LOG_TAG = BaseSignInActivity.class.getSimpleName();
 
     /**
+     * CONSTANTS
+     **/
+    private static final String LOGIN_TYPE_FACEBOOK = "facebook";
+    private static final String LOGIN_TYPE_PASSWORD = "password";
+    private static final String LOGIN_TYPE_GOOGLE = "google";
+
+    /**
      * FACEBOOK
      **/
-
     private CallbackManager mFacebookCallbackManager;
-
     private AccessTokenTracker mFacebookAccessTokenTracker;
-
     private String[] mFacebookPermissions = {
             "public_profile",
             "email",
@@ -67,21 +70,15 @@ public class BaseSignInActivity extends AppCompatActivity
     /**
      * GOOGLE PLUS
      **/
-
     private static final int RC_GOOGLE_LOGIN = 1;
-
     private GoogleApiClient mGoogleApiClient;
 
     /**
      * GENERAL
      **/
-
     private Firebase mFirebase;
-
     private AuthData mAuthData;
-
     private Firebase.AuthStateListener mAuthStateListener;
-
     private ProgressDialog mProgressDialog;
 
     @Override
@@ -96,18 +93,17 @@ public class BaseSignInActivity extends AppCompatActivity
         FacebookSdk.sdkInitialize(getApplicationContext());
 
         /** FACEBOOK **/
-
         mFacebookCallbackManager = CallbackManager.Factory.create();
         mFacebookAccessTokenTracker = new AccessTokenTracker() {
             @Override
-            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken,
+                                                       AccessToken currentAccessToken) {
                 Log.i(LOG_TAG, "onCurrentAccessTokenChanged: ");
                 BaseSignInActivity.this.onFacebookAccessTokenChange(currentAccessToken);
             }
         };
 
         /** GOOGLE PLUS **/
-
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
@@ -118,9 +114,7 @@ public class BaseSignInActivity extends AppCompatActivity
                 .build();
 
         /** GENERAL **/
-
         mFirebase = new Firebase(FirebaseConstants.FB_REF_MAIN);
-
         mAuthStateListener = authData -> {
             if (authData != null) {
                 setAuthenticatedUser(authData);
@@ -145,7 +139,8 @@ public class BaseSignInActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_GOOGLE_LOGIN) {
-            GoogleSignInResult googleSignInResult = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            GoogleSignInResult googleSignInResult = Auth.GoogleSignInApi
+                    .getSignInResultFromIntent(data);
             if (googleSignInResult.isSuccess()) {
                 showProgressDialog();
                 GoogleSignInAccount googleSignInAccount = googleSignInResult.getSignInAccount();
@@ -163,7 +158,6 @@ public class BaseSignInActivity extends AppCompatActivity
     /**
      * GOOGLE PLUS
      **/
-
     protected void googleLogin() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_GOOGLE_LOGIN);
@@ -205,10 +199,11 @@ public class BaseSignInActivity extends AppCompatActivity
             @Override
             protected void onPostExecute(String token) {
                 if (token != null) {
-                    mFirebase.authWithOAuthToken("google", token, new AuthResultHandler("google"));
+                    mFirebase.authWithOAuthToken(LOGIN_TYPE_GOOGLE, token,
+                            new AuthResultHandler(LOGIN_TYPE_GOOGLE));
                 } else if (errorMessage != null) {
                     hideProgressDialog();
-                    Utils.showErrorMessage(getApplicationContext(), errorMessage);
+                    Utils.showMessage(getApplicationContext(), errorMessage);
                 }
             }
         };
@@ -218,35 +213,37 @@ public class BaseSignInActivity extends AppCompatActivity
     /**
      * FACEBOOK
      **/
-
     protected void facebookLogin() {
-        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList(mFacebookPermissions));
-        LoginManager.getInstance().registerCallback(mFacebookCallbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                showProgressDialog();
-                Log.i(LOG_TAG, "onSuccess: " + loginResult);
-            }
+        LoginManager.getInstance().logInWithReadPermissions(this,
+                Arrays.asList(mFacebookPermissions));
+        LoginManager.getInstance().registerCallback(mFacebookCallbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        showProgressDialog();
+                        Log.i(LOG_TAG, "onSuccess: " + loginResult);
+                    }
 
-            @Override
-            public void onCancel() {
-                hideProgressDialog();
-                Log.i(LOG_TAG, "onCancel: ");
-            }
+                    @Override
+                    public void onCancel() {
+                        hideProgressDialog();
+                        Log.i(LOG_TAG, "onCancel: ");
+                    }
 
-            @Override
-            public void onError(FacebookException error) {
-                hideProgressDialog();
-                Log.i(LOG_TAG, "onError: " + error.getMessage());
-            }
-        });
+                    @Override
+                    public void onError(FacebookException error) {
+                        hideProgressDialog();
+                        Log.i(LOG_TAG, "onError: " + error.getMessage());
+                    }
+                });
     }
 
     private void onFacebookAccessTokenChange(AccessToken token) {
         if (token != null) {
-            mFirebase.authWithOAuthToken("facebook", token.getToken(), new AuthResultHandler("facebook"));
+            mFirebase.authWithOAuthToken(LOGIN_TYPE_FACEBOOK, token.getToken(),
+                    new AuthResultHandler(LOGIN_TYPE_FACEBOOK));
         } else {
-            if (this.mAuthData != null && this.mAuthData.getProvider().equals("facebook")) {
+            if (this.mAuthData != null && this.mAuthData.getProvider().equals(LOGIN_TYPE_FACEBOOK)) {
                 mFirebase.unauth();
             }
         }
@@ -255,13 +252,12 @@ public class BaseSignInActivity extends AppCompatActivity
     /**
      * GENERAL
      **/
-
     protected void loginEmailPassword(String email, String password) {
         if (email.equals("") || password.equals("")) {
-            Toast.makeText(BaseSignInActivity.this, "You did not fill all fields", Toast.LENGTH_SHORT).show();
+            Utils.showMessage(getApplicationContext(), "You did not fill all fields");
         } else {
             showProgressDialog();
-            mFirebase.authWithPassword(email, password, new AuthResultHandler("password"));
+            mFirebase.authWithPassword(email, password, new AuthResultHandler(LOGIN_TYPE_PASSWORD));
         }
     }
 
@@ -276,13 +272,13 @@ public class BaseSignInActivity extends AppCompatActivity
         @Override
         public void onAuthenticated(AuthData authData) {
             switch (provider) {
-                case "facebook":
+                case LOGIN_TYPE_FACEBOOK:
                     Prefs.setLoggedType(Prefs.FACEBOOK_LOGIN);
                     break;
-                case "google":
+                case LOGIN_TYPE_GOOGLE:
                     Prefs.setLoggedType(Prefs.GOOGLE_LOGIN);
                     break;
-                case "password":
+                case LOGIN_TYPE_PASSWORD:
                     Prefs.setLoggedType(Prefs.FIREBASE_LOGIN);
                     break;
             }
@@ -293,11 +289,11 @@ public class BaseSignInActivity extends AppCompatActivity
         @Override
         public void onAuthenticationError(FirebaseError firebaseError) {
             hideProgressDialog();
-            Utils.showErrorMessage(getApplicationContext(), firebaseError.toString());
+            Utils.showMessage(getApplicationContext(), firebaseError.toString());
         }
     }
 
-    private void setAuthenticatedUser(AuthData authData) { // TODO check if user exist if login throw social network
+    private void setAuthenticatedUser(AuthData authData) {
         if (authData != null) {
             Prefs.setUserId(authData.getUid());
             int loggedType = Prefs.getLoggedType();
@@ -334,7 +330,6 @@ public class BaseSignInActivity extends AppCompatActivity
     /**
      * OTHER
      **/
-
     protected void startMainActivity() {
         Intent intentMain = new Intent(BaseSignInActivity.this, MainActivity.class);
         intentMain.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -349,6 +344,9 @@ public class BaseSignInActivity extends AppCompatActivity
         finish();
     }
 
+    /**
+     * METHODS FOR SHOW PROGRESS
+     **/
     private void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
@@ -369,5 +367,4 @@ public class BaseSignInActivity extends AppCompatActivity
             mProgressDialog.dismiss();
         }
     }
-
 }

@@ -2,42 +2,55 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="210dp">
+    android:layout_height="150dp">
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/nav_drawer_header_img"
-        android:scaleType="centerCrop" />
+        android:layout_height="150dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/nav_drawer_header_img" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_gravity="center"
+        android:layout_height="150dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:orientation="vertical">
 
         <ImageView
             android:id="@+id/nav_header_avatar"
-            android:layout_width="92dp"
-            android:layout_height="92dp"
-            android:src="@drawable/icon_no_avatar"
-            android:layout_marginBottom="@dimen/activity_vertical_margin" />
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/icon_no_avatar" />
 
         <TextView
             android:id="@+id/nav_header_name"
-            style="@style/AppTheme.Drawer.Username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="36dp"
+            android:layout_marginTop="16dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/colorTextNavHeader"
+            android:textSize="@dimen/medium_text_size"
+            android:textStyle="bold"
             tools:text="Alex Marinovskiy" />
 
         <TextView
             android:id="@+id/nav_header_email"
             android:layout_width="wrap_content"
-            style="@style/AppTheme.Drawer.Email"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="12dp"
+            android:layout_marginTop="16dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/colorTextNavHeader"
+            android:textSize="@dimen/medium_text_size"
             tools:text="alexander.marinovskiy@gmail.com" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </FrameLayout>

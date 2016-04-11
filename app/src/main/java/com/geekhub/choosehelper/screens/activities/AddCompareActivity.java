@@ -19,8 +19,8 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.network.NetworkVariant;
 import com.geekhub.choosehelper.screens.fragments.AllComparesFragment;
-import com.geekhub.choosehelper.utils.AmazonUtil;
-import com.geekhub.choosehelper.utils.ImageUtil;
+import com.geekhub.choosehelper.utils.AmazonUtils;
+import com.geekhub.choosehelper.utils.ImageUtils;
 import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.Utils;
 import com.geekhub.choosehelper.utils.firebase.FirebaseComparesManager;
@@ -131,19 +131,19 @@ public class AddCompareActivity extends BaseSignInActivity {
                 case RC_GALLERY_FIRST:
                     avatarUri = data.getData();
                     try {
-                        mFirstImagePath = ImageUtil.getFilePath(getApplicationContext(), avatarUri);
-                        ImageUtil.loadImage(mAddCompareImgOne, mFirstImagePath);
+                        mFirstImagePath = ImageUtils.getFilePath(getApplicationContext(), avatarUri);
+                        ImageUtils.loadImage(mAddCompareImgOne, mFirstImagePath);
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
                         //TODO toast exception
                     }
                     break;
                 case RC_CAMERA_FIRST:
-                    avatarUri = ImageUtil.getPhotoUri(getApplicationContext(),
+                    avatarUri = ImageUtils.getPhotoUri(getApplicationContext(),
                             (Bitmap) data.getExtras().get("data"));
                     try {
-                        mFirstImagePath = ImageUtil.getFilePath(getApplicationContext(), avatarUri);
-                        ImageUtil.loadImage(mAddCompareImgOne, mFirstImagePath);
+                        mFirstImagePath = ImageUtils.getFilePath(getApplicationContext(), avatarUri);
+                        ImageUtils.loadImage(mAddCompareImgOne, mFirstImagePath);
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
                         //TODO toast exception
@@ -152,19 +152,19 @@ public class AddCompareActivity extends BaseSignInActivity {
                 case RC_GALLERY_SECOND:
                     avatarUri = data.getData();
                     try {
-                        mSecondImagePath = ImageUtil.getFilePath(getApplicationContext(), avatarUri);
-                        ImageUtil.loadImage(mAddCompareImgTwo, mSecondImagePath);
+                        mSecondImagePath = ImageUtils.getFilePath(getApplicationContext(), avatarUri);
+                        ImageUtils.loadImage(mAddCompareImgTwo, mSecondImagePath);
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
                         //TODO toast exception
                     }
                     break;
                 case RC_CAMERA_SECOND:
-                    avatarUri = ImageUtil.getPhotoUri(getApplicationContext(),
+                    avatarUri = ImageUtils.getPhotoUri(getApplicationContext(),
                             (Bitmap) data.getExtras().get("data"));
                     try {
-                        mSecondImagePath = ImageUtil.getFilePath(getApplicationContext(), avatarUri);
-                        ImageUtil.loadImage(mAddCompareImgTwo, mSecondImagePath);
+                        mSecondImagePath = ImageUtils.getFilePath(getApplicationContext(), avatarUri);
+                        ImageUtils.loadImage(mAddCompareImgTwo, mSecondImagePath);
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
                         //TODO toast exception
@@ -206,7 +206,7 @@ public class AddCompareActivity extends BaseSignInActivity {
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
             mToolbar.setNavigationIcon(ContextCompat.getDrawable(getApplicationContext(),
-                    R.drawable.ic_close_white));
+                    R.drawable.icon_cancel));
             mToolbar.setNavigationOnClickListener(v -> onBackPressed());
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -235,17 +235,20 @@ public class AddCompareActivity extends BaseSignInActivity {
                 mQuestion,
                 variants,
                 -1 * System.currentTimeMillis());
+
+        /** when return to all compares auto load new **/
+        AllComparesFragment.sIsNeedToAutoUpdate = true;
     }
 
     private String getUrlAndStartUpload(String filePath) {
         File file = new File(filePath);
-        TransferObserver transferObserver = AmazonUtil
+        TransferObserver transferObserver = AmazonUtils
                 .getTransferUtility(getApplicationContext())
-                .upload(AmazonUtil.BUCKET_NAME + AmazonUtil.FOLDER_IMAGES + "/" + Prefs.getUserId(),
+                .upload(AmazonUtils.BUCKET_NAME + AmazonUtils.FOLDER_IMAGES + "/" + Prefs.getUserId(),
                         file.getName(),
                         file);
-        AmazonUtil.uploadImage(transferObserver);
-        return AmazonUtil.BASE_URL + AmazonUtil.FOLDER_IMAGES + "/"
+        AmazonUtils.uploadImage(transferObserver);
+        return AmazonUtils.BASE_URL + AmazonUtils.FOLDER_IMAGES + "/"
                 + Prefs.getUserId() + "/" + file.getName();
     }
 }

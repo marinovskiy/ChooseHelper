@@ -56,7 +56,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/shadow_layout">
+        android:background="@drawable/comment_add_shadow_layout">
 
         <EditText
             android:id="@+id/details_et_comment_text"
