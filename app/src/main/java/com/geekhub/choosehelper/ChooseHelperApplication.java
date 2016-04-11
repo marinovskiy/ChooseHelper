@@ -19,7 +19,9 @@ import io.realm.RealmConfiguration;
 
 public class ChooseHelperApplication extends Application {
 
-    /** primary keys (id) for realm **/
+    /**
+     * primary keys (id) for realm
+     **/
     public static AtomicLong sVariantPrimaryKey;
     public static AtomicLong sFollowerPrimaryKey;
     public static AtomicLong sFollowingPrimaryKey;
@@ -35,7 +37,11 @@ public class ChooseHelperApplication extends Application {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
         Prefs.init(this);
-        Prefs.setNumberOfCompares(20);
+
+        if (Prefs.getNumberOfCompares() == 0) {
+            Prefs.setNumberOfCompares(Prefs.COMPARES_COUNT_TWENTY);
+        }
+
         Firebase.setAndroidContext(this);
         RealmConfiguration configuration = new RealmConfiguration.Builder(this)
                 .name("choose_helper_db.realm")

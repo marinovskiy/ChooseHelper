@@ -3,7 +3,6 @@ package com.geekhub.choosehelper.models.ui;
 public class Settings {
 
     private String title;
-
     private String value;
 
     public Settings() {
