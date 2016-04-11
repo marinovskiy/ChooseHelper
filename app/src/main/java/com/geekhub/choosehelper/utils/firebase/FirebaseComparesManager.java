@@ -1,11 +1,8 @@
 package com.geekhub.choosehelper.utils.firebase;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.geekhub.choosehelper.models.network.NetworkComment;
 import com.geekhub.choosehelper.models.network.NetworkCompare;
 import com.geekhub.choosehelper.models.network.NetworkVariant;
 
@@ -13,13 +10,14 @@ import java.util.List;
 
 public class FirebaseComparesManager {
 
-    public static void addCompare(String userId, String question,
+    public static void addCompare(String userId, String question, String category,
                                   List<NetworkVariant> variants, long date) {
         Firebase firebase = new Firebase(FirebaseConstants.FB_REF_MAIN)
                 .child(FirebaseConstants.FB_REF_COMPARES);
         /** create compare variable **/
         NetworkCompare compare = new NetworkCompare();
         compare.setQuestion(question);
+        compare.setCategory(category);
         compare.setDate(date);
         compare.setOpen(true);
         compare.setVariants(variants);

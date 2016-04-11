@@ -23,6 +23,8 @@ public class Compare extends RealmObject {
 
     private int likedVariant;
 
+    private String category;
+
     public Compare() {
     }
 
@@ -88,5 +90,13 @@ public class Compare extends RealmObject {
 
     public void setLikedVariant(int likedVariant) {
         this.likedVariant = likedVariant;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

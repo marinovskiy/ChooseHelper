@@ -14,6 +14,8 @@ public class NetworkCompare {
 
     private List<NetworkVariant> variants;
 
+    private String category;
+
     public NetworkCompare() {
 
     }
@@ -56,5 +58,13 @@ public class NetworkCompare {
 
     public void setVariants(List<NetworkVariant> variants) {
         this.variants = variants;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

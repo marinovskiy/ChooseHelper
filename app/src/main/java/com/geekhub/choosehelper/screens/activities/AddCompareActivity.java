@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -61,7 +62,11 @@ public class AddCompareActivity extends BaseSignInActivity {
     @Bind(R.id.add_compare_second_img)
     ImageView mAddCompareImgTwo;
 
+    @Bind(R.id.add_compare_category_spinner)
+    AppCompatSpinner mCategoriesSpinner;
+
     private String mQuestion;
+    private String mCategory;
     private String mFirstVariant;
     private String mSecondVariant;
     private String mFirstImageUrl;
@@ -88,7 +93,7 @@ public class AddCompareActivity extends BaseSignInActivity {
                             galleryIntent.setType("image/*");
                             galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
                             startActivityForResult(Intent.createChooser(galleryIntent,
-                                            getString(R.string.compare_dialog_photo_title)),
+                                    getString(R.string.compare_dialog_photo_title)),
                                     RC_GALLERY_FIRST);
                             break;
                         case 1:
@@ -108,7 +113,7 @@ public class AddCompareActivity extends BaseSignInActivity {
                             galleryIntent.setType("image/*");
                             galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
                             startActivityForResult(Intent.createChooser(galleryIntent,
-                                            getString(R.string.compare_dialog_photo_title)),
+                                    getString(R.string.compare_dialog_photo_title)),
                                     RC_GALLERY_SECOND);
                             break;
                         case 1:
@@ -206,7 +211,7 @@ public class AddCompareActivity extends BaseSignInActivity {
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
             mToolbar.setNavigationIcon(ContextCompat.getDrawable(getApplicationContext(),
-                    R.drawable.icon_cancel));
+                    R.drawable.icon_back));
             mToolbar.setNavigationOnClickListener(v -> onBackPressed());
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -215,6 +220,8 @@ public class AddCompareActivity extends BaseSignInActivity {
     }
 
     private void addCompare() {
+
+        mCategory = mCategoriesSpinner.getSelectedItem().toString();
 
         /** check if user pick images. If he didn't - will be using standard image **/
         if (mFirstImagePath != null) {
@@ -233,6 +240,7 @@ public class AddCompareActivity extends BaseSignInActivity {
         FirebaseComparesManager.addCompare(
                 Prefs.getUserId(),
                 mQuestion,
+                mCategory,
                 variants,
                 -1 * System.currentTimeMillis());
 

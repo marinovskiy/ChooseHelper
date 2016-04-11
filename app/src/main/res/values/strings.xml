@@ -65,4 +65,13 @@
     <string name="tab_label_all">All</string>
     <string name="tab_label_followings">Followings</string>
 
+    <string-array name="categories">
+        <item>Entertainment</item>
+        <item>Transport</item>
+        <item>Clothes</item>
+        <item>Eating</item>
+        <item>Places</item>
+        <item>Other</item>
+    </string-array>
+
 </resources>
