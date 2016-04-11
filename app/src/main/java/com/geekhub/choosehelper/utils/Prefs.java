@@ -2,9 +2,6 @@ package com.geekhub.choosehelper.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
-
-import com.geekhub.choosehelper.R;
 
 public class Prefs {
 
@@ -27,13 +24,6 @@ public class Prefs {
     public static final int COMPARES_COUNT_TWENTY = 20;
     public static final int COMPARES_COUNT_FIFTY = 50;
     public static final int COMPARES_COUNT_MAX = 66;
-
-    public static final String LANGUAGE_EN = Resources.getSystem().getString(R.string.dialog_settings_language_en);
-    public static final String LANGUAGE_UA = Resources.getSystem().getString(R.string.dialog_settings_language_ua);
-
-    public static final String CATEGORIES_FOOD = Resources.getSystem().getString(R.string.dialog_settings_categories_food);
-    public static final String CATEGORIES_SPORT = Resources.getSystem().getString(R.string.dialog_settings_categories_sport);
-    public static final String CATEGORIES_OTHER = Resources.getSystem().getString(R.string.dialog_settings_categories_other);
 
     private static SharedPreferences sPrefs;
 
@@ -70,14 +60,6 @@ public class Prefs {
 
     public static void setNumberOfCompares(int numberOfCompares) {
         setInt(SETTINGS_NUMBER_OF_COMPARES, numberOfCompares);
-    }
-
-    public static String getLanguageSettings() {
-        return getString(SETTINGS_LANGUAGE);
-    }
-
-    public static void setLanguageSettings(String value) {
-        setString(SETTINGS_LANGUAGE, value);
     }
 
     // standard methods
