@@ -60,9 +60,9 @@
     <string name="toast_error_message">Oops! Error. Please, try later</string>
     <string name="toast_cannot_like_closed">This compare has been closed. You cannot like closed compare</string>
     <string name="toast_cannot_like_own">You cannot like your own compares</string>
-    <string name="search_hint_compares">Search compares...</string>
+    <string name="search_hint_compares">Search compares…</string>
     <string name="toast_cannot_search">Cannot search without internet</string>
     <string name="tab_label_all">All</string>
-    <string name="tab_label_followings">Followings\'s</string>
+    <string name="tab_label_followings">Followings</string>
 
 </resources>

@@ -98,7 +98,7 @@ public class AllComparesFragment extends BaseFragment {
                 .child(FirebaseConstants.FB_REF_COMPARES);
 
         mQueryCompares = mFirebaseCompares.orderByChild(FirebaseConstants.FB_REF_DATE)
-                .limitToFirst(20); // TODO settings user choose number of compares (20, 50 etc.)
+                .limitToFirst(Prefs.getNumberOfCompares());
 
         mFirebaseLikes = new Firebase(FirebaseConstants.FB_REF_MAIN)
                 .child(FirebaseConstants.FB_REF_LIKES);
@@ -151,7 +151,7 @@ public class AllComparesFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (!mIsNeedToShowUpdateBtn) {
+        if (sIsNeedToAutoUpdate) {
             sIsNeedToAutoUpdate = false;
             fetchComparesFromNetwork();
         }
@@ -175,7 +175,7 @@ public class AllComparesFragment extends BaseFragment {
         mFirebaseCompares.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (mIsNeedToShowUpdateBtn) {
+                if (mIsNeedToShowUpdateBtn && !sIsNeedToAutoUpdate) {
                     mIsNeedToShowUpdateBtnWhileScroll = true;
                     mBtnNewComparesAvailable.setVisibility(View.VISIBLE);
                 } else {
@@ -265,9 +265,7 @@ public class AllComparesFragment extends BaseFragment {
         });
     }
 
-    /**
-     * update UI method
-     **/
+    // update UI method
     private void updateUi(List<Compare> compares) {
         setProgressVisibility(false);
 
@@ -319,6 +317,7 @@ public class AllComparesFragment extends BaseFragment {
                     isNeedToUnCheck = true;
                     Utils.showMessage(getContext(), getString(R.string.toast_cannot_like_own));
                 } else { // update like
+                    sIsNeedToAutoUpdate = false; // don't show update btn if like or unlike
                     Utils.blockViews(mainView, clickedCheckBox, otherCheckBox);
                     FirebaseLikesManager.updateLike(compares.get(position).getId(), variantNumber,
                             mainView, clickedCheckBox, otherCheckBox);

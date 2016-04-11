@@ -8,11 +8,11 @@ import android.view.View;
 
 import com.geekhub.choosehelper.R;
 
-public class SimpleDividerItemDecoration extends RecyclerView.ItemDecoration {
+public class ProfileDivider extends RecyclerView.ItemDecoration {
 
     private Drawable mDivider;
 
-    public SimpleDividerItemDecoration(Context context) {
+    public ProfileDivider(Context context) {
         mDivider = context.getResources().getDrawable(R.drawable.comment_rv_divider);
     }
 

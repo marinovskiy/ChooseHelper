@@ -20,9 +20,9 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.geekhub.choosehelper.R;
+import com.geekhub.choosehelper.models.db.Following;
 import com.geekhub.choosehelper.models.db.User;
 import com.geekhub.choosehelper.screens.fragments.AllComparesFragment;
 import com.geekhub.choosehelper.screens.fragments.FollowingsComparesFragment;
@@ -33,6 +33,9 @@ import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.Utils;
 import com.geekhub.choosehelper.utils.db.DbUsersManager;
 import com.geekhub.choosehelper.utils.firebase.FirebaseUsersManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -123,7 +126,8 @@ public class MainActivity extends BaseSignInActivity
                 startActivity(userIntent);
                 return true;
             case R.id.action_nav_settings:
-                // TODO settings
+                mDrawerLayout.closeDrawers();
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             case R.id.action_nav_help:
                 mDrawerLayout.closeDrawers();
@@ -175,22 +179,22 @@ public class MainActivity extends BaseSignInActivity
 
         MenuItemCompat.setOnActionExpandListener(menu.findItem(R.id.action_search),
                 new MenuItemCompat.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                return true;
-            }
+                    @Override
+                    public boolean onMenuItemActionExpand(MenuItem item) {
+                        return true;
+                    }
 
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                getSupportFragmentManager().beginTransaction()
-                        .remove(mSearchComparesFragment)
-                        .commit();
-                mSearchContainer.setVisibility(View.GONE);
-                mTabLayout.setVisibility(View.VISIBLE);
-                mViewPager.setVisibility(View.VISIBLE);
-                return true;
-            }
-        });
+                    @Override
+                    public boolean onMenuItemActionCollapse(MenuItem item) {
+                        getSupportFragmentManager().beginTransaction()
+                                .remove(mSearchComparesFragment)
+                                .commit();
+                        mSearchContainer.setVisibility(View.GONE);
+                        mTabLayout.setVisibility(View.VISIBLE);
+                        mViewPager.setVisibility(View.VISIBLE);
+                        return true;
+                    }
+                });
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -288,8 +292,20 @@ public class MainActivity extends BaseSignInActivity
         ComparesViewPagerAdapter adapter = new ComparesViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(AllComparesFragment.newInstance(),
                 getString(R.string.tab_label_all));
-        adapter.addFragment(FollowingsComparesFragment.newInstance(),
+        adapter.addFragment(FollowingsComparesFragment
+                        .newInstance(/*getFollowingsIds(mCurrentUser.getFollowings())*/),
                 getString(R.string.tab_label_followings));
         viewPager.setAdapter(adapter);
     }
+
+
+    // TODO replace to utils or manager
+    private ArrayList<String> getFollowingsIds(List<Following> followings) {
+        ArrayList<String> usersIds = new ArrayList<>();
+        for (Following following : followings) {
+            usersIds.add(following.getUserId());
+        }
+        return usersIds;
+    }
+
 }

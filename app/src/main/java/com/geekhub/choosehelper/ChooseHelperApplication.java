@@ -35,6 +35,7 @@ public class ChooseHelperApplication extends Application {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
         Prefs.init(this);
+        Prefs.setNumberOfCompares(20);
         Firebase.setAndroidContext(this);
         RealmConfiguration configuration = new RealmConfiguration.Builder(this)
                 .name("choose_helper_db.realm")

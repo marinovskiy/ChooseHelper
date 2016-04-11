@@ -65,6 +65,7 @@ public class ModelConverter {
         Compare compare = new Compare();
         compare.setId(networkCompareId);
         compare.setDate(-1 * networkCompare.getDate());
+        compare.setOpen(networkCompare.isOpen());
         compare.setQuestion(networkCompare.getQuestion());
         compare.setAuthor(author);
         List<NetworkVariant> networkVariants = networkCompare.getVariants();

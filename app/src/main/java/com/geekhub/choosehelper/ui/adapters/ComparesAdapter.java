@@ -170,6 +170,9 @@ public class ComparesAdapter extends RecyclerView.Adapter<ComparesAdapter.ViewHo
             } else if (compare.getLikedVariant() == 1) {
                 mChLikeFirst.setChecked(false);
                 mChLikeSecond.setChecked(true);
+            } else {
+                mChLikeFirst.setChecked(false);
+                mChLikeSecond.setChecked(false);
             }
 
             mTvDate.setText(DateUtils.convertDateTime(compare.getDate()));

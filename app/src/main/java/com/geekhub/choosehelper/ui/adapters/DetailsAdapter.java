@@ -153,7 +153,7 @@ public class DetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
             } else if (id == mSwitchStatus.getId()) {
                 if (mOnSwitchChangeListener != null) {
-                    mOnSwitchChangeListener.onSwitchChanged(mSwitchStatus);
+                    mOnSwitchChangeListener.onSwitchChanged(mSwitchStatus, mTvStatus);
                 }
             }
         }
@@ -178,8 +178,13 @@ public class DetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             if (compare.getLikedVariant() == 0) {
                 mChLikeFirst.setChecked(true);
+                mChLikeSecond.setChecked(false);
             } else if (compare.getLikedVariant() == 1) {
+                mChLikeFirst.setChecked(false);
                 mChLikeSecond.setChecked(true);
+            } else {
+                mChLikeFirst.setChecked(false);
+                mChLikeSecond.setChecked(false);
             }
 
             if (compare.getAuthor().getId().equals(Prefs.getUserId())) {

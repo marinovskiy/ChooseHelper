@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/about_toolbar"
+        android:id="@+id/toolbar_help"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize" />
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        app:elevation="4dp"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:title="Help"
+        app:titleTextColor="@color/colorTextToolbar" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
+        <!--content here-->
+
+        <View
+            android:id="@+id/toolbar_shadow_help"
             android:layout_width="match_parent"
-            android:layout_height="4dp"
-            android:src="@drawable/toolbar_shadow" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <!--Content-->
-
-        </LinearLayout>
+            android:layout_height="6dp"
+            android:background="@drawable/toolbar_shadow" />
 
     </FrameLayout>
 

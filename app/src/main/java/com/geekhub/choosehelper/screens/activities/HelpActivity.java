@@ -1,34 +1,39 @@
 package com.geekhub.choosehelper.screens.activities;
 
-
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
+import android.view.View;
 
 import com.geekhub.choosehelper.R;
 
-public class HelpActivity extends AppCompatActivity {
+import butterknife.Bind;
+
+public class HelpActivity extends BaseSignInActivity {
+
+    @Bind(R.id.toolbar_help)
+    Toolbar mToolbar;
+
+    @Bind(R.id.toolbar_shadow_help)
+    View mToolbarShadow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
-        setToolbar();
+        setupToolbar();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_done, menu);
-        return true;
-    }
-
-    private void setToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.about_toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setOnMenuItemClickListener(v -> {
-            onBackPressed();
-            return true;
-        });
+    private void setupToolbar() {
+        if (mToolbar != null) {
+            setSupportActionBar(mToolbar);
+            mToolbar.setNavigationIcon(ContextCompat.getDrawable(getApplicationContext(),
+                    R.drawable.icon_back));
+            mToolbar.setNavigationOnClickListener(v -> onBackPressed());
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mToolbarShadow.setVisibility(View.GONE);
+        }
     }
 }

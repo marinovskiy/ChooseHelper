@@ -5,30 +5,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.geekhub.choosehelper.screens.activities.SearchActivity">
+    tools:context="com.geekhub.choosehelper.screens.activities.SettingsActivity">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_search"
+        android:id="@+id/toolbar_settings"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="@color/colorPrimary"
         app:elevation="4dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:title="Settings"
         app:titleTextColor="@color/colorTextToolbar" />
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorBackgroundComment">
+        android:layout_height="wrap_content">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view_search"
+            android:id="@+id/recycler_view_settings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scrollbars="vertical" />
+            android:scrollbars="none" />
 
         <View
-            android:id="@+id/toolbar_shadow_search"
+            android:id="@+id/toolbar_shadow_settings"
             android:layout_width="match_parent"
             android:layout_height="6dp"
             android:background="@drawable/toolbar_shadow" />

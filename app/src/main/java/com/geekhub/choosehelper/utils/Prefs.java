@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 public class Prefs {
 
+    // user
     public static final String USER_ID = "prefs_user_id";
     public static final String LOGGED_TYPE = "prefs_logged_type";
 
@@ -12,6 +13,10 @@ public class Prefs {
     public static final int GOOGLE_LOGIN = 1;
     public static final int FACEBOOK_LOGIN = 2;
     public static final int FIREBASE_LOGIN = 3;
+
+    // settings
+    public static final String SETTINGS_NUMBER_OF_COMPARES = "settings_number_of_compares";
+    public static final String SETTINGS_FILTER_OF_COMPARES = "settings_filter_of_compares";
 
     private static SharedPreferences sPrefs;
 
@@ -24,6 +29,7 @@ public class Prefs {
         }
     }
 
+    // users
     public static int getLoggedType() {
         return getInt(LOGGED_TYPE);
     }
@@ -40,6 +46,16 @@ public class Prefs {
         setString(USER_ID, userId);
     }
 
+    // settings //TODO let user pick in first run dialog
+    public static int getNumberOfCompares() {
+        return getInt(SETTINGS_NUMBER_OF_COMPARES);
+    }
+
+    public static void setNumberOfCompares(int numberOfCompares) {
+        setInt(SETTINGS_NUMBER_OF_COMPARES, numberOfCompares);
+    }
+
+    // standard methods
     private static String getString(String key) {
         return sPrefs.getString(key, null);
     }

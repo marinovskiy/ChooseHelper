@@ -30,7 +30,7 @@ import com.geekhub.choosehelper.models.network.NetworkLike;
 import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.screens.fragments.AllComparesFragment;
 import com.geekhub.choosehelper.ui.adapters.DetailsAdapter;
-import com.geekhub.choosehelper.ui.dividers.SimpleDividerItemDecoration;
+import com.geekhub.choosehelper.ui.dividers.CommentsDivider;
 import com.geekhub.choosehelper.utils.ModelConverter;
 import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.Utils;
@@ -106,7 +106,7 @@ public class DetailsActivity extends BaseSignInActivity {
         /** recycler view **/
         mRecyclerView.setNestedScrollingEnabled(false);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
+        mRecyclerView.addItemDecoration(new CommentsDivider(this));
 
         /** get current compare id and create firebase references **/
         if (getIntent() != null) {
@@ -189,7 +189,7 @@ public class DetailsActivity extends BaseSignInActivity {
                 onBackPressed();
                 return true;
             case R.id.action_details_compare_menu:
-                View view = findViewById(R.id.action_details_compare_menu);
+                View view = this.findViewById(R.id.action_details_compare_menu);
                 if (mCompare.getAuthor().getId().equals(Prefs.getUserId())) {
                     Utils.showOwnerPopupMenu(getApplicationContext(), view, mCompareId);
                 } else {
@@ -255,17 +255,20 @@ public class DetailsActivity extends BaseSignInActivity {
                     clickedCheckBox.setChecked(false);
                     int newValue = Integer.parseInt(clickedCheckBox.getText().toString()) - 1;
                     clickedCheckBox.setText(String.valueOf(newValue));
-                    Utils.showMessage(getApplicationContext(), "This compare has been closed. You cannot like closed compare");
+                    Utils.showMessage(getApplicationContext(),
+                            getString(R.string.toast_cannot_like_closed));
                 } else if (!Utils.hasInternet(getApplicationContext())) {
                     clickedCheckBox.setChecked(false);
                     int newValue = Integer.parseInt(clickedCheckBox.getText().toString()) - 1;
                     clickedCheckBox.setText(String.valueOf(newValue));
-                    Utils.showMessage(getApplicationContext(), getString(R.string.toast_no_internet));
+                    Utils.showMessage(getApplicationContext(),
+                            getString(R.string.toast_no_internet));
                 } else if (compare.getAuthor().getId().equals(Prefs.getUserId())) {
                     clickedCheckBox.setChecked(false);
                     int newValue = Integer.parseInt(clickedCheckBox.getText().toString()) - 1;
                     clickedCheckBox.setText(String.valueOf(newValue));
-                    Utils.showMessage(getApplicationContext(), "You cannot like your own compares");
+                    Utils.showMessage(getApplicationContext(),
+                            getString(R.string.toast_cannot_like_own));
                 } else {
                     Utils.blockViews(clickedCheckBox, otherCheckBox);
                     AllComparesFragment.sIsNeedToAutoUpdate = true;
@@ -274,12 +277,19 @@ public class DetailsActivity extends BaseSignInActivity {
                 }
             });
 
-            adapter.setOnSwitchChangeListener(switchCompat -> {
-                AllComparesFragment.sIsNeedToAutoUpdate = true;
-                if (switchCompat.isChecked()) {
-                    updateCompareStatus(true);
+            adapter.setOnSwitchChangeListener((switchCompat, tvStatus) -> {
+                if (!Utils.hasInternet(getApplicationContext())) {
+                    Utils.showMessage(getApplicationContext(),
+                            getString(R.string.toast_no_internet));
                 } else {
-                    updateCompareStatus(false);
+                    AllComparesFragment.sIsNeedToAutoUpdate = true;
+                    if (switchCompat.isChecked()) {
+                        updateCompareStatus(true);
+                        tvStatus.setText("Open");
+                    } else {
+                        updateCompareStatus(false);
+                        tvStatus.setText("Close");
+                    }
                 }
             });
         } else {

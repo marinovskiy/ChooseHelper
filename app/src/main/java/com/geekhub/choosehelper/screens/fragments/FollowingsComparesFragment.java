@@ -1,8 +1,8 @@
 package com.geekhub.choosehelper.screens.fragments;
 
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,7 +20,6 @@ import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.db.Compare;
-import com.geekhub.choosehelper.models.db.User;
 import com.geekhub.choosehelper.models.network.NetworkCompare;
 import com.geekhub.choosehelper.models.network.NetworkLike;
 import com.geekhub.choosehelper.models.network.NetworkUser;
@@ -38,11 +37,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
-import butterknife.OnClick;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
 public class FollowingsComparesFragment extends BaseFragment {
+
+    public static final String INTENT_KEY_USERS_IDS = "intent_key_users_ids";
 
     @Bind(R.id.recycler_view_followings_compares)
     RecyclerView mRecyclerView;
@@ -56,20 +56,17 @@ public class FollowingsComparesFragment extends BaseFragment {
     @Bind(R.id.followings_cmps_btn_cmps_available)
     Button mBtnNewComparesAvailable;
 
-    private boolean mIsNeedToShowUpdateBtn = false;
-    private boolean mIsNeedToShowUpdateBtnWhileScroll = false;
-
     /**
      * firebase references and queries
      **/
     private Firebase mFirebaseCompares;
     private Query mQueryCompares;
-
     private Firebase mFirebaseLikes;
 
     /**
      * realm
      **/
+    private ArrayList<String> mUsersIds = new ArrayList<>();
 
     private RealmResults<Compare> mCompares;
 
@@ -83,8 +80,20 @@ public class FollowingsComparesFragment extends BaseFragment {
 
     }
 
-    public static FollowingsComparesFragment newInstance() {
-        return new FollowingsComparesFragment();
+    public static FollowingsComparesFragment newInstance(/*ArrayList<String> usersIds*/) {
+        FollowingsComparesFragment fragment = new FollowingsComparesFragment();
+        //Bundle bundle = new Bundle();
+        //bundle.putStringArrayList(INTENT_KEY_USERS_IDS, usersIds);
+        //fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        /*if (getArguments() != null) {
+            mUsersIds = getArguments().getStringArrayList(INTENT_KEY_USERS_IDS);
+        }*/
     }
 
     @Override
@@ -103,7 +112,7 @@ public class FollowingsComparesFragment extends BaseFragment {
                 .child(FirebaseConstants.FB_REF_COMPARES);
 
         mQueryCompares = mFirebaseCompares.orderByChild(FirebaseConstants.FB_REF_DATE)
-                .limitToFirst(20); // TODO settings user choose number of compares (20, 50 etc.)
+                .limitToFirst(Prefs.getNumberOfCompares());
 
         mFirebaseLikes = new Firebase(FirebaseConstants.FB_REF_MAIN)
                 .child(FirebaseConstants.FB_REF_LIKES);
@@ -112,10 +121,10 @@ public class FollowingsComparesFragment extends BaseFragment {
         fetchComparesFromDb();
         if (Utils.hasInternet(getContext())) {
             fetchComparesFromNetwork();
-            addListenerForNewValues();
+            //addListenerForNewValues();
         }
 
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        /*mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -125,7 +134,7 @@ public class FollowingsComparesFragment extends BaseFragment {
                     mBtnNewComparesAvailable.setVisibility(View.VISIBLE);
                 }
             }
-        });
+        });*/
 
         /** swipe refresh layout **/
         mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -144,12 +153,12 @@ public class FollowingsComparesFragment extends BaseFragment {
         });
     }
 
-    @OnClick(R.id.followings_cmps_btn_cmps_available)
-    public void onClick() {
-        mBtnNewComparesAvailable.setVisibility(View.GONE);
-        mIsNeedToShowUpdateBtnWhileScroll = false;
-        fetchComparesFromNetwork();
-    }
+//    @OnClick(R.id.followings_cmps_btn_cmps_available)
+//    public void onClick() {
+//        mBtnNewComparesAvailable.setVisibility(View.GONE);
+//        mIsNeedToShowUpdateBtnWhileScroll = false;
+//        fetchComparesFromNetwork();
+//    }
 
     @Override
     public void onResume() {
@@ -185,20 +194,26 @@ public class FollowingsComparesFragment extends BaseFragment {
             /** click listener for likes **/
             adapter.setOnLikeClickListener((mainView, clickedCheckBox, otherCheckBox,
                                             position, variantNumber) -> {
-                if (!Utils.hasInternet(getContext())) {
-                    clickedCheckBox.setChecked(false);
-                    int newValue = Integer.parseInt(clickedCheckBox.getText().toString()) - 1;
-                    clickedCheckBox.setText(String.valueOf(newValue));
+                boolean isNeedToUnCheck = false;
+                if (!compares.get(position).isOpen()) { // if closed
+                    isNeedToUnCheck = true;
+                    Utils.showMessage(getContext(), getString(R.string.toast_cannot_like_closed));
+                } else if (!Utils.hasInternet(getContext())) { // if no internet
+                    isNeedToUnCheck = true;
                     Utils.showMessage(getContext(), getString(R.string.toast_no_internet));
-                } else if (compares.get(position).getAuthor().getId().equals(Prefs.getUserId())) {
-                    clickedCheckBox.setChecked(false);
-                    int newValue = Integer.parseInt(clickedCheckBox.getText().toString()) - 1;
-                    clickedCheckBox.setText(String.valueOf(newValue));
-                    Utils.showMessage(getContext(), "You cannot like your own compares");
-                } else {
+                } else if (compares.get(position).getAuthor().getId().equals(Prefs.getUserId())) { // if user is owner
+                    isNeedToUnCheck = true;
+                    Utils.showMessage(getContext(), getString(R.string.toast_cannot_like_own));
+                } else { // update like
                     Utils.blockViews(mainView, clickedCheckBox, otherCheckBox);
                     FirebaseLikesManager.updateLike(compares.get(position).getId(), variantNumber,
                             mainView, clickedCheckBox, otherCheckBox);
+                }
+                // unCheck if need
+                if (isNeedToUnCheck) {
+                    clickedCheckBox.setChecked(false);
+                    int newValue = Integer.parseInt(clickedCheckBox.getText().toString()) - 1;
+                    clickedCheckBox.setText(String.valueOf(newValue));
                 }
             });
 
@@ -245,12 +260,12 @@ public class FollowingsComparesFragment extends BaseFragment {
         mFirebaseCompares.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (mIsNeedToShowUpdateBtn) {
+                /*if (mIsNeedToShowUpdateBtn) {
                     mIsNeedToShowUpdateBtnWhileScroll = true;
                     mBtnNewComparesAvailable.setVisibility(View.VISIBLE);
                 } else {
                     mIsNeedToShowUpdateBtn = true;
-                }
+                }*/
             }
 
             @Override
@@ -273,8 +288,11 @@ public class FollowingsComparesFragment extends BaseFragment {
                     hideRefreshing();
                 for (DataSnapshot compareSnapshot : dataSnapshot.getChildren()) {
                     NetworkCompare networkCompare = compareSnapshot.getValue(NetworkCompare.class);
-                    fetchDetailsFromNetwork(compares, networkCompare,
-                            compareSnapshot.getKey(), snapshotSize);
+                    String authorId = networkCompare.getUserId();
+                    //if (mUsersIds.contains(authorId)) {
+                        fetchDetailsFromNetwork(compares, networkCompare,
+                                compareSnapshot.getKey(), snapshotSize);
+                    //}
                 }
             }
 
@@ -350,5 +368,4 @@ public class FollowingsComparesFragment extends BaseFragment {
     private void setProgressVisibility(boolean visible) {
         mProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
-
 }
