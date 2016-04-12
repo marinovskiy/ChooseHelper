@@ -6,7 +6,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 
 import com.geekhub.choosehelper.R;
@@ -50,8 +49,6 @@ public class SettingsActivity extends BaseSignInActivity {
             SettingsAlertDialog dialog =
                     new SettingsAlertDialog(SettingsActivity.this, mSettingsList.get(p));
             dialog.openSettingsDialog();
-            Log.d(TAG, "In preferences: " + mSettingsList.get(p).getTitle()
-                    + " value/" + Prefs.getNumberOfCompares());
         });
     }
 
@@ -69,9 +66,28 @@ public class SettingsActivity extends BaseSignInActivity {
 
     private List<Settings> generateSettings() {
         List<Settings> settingsList = new ArrayList<>();
-        settingsList.add(new Settings(Prefs.SETTINGS_NUMBER_OF_COMPARES, String.valueOf(Prefs.getNumberOfCompares())));
+        settingsList.add(new Settings(getApplicationContext().getString(R.string.ad_title_compares_count),
+                String.valueOf(Prefs.getNumberOfCompares())));
         settingsList.add(new Settings("Language", "English"));
         settingsList.add(new Settings("Filters", "..."));
         return settingsList;
     }
+
+    public static void updateRV() {
+
+    }
+
+//    public static void updateUi(List<Settings> settingses) {
+//        SettingsAdapter adapter;
+//        if (mRecyclerView.getAdapter() == null) {
+//            adapter = new SettingsAdapter(settingses.subList(0, settingses.size() < 2
+//                    ? settingses.size() : 2));
+//            mRecyclerView.setAdapter(adapter);
+//
+//        } else {
+//            adapter = (SettingsAdapter) mRecyclerView.getAdapter();
+//            adapter.updateList(settingses.subList(0, settingses.size() < 19 ? settingses.size() : 19));
+//            adapter.notifyDataSetChanged();
+//        }
+//    }
 }

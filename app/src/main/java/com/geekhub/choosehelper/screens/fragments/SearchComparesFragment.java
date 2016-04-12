@@ -153,8 +153,8 @@ public class SearchComparesFragment extends BaseFragment {
 
         ComparesAdapter adapter;
         if (mRecyclerView.getAdapter() == null) {
-            adapter = new ComparesAdapter(compares.subList(0, compares.size() < 19
-                    ? compares.size() : 19));
+            adapter = new ComparesAdapter(compares.subList(0, compares.size() < Prefs.getNumberOfCompares() - 1
+                    ? compares.size() : Prefs.getNumberOfCompares() - 1));
             mRecyclerView.setAdapter(adapter);
 
             // click listener for details
@@ -212,8 +212,8 @@ public class SearchComparesFragment extends BaseFragment {
             });
         } else {
             adapter = (ComparesAdapter) mRecyclerView.getAdapter();
-            adapter.updateList(compares.subList(0, compares.size() < 19
-                    ? compares.size() : 19));
+            adapter.updateList(compares.subList(0, compares.size() < Prefs.getNumberOfCompares() - 1
+                    ? compares.size() : Prefs.getNumberOfCompares() - 1));
             adapter.notifyDataSetChanged();
         }
     }

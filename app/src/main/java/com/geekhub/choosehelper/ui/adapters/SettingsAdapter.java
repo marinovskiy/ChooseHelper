@@ -25,6 +25,10 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
         mSettingsList = settingsList;
     }
 
+    public void updateList(List<Settings> settingses) {
+        mSettingsList = settingses;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext())

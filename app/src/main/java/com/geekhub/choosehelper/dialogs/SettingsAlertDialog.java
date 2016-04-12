@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.ui.Settings;
+import com.geekhub.choosehelper.screens.activities.SettingsActivity;
 import com.geekhub.choosehelper.utils.Prefs;
 
 public class SettingsAlertDialog {
@@ -25,7 +26,7 @@ public class SettingsAlertDialog {
     public void openSettingsDialog() {
         AlertDialog dialog;
 
-        if (mSettings.getTitle().equals(Prefs.SETTINGS_NUMBER_OF_COMPARES)) {
+        if (mSettings.getTitle().equals(mContext.getString(R.string.ad_title_compares_count))) {
             dialog = createDialog(Prefs.SETTINGS_NUMBER_OF_COMPARES,
                     mContext.getString(R.string.ad_title_compares_count), mComparesCount);
             dialog.show();
@@ -65,8 +66,8 @@ public class SettingsAlertDialog {
             if (mPrefsKey.equals(Prefs.SETTINGS_NUMBER_OF_COMPARES)) {
                 Prefs.setNumberOfCompares(Integer.parseInt(mComparesCount[which]));
             }
-
             dialog.cancel();
+            SettingsActivity.updateRV();
         }
     }
 }
