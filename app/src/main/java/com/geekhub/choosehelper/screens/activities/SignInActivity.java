@@ -1,6 +1,5 @@
 package com.geekhub.choosehelper.screens.activities;
 
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -55,9 +54,12 @@ public class SignInActivity extends BaseSignInActivity {
                 break;
             case R.id.tv_create_an_account:
                 Intent intentSignUp = new Intent(SignInActivity.this, SignUpActivity.class);
-                Bundle bndlanimation = ActivityOptions.makeCustomAnimation(getApplicationContext(),
-                        R.anim.slide_in_to_left, R.anim.do_nothing).toBundle();
-                startActivity(intentSignUp, bndlanimation);
+//                Bundle bndlanimation = ActivityOptions.makeCustomAnimation(getApplicationContext(),
+//                        R.anim.slide_in_to_left, R.anim.do_nothing).toBundle();
+//                startActivity(intentSignUp, bndlanimation);
+                startActivity(intentSignUp);
+                overridePendingTransition(R.anim.slide_in_to_left, R.anim.do_nothing);
+                finish();
                 break;
         }
     }
