@@ -3,62 +3,71 @@ package com.geekhub.choosehelper.dialogs;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.support.v7.app.AlertDialog;
+import android.widget.Toast;
 
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.ui.Settings;
+import com.geekhub.choosehelper.screens.activities.SettingsActivity;
 import com.geekhub.choosehelper.utils.Prefs;
 
 public class SettingsAlertDialog {
 
-    private static String[] sVariantsCompCount = {"" + Prefs.COMPARES_COUNT_MIN, "" + Prefs.COMPARES_COUNT_TEN, ""
-            + Prefs.COMPARES_COUNT_TWENTY, "" + Prefs.COMPARES_COUNT_FIFTY, "" + Prefs.COMPARES_COUNT_MAX};
+    private final String[] mComparesCount = {"6", "10", "20", "50", "66"};
 
-    private static String[] sVariantsLanguage = {Prefs.LANGUAGE_UA, Prefs.LANGUAGE_EN};
+    private Context mContext;
+    private Settings mSettings;
 
-    private static int dialogType;
+    public SettingsAlertDialog(Context mContext, Settings mSettings) {
+        this.mContext = mContext;
+        this.mSettings = mSettings;
+    }
 
+    public void openSettingsDialog() {
+        AlertDialog dialog;
 
-    public static AlertDialog createDialog(Context context, Settings settings) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(settings.getTitle())
+        if (mSettings.getTitle().equals(mContext.getString(R.string.ad_title_compares_count))) {
+            dialog = createDialog(Prefs.SETTINGS_NUMBER_OF_COMPARES,
+                    mContext.getString(R.string.ad_title_compares_count), mComparesCount);
+            dialog.show();
+        } else {
+            Toast.makeText(mContext, "NO!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // Create a specifics alert dialog
+    private AlertDialog createDialog(String key, String title, String[] variants) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle(title)
                 .setIcon(R.drawable.icon_settings_dark)
                 .setCancelable(false)
-                .setNegativeButton(R.string.dialog_settings_btn_cancel, (dialog, which) -> {
+                .setNegativeButton(R.string.ad_btn_cancel, (dialog, which) -> {
                     dialog.cancel();
                 })
-                .setSingleChoiceItems(generateItems(settings.getTitle()), -1, new ApplyClickListener());
+                .setSingleChoiceItems(variants, -1, new ApplyClickListener(key));
 
         return builder.create();
     }
 
-    private static String[] generateItems(String settingsTitle) {
-        if (settingsTitle.equals(
-                Resources.getSystem().getString(R.string.dialog_settings_title_compares_count))) {
-            dialogType = 0;
-            return sVariantsCompCount;
-        } else if (settingsTitle.equals(
-                Resources.getSystem().getString(R.string.dialog_settings_title_language))) {
-            dialogType = 1;
-            return sVariantsLanguage;
-        }
-        return new String[]{"..."};
-    }
+    /*
+     ** Work with preferences
+     */
 
-    private static class ApplyClickListener implements AlertDialog.OnClickListener {
+    private class ApplyClickListener implements AlertDialog.OnClickListener {
+
+        private String mPrefsKey;
+
+        public ApplyClickListener(String prefsKey) {
+            this.mPrefsKey = prefsKey;
+        }
 
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            switch (dialogType) {
-                case 0: {
-                    Prefs.setNumberOfCompares(Integer.parseInt(sVariantsCompCount[which]));
-                    break;
-                }
-                case 1:
-                    Prefs.setLanguageSettings(sVariantsLanguage[which]);
-                    break;
+            if (mPrefsKey.equals(Prefs.SETTINGS_NUMBER_OF_COMPARES)) {
+                Prefs.setNumberOfCompares(Integer.parseInt(mComparesCount[which]));
             }
+            dialog.cancel();
+            SettingsActivity.updateRV();
         }
     }
 }
