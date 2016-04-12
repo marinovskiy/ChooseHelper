@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 
 import com.geekhub.choosehelper.R;
@@ -52,6 +53,13 @@ public class SettingsActivity extends BaseSignInActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateRV(generateSettings());
+        Log.d(TAG, "RV has been updated");
+    }
+
     private void setupToolbar() {
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
@@ -73,21 +81,9 @@ public class SettingsActivity extends BaseSignInActivity {
         return settingsList;
     }
 
-    public static void updateRV() {
-
+    private void updateRV(List<Settings> list) {
+        SettingsAdapter adapter = (SettingsAdapter) mRecyclerView.getAdapter();
+        adapter.updateList((list.subList(0, list.size() < 3 ? list.size() : 3)));
+        adapter.notifyDataSetChanged();
     }
-
-//    public static void updateUi(List<Settings> settingses) {
-//        SettingsAdapter adapter;
-//        if (mRecyclerView.getAdapter() == null) {
-//            adapter = new SettingsAdapter(settingses.subList(0, settingses.size() < 2
-//                    ? settingses.size() : 2));
-//            mRecyclerView.setAdapter(adapter);
-//
-//        } else {
-//            adapter = (SettingsAdapter) mRecyclerView.getAdapter();
-//            adapter.updateList(settingses.subList(0, settingses.size() < 19 ? settingses.size() : 19));
-//            adapter.notifyDataSetChanged();
-//        }
-//    }
 }

@@ -8,7 +8,7 @@ import android.widget.Toast;
 
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.ui.Settings;
-import com.geekhub.choosehelper.screens.activities.SettingsActivity;
+import com.geekhub.choosehelper.screens.fragments.AllComparesFragment;
 import com.geekhub.choosehelper.utils.Prefs;
 
 public class SettingsAlertDialog {
@@ -66,8 +66,8 @@ public class SettingsAlertDialog {
             if (mPrefsKey.equals(Prefs.SETTINGS_NUMBER_OF_COMPARES)) {
                 Prefs.setNumberOfCompares(Integer.parseInt(mComparesCount[which]));
             }
+            AllComparesFragment.sIsNeedToAutoUpdate = true;
             dialog.cancel();
-            SettingsActivity.updateRV();
         }
     }
 }

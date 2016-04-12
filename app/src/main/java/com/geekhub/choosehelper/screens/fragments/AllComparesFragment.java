@@ -5,13 +5,13 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
-import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -41,6 +41,8 @@ import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
 public class AllComparesFragment extends BaseFragment {
+
+    private static final String TAG = AllComparesFragment.class.getName();
 
     @Bind(R.id.swipe_to_refresh_all_compares)
     SwipeRefreshLayout mSwipeRefreshLayout;
@@ -333,6 +335,7 @@ public class AllComparesFragment extends BaseFragment {
             adapter = (ComparesAdapter) mRecyclerView.getAdapter();
             adapter.updateList(compares.subList(0, compares.size() < 19 ? compares.size() : 19));
             adapter.notifyDataSetChanged();
+            Log.d(TAG, "RV has been updated");
         }
 
         mRecyclerView.scrollToPosition(0);
