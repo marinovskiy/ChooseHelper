@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.firebase.client.Firebase;
@@ -42,6 +41,9 @@ public class SignUpActivity extends BaseSignInActivity {
 
     @Bind(R.id.iv_sign_up_photo)
     ImageView mIvAvatar;
+
+    @Bind(R.id.iv_sign_up_photo_load)
+    ImageView mIvAvatarLoad;
 
     @Bind(R.id.et_sign_up_full_name)
     EditText mEtSignUpFullName;
@@ -75,6 +77,7 @@ public class SignUpActivity extends BaseSignInActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_sign_up_photo:
+            case R.id.iv_sign_up_photo_load:
                 Utils.showPhotoPickerDialog(SignUpActivity.this, (dialog, which) -> {
                     switch (which) {
                         case 0:
@@ -108,8 +111,13 @@ public class SignUpActivity extends BaseSignInActivity {
                 break;
             case R.id.tv_already_have_an_account:
                 //onBackPressed();
+//                break;
+//                finish();
+//                this.overridePendingTransition(R.anim.slide_in_to_left, R.anim.do_nothing);
+                Intent intentSignIn = new Intent(SignUpActivity.this, SignInActivity.class);
+                startActivity(intentSignIn);
+                overridePendingTransition(R.anim.slide_in_to_right, R.anim.do_nothing);
                 finish();
-                this.overridePendingTransition(R.anim.slide_in_to_left, R.anim.do_nothing);
                 break;
         }
     }
@@ -129,7 +137,7 @@ public class SignUpActivity extends BaseSignInActivity {
                     avatarUri = data.getData();
                     try {
                         mFilePath = ImageUtils.getFilePath(getApplicationContext(), avatarUri);
-                        ImageUtils.loadCircleImage(mIvAvatar, mFilePath);
+                        ImageUtils.loadCircleImage(mIvAvatarLoad, mFilePath);
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
                         //TODO toast exception
@@ -140,7 +148,7 @@ public class SignUpActivity extends BaseSignInActivity {
                             (Bitmap) data.getExtras().get("data"));
                     try {
                         mFilePath = ImageUtils.getFilePath(getApplicationContext(), avatarUri);
-                        ImageUtils.loadCircleImage(mIvAvatar, mFilePath);
+                        ImageUtils.loadCircleImage(mIvAvatarLoad, mFilePath);
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
                         //TODO toast exception
