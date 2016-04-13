@@ -70,6 +70,9 @@ public class ComparesAdapter extends RecyclerView.Adapter<ComparesAdapter.ViewHo
         @Bind(R.id.compare_tv_author)
         TextView mTvAuthor;
 
+        @Bind(R.id.compare_tv_date)
+        TextView mTvDate;
+
         @Bind(R.id.rv_img_more)
         ImageView mImgMore;
 
@@ -94,8 +97,8 @@ public class ComparesAdapter extends RecyclerView.Adapter<ComparesAdapter.ViewHo
         @Bind(R.id.compare_ch_like_second)
         CheckBox mChLikeSecond;
 
-        @Bind(R.id.compare_tv_date)
-        TextView mTvDate;
+        @Bind(R.id.compare_tv_category)
+        TextView mTvCategory;
 
         @Bind(R.id.compare_tv_status)
         TextView mTvStatus;
@@ -176,6 +179,7 @@ public class ComparesAdapter extends RecyclerView.Adapter<ComparesAdapter.ViewHo
             }
 
             mTvDate.setText(DateUtils.convertDateTime(compare.getDate()));
+            mTvCategory.setText(compare.getCategory());
 
             if (compare.isOpen())
                 mTvStatus.setText("Open");

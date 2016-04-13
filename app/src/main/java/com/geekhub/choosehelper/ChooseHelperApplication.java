@@ -2,6 +2,7 @@ package com.geekhub.choosehelper;
 
 import android.app.Application;
 import android.content.Context;
+import android.preference.PreferenceManager;
 import android.support.multidex.MultiDex;
 
 import com.crashlytics.android.Crashlytics;
@@ -37,11 +38,7 @@ public class ChooseHelperApplication extends Application {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
         Prefs.init(this);
-
-        if (Prefs.getNumberOfCompares() == 0) {
-            Prefs.setNumberOfCompares(Prefs.COMPARES_COUNT_TWENTY);
-        }
-
+        PreferenceManager.setDefaultValues(this, R.xml.settings, false);
         Firebase.setAndroidContext(this);
         RealmConfiguration configuration = new RealmConfiguration.Builder(this)
                 .name("choose_helper_db.realm")

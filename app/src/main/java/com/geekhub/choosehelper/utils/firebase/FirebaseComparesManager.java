@@ -3,6 +3,8 @@ package com.geekhub.choosehelper.utils.firebase;
 import android.util.Log;
 
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ServerValue;
 import com.geekhub.choosehelper.models.network.NetworkCompare;
 import com.geekhub.choosehelper.models.network.NetworkVariant;
 
@@ -23,7 +25,12 @@ public class FirebaseComparesManager {
         compare.setVariants(variants);
         compare.setUserId(userId);
         /** push to firebase **/
-        firebase.push().setValue(compare);
+        firebase.push().setValue(compare, ServerValue.TIMESTAMP, new Firebase.CompletionListener() {
+            @Override
+            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+
+            }
+        });
     }
 
     public static void deleteCompare(String compareId) {

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <MultiSelectListPreference
+        android:defaultValue="@array/empty_array"
+        android:entries="@array/categories"
+        android:entryValues="@array/categories"
+        android:key="@string/settings_categories"
+        android:summary="No categories selected"
+        android:title="Categories of compares" />
+
+    <ListPreference
+        android:defaultValue="5"
+        android:dialogTitle="Choose number of compares"
+        android:entries="@array/numbers_of_compares"
+        android:entryValues="@array/numbers_of_compares"
+        android:key="@string/settings_numbers_of_compares"
+        android:summary="Show %s compares in main"
+        android:title="Number of compares" />
+
+    <ListPreference
+        android:defaultValue="English"
+        android:dialogTitle="Choose language of application"
+        android:entries="@array/languages"
+        android:entryValues="@array/languages"
+        android:key="@string/settings_language"
+        android:summary="%s"
+        android:title="Language" />
+
+</PreferenceScreen>

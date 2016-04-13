@@ -31,16 +31,16 @@
                 android:textSize="24sp" />
 
             <FrameLayout
-                android:layout_marginTop="18dp"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
-                android:layout_gravity="center">
+                android:layout_gravity="center"
+                android:layout_marginTop="18dp">
 
                 <ImageView
-                    android:src="@drawable/circle"
-                    android:layout_gravity="center"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:src="@drawable/circle" />
 
                 <ImageView
                     android:id="@+id/iv_sign_up_photo"
@@ -48,7 +48,7 @@
                     android:layout_height="70dp"
                     android:layout_gravity="center_horizontal|top"
                     android:layout_marginTop="15dp"
-                    android:src="@drawable/icon_camera" />
+                    android:src="@drawable/icon_camera_big" />
 
                 <ImageView
                     android:id="@+id/iv_sign_up_photo_load"

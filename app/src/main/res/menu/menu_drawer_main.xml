@@ -20,9 +20,4 @@
         android:icon="@drawable/icon_logout"
         android:title="Logout" />
 
-    <item
-        android:id="@+id/action_nav_exit"
-        android:icon="@drawable/icon_exit"
-        android:title="Exit" />
-
 </menu>

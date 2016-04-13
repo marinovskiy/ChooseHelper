@@ -75,10 +75,7 @@ public class MainActivity extends BaseSignInActivity
     private User mCurrentUser;
     private RealmChangeListener mUserListener = () -> {
         if (mCurrentUser != null && mCurrentUser.isLoaded()) {
-            try {
-                updateNavDrawerHeader(mCurrentUser);
-            } catch (NullPointerException ignored) {
-            }
+            updateNavDrawerHeader(mCurrentUser);
         }
     };
 
@@ -136,9 +133,6 @@ public class MainActivity extends BaseSignInActivity
             case R.id.action_nav_logout:
                 logout();
                 startSignInActivity();
-                return true;
-            case R.id.action_nav_exit:
-                finish();
                 return true;
             default:
                 return false;

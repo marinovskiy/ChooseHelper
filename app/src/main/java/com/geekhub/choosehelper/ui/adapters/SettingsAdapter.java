@@ -56,8 +56,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            if (getAdapterPosition() != mSettingsList.size() - 1)
-                itemView.setOnClickListener(this);
+            itemView.setOnClickListener(this);
         }
 
         @Override
