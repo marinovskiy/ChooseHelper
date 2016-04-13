@@ -137,6 +137,7 @@ public class SignUpActivity extends BaseSignInActivity {
                     avatarUri = data.getData();
                     try {
                         mFilePath = ImageUtils.getFilePath(getApplicationContext(), avatarUri);
+                        mIvAvatarLoad.setVisibility(View.VISIBLE);
                         ImageUtils.loadCircleImage(mIvAvatarLoad, mFilePath);
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
@@ -148,6 +149,7 @@ public class SignUpActivity extends BaseSignInActivity {
                             (Bitmap) data.getExtras().get("data"));
                     try {
                         mFilePath = ImageUtils.getFilePath(getApplicationContext(), avatarUri);
+                        mIvAvatarLoad.setVisibility(View.VISIBLE);
                         ImageUtils.loadCircleImage(mIvAvatarLoad, mFilePath);
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
