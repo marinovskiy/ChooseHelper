@@ -12,6 +12,7 @@
         android:background="@drawable/sign_in_top_shadow"
         android:gravity="center_horizontal"
         android:orientation="vertical"
+        android:weightSum="1"
         app:layout_heightPercent="62%">
 
         <TextView
@@ -73,26 +74,36 @@
 
         </android.support.design.widget.TextInputLayout>
 
-        <Button
-            android:id="@+id/sign_in_btn_login"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/button_sign_selector"
-            android:text="@string/label_login"
-            android:textAllCaps="true"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp" />
+            android:layout_marginTop="24dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/shadow_button" />
+
+            <!--<Button-->
+                <!--android:id="@+id/sign_in_btn_login"-->
+                <!--style="@style/AppTheme.Button"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:background="@drawable/button_sign_selector"-->
+                <!--android:text="@string/label_login" />-->
+
+        </FrameLayout>
 
         <TextView
             android:id="@+id/sign_in_tv_forgot_password"
-            style="?borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="14dp"
             android:layout_marginTop="16dp"
+            android:layout_weight="0.07"
+            android:padding="10dp"
             android:text="Forgot password?"
             android:textAllCaps="false"
             android:textColor="#03A9F4"
@@ -122,45 +133,21 @@
             android:gravity="center_horizontal"
             android:orientation="horizontal">
 
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
+            <ImageView
+                android:id="@+id/sign_in_facebook"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:src="@mipmap/icon_facebook_circle" />
 
-                <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/shadow_circle" />
-
-                <ImageView
-                    android:layout_marginLeft="1dp"
-                    android:id="@+id/sign_in_facebook"
-                    android:layout_width="55dp"
-                    android:layout_height="55dp"
-                    android:src="@mipmap/icon_facebook_circle" />
-
-            </FrameLayout>
-
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
-
-                <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/shadow_circle" />
-
-                <ImageView
-                    android:layout_marginLeft="1dp"
-                    android:id="@+id/sign_in_google"
-                    android:layout_width="55dp"
-                    android:layout_height="55dp"
-                    android:src="@mipmap/icon_google_plus_circle" />
-
-            </FrameLayout>
+            <ImageView
+                android:id="@+id/sign_in_google"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:src="@mipmap/icon_google_plus_circle" />
 
         </LinearLayout>
 
