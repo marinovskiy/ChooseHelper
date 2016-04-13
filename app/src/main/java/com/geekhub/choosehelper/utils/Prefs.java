@@ -3,6 +3,8 @@ package com.geekhub.choosehelper.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.Set;
+
 public class Prefs {
 
     // user
@@ -15,15 +17,9 @@ public class Prefs {
     public static final int FIREBASE_LOGIN = 3;
 
     // settings
-    public static final String SETTINGS_NUMBER_OF_COMPARES = "settings_number_of_compares";
     public static final String SETTINGS_LANGUAGE = "settings_language";
-//    public static final String SETTINGS_FILTER_OF_COMPARES = "settings_filter_of_compares";
-
-    public static final int COMPARES_COUNT_MIN = 6;
-    public static final int COMPARES_COUNT_TEN = 10;
-    public static final int COMPARES_COUNT_TWENTY = 20;
-    public static final int COMPARES_COUNT_FIFTY = 50;
-    public static final int COMPARES_COUNT_MAX = 66;
+    public static final String SETTINGS_CATEGORIES = "settings_filter_of_compares";
+    public static final String SETTINGS_NUMBER_OF_COMPARES = "settings_number_of_compares";
 
     private static SharedPreferences sPrefs;
 
@@ -36,7 +32,7 @@ public class Prefs {
         }
     }
 
-    // users
+    // login and user
     public static int getLoggedType() {
         return getInt(LOGGED_TYPE);
     }
@@ -62,16 +58,21 @@ public class Prefs {
         setInt(SETTINGS_NUMBER_OF_COMPARES, numberOfCompares);
     }
 
+    public static Set<String> getCategories() {
+        return getStringSet(SETTINGS_CATEGORIES);
+    }
+
+    public static void setCategories(Set<String> stringSet) {
+        setStringSet(SETTINGS_CATEGORIES, stringSet);
+    }
+
     // standard methods
     private static String getString(String key) {
         return sPrefs.getString(key, null);
     }
 
     private static void setString(String key, String value) {
-        sPrefs
-                .edit()
-                .putString(key, value)
-                .apply();
+        sPrefs.edit().putString(key, value).apply();
     }
 
     private static int getInt(String key) {
@@ -79,10 +80,15 @@ public class Prefs {
     }
 
     private static void setInt(String key, int value) {
-        sPrefs
-                .edit()
-                .putInt(key, value)
-                .apply();
+        sPrefs.edit().putInt(key, value).apply();
+    }
+
+    private static Set<String> getStringSet(String key) {
+        return sPrefs.getStringSet(key, null);
+    }
+
+    private static void setStringSet(String key, Set<String> stringSet) {
+        sPrefs.edit().putStringSet(key, stringSet).apply();
     }
 
 }

@@ -72,7 +72,7 @@ public class FollowingsComparesFragment extends BaseFragment {
 
     private RealmChangeListener mComparesListener = () -> {
         if (mCompares != null && mCompares.isLoaded()) {
-            updateUi(mCompares);
+            //updateUi(mCompares);
         }
     };
 
@@ -112,7 +112,7 @@ public class FollowingsComparesFragment extends BaseFragment {
                 .child(FirebaseConstants.FB_REF_COMPARES);
 
         mQueryCompares = mFirebaseCompares.orderByChild(FirebaseConstants.FB_REF_DATE)
-                .limitToFirst(Prefs.getNumberOfCompares());
+                .limitToFirst(20);
 
         mFirebaseLikes = new Firebase(FirebaseConstants.FB_REF_MAIN)
                 .child(FirebaseConstants.FB_REF_LIKES);
@@ -175,74 +175,74 @@ public class FollowingsComparesFragment extends BaseFragment {
     /**
      * update UI method
      **/
-    private void updateUi(List<Compare> compares) {
-        setProgressVisibility(false);
-
-        ComparesAdapter adapter;
-        if (mRecyclerView.getAdapter() == null) {
-            adapter = new ComparesAdapter(compares.subList(0, compares.size() < 19
-                    ? compares.size() : 19));
-            mRecyclerView.setAdapter(adapter);
-
-            /** click listener for details **/
-            adapter.setOnItemClickListener((view, position) -> {
-                Intent intent = new Intent(getActivity(), DetailsActivity.class);
-                intent.putExtra(DetailsActivity.INTENT_KEY_COMPARE_ID, compares.get(position).getId());
-                startActivity(intent);
-            });
-
-            /** click listener for likes **/
-            adapter.setOnLikeClickListener((mainView, clickedCheckBox, otherCheckBox,
-                                            position, variantNumber) -> {
-                boolean isNeedToUnCheck = false;
-                if (!compares.get(position).isOpen()) { // if closed
-                    isNeedToUnCheck = true;
-                    Utils.showMessage(getContext(), getString(R.string.toast_cannot_like_closed));
-                } else if (!Utils.hasInternet(getContext())) { // if no internet
-                    isNeedToUnCheck = true;
-                    Utils.showMessage(getContext(), getString(R.string.toast_no_internet));
-                } else if (compares.get(position).getAuthor().getId().equals(Prefs.getUserId())) { // if user is owner
-                    isNeedToUnCheck = true;
-                    Utils.showMessage(getContext(), getString(R.string.toast_cannot_like_own));
-                } else { // update like
-                    Utils.blockViews(mainView, clickedCheckBox, otherCheckBox);
-                    FirebaseLikesManager.updateLike(compares.get(position).getId(), variantNumber,
-                            mainView, clickedCheckBox, otherCheckBox);
-                }
-                // unCheck if need
-                if (isNeedToUnCheck) {
-                    clickedCheckBox.setChecked(false);
-                    int newValue = Integer.parseInt(clickedCheckBox.getText().toString()) - 1;
-                    clickedCheckBox.setText(String.valueOf(newValue));
-                }
-            });
-
-            /** click listener for popup menu **/
-            adapter.setOnItemClickListenerPopup((view, position) -> {
-                String compareId = compares.get(position).getId();
-                if (compares.get(position).getAuthor().getId().equals(Prefs.getUserId())) {
-                    Utils.showOwnerPopupMenu(getContext(), view, compareId);
-                } else {
-                    Utils.showUserPopupMenu(getContext(), view, compareId);
-                }
-            });
-
-            /** click listener for author **/
-            adapter.setOnItemClickListenerAuthor((view, position) -> {
-                Intent userIntent = new Intent(getActivity(), ProfileActivity.class);
-                userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID,
-                        compares.get(position).getAuthor().getId());
-                userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME,
-                        compares.get(position).getAuthor().getFullName());
-                startActivity(userIntent);
-            });
-        } else {
-            adapter = (ComparesAdapter) mRecyclerView.getAdapter();
-            adapter.updateList(compares.subList(0, compares.size() < 19
-                    ? compares.size() : 19));
-            adapter.notifyDataSetChanged();
-        }
-    }
+//    private void updateUi(List<Compare> compares) {
+//        setProgressVisibility(false);
+//
+//        ComparesAdapter adapter;
+//        if (mRecyclerView.getAdapter() == null) {
+//            adapter = new ComparesAdapter(compares.subList(0, compares.size() < 19
+//                    ? compares.size() : 19));
+//            mRecyclerView.setAdapter(adapter);
+//
+//            /** click listener for details **/
+//            adapter.setOnItemClickListener((view, position) -> {
+//                Intent intent = new Intent(getActivity(), DetailsActivity.class);
+//                intent.putExtra(DetailsActivity.INTENT_KEY_COMPARE_ID, compares.get(position).getId());
+//                startActivity(intent);
+//            });
+//
+//            /** click listener for likes **/
+//            adapter.setOnLikeClickListener((mainView, clickedCheckBox, otherCheckBox,
+//                                            position, variantNumber) -> {
+//                boolean isNeedToUnCheck = false;
+//                if (!compares.get(position).isOpen()) { // if closed
+//                    isNeedToUnCheck = true;
+//                    Utils.showMessage(getContext(), getString(R.string.toast_cannot_like_closed));
+//                } else if (!Utils.hasInternet(getContext())) { // if no internet
+//                    isNeedToUnCheck = true;
+//                    Utils.showMessage(getContext(), getString(R.string.toast_no_internet));
+//                } else if (compares.get(position).getAuthor().getId().equals(Prefs.getUserId())) { // if user is owner
+//                    isNeedToUnCheck = true;
+//                    Utils.showMessage(getContext(), getString(R.string.toast_cannot_like_own));
+//                } else { // update like
+//                    Utils.blockViews(mainView, clickedCheckBox, otherCheckBox);
+//                    FirebaseLikesManager.updateLike(compares.get(position).getId(), variantNumber,
+//                            mainView, clickedCheckBox, otherCheckBox);
+//                }
+//                // unCheck if need
+//                if (isNeedToUnCheck) {
+//                    clickedCheckBox.setChecked(false);
+//                    int newValue = Integer.parseInt(clickedCheckBox.getText().toString()) - 1;
+//                    clickedCheckBox.setText(String.valueOf(newValue));
+//                }
+//            });
+//
+//            /** click listener for popup menu **/
+//            adapter.setOnItemClickListenerPopup((view, position) -> {
+//                String compareId = compares.get(position).getId();
+//                if (compares.get(position).getAuthor().getId().equals(Prefs.getUserId())) {
+//                    Utils.showOwnerPopupMenu(getContext(), view, compareId);
+//                } else {
+//                    Utils.showUserPopupMenu(getContext(), view, compareId);
+//                }
+//            });
+//
+//            /** click listener for author **/
+//            adapter.setOnItemClickListenerAuthor((view, position) -> {
+//                Intent userIntent = new Intent(getActivity(), ProfileActivity.class);
+//                userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID,
+//                        compares.get(position).getAuthor().getId());
+//                userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME,
+//                        compares.get(position).getAuthor().getFullName());
+//                startActivity(userIntent);
+//            });
+//        } else {
+//            adapter = (ComparesAdapter) mRecyclerView.getAdapter();
+//            adapter.updateList(compares.subList(0, compares.size() < 19
+//                    ? compares.size() : 19));
+//            adapter.notifyDataSetChanged();
+//        }
+//    }
 
     /**
      * get information about compare from local database

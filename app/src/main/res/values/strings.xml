@@ -71,13 +71,36 @@
     <string name="tab_label_all">All</string>
     <string name="tab_label_followings">Followings</string>
 
+    <!--settings-->
+    <string name="settings_numbers_of_compares">settings_numbers_of_compares</string>
+    <string name="settings_language">settings_language</string>
+    <string name="settings_categories">settings_categories</string>
+
     <string-array name="categories">
         <item>Entertainment</item>
         <item>Transport</item>
         <item>Clothes</item>
         <item>Eating</item>
         <item>Places</item>
+        <item>Movies</item>
         <item>Other</item>
     </string-array>
+
+    <string-array name="numbers_of_compares">
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>25</item>
+        <item>50</item>
+    </string-array>
+
+    <string-array name="languages">
+        <item>English</item>
+        <item>Ukrainian</item>
+        <item>Russian</item>
+    </string-array>
+
+    <string-array name="empty_array"/>
 
 </resources>

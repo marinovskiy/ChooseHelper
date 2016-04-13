@@ -288,7 +288,7 @@ public class DetailsActivity extends BaseSignInActivity {
                         tvStatus.setText("Open");
                     } else {
                         updateCompareStatus(false);
-                        tvStatus.setText("Close");
+                        tvStatus.setText("Closed");
                     }
                 }
             });
