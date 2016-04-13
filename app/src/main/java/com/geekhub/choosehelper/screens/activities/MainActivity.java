@@ -13,6 +13,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,18 +21,26 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.db.Following;
 import com.geekhub.choosehelper.models.db.User;
+import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.screens.fragments.AllComparesFragment;
 import com.geekhub.choosehelper.screens.fragments.FollowingsComparesFragment;
 import com.geekhub.choosehelper.screens.fragments.SearchComparesFragment;
 import com.geekhub.choosehelper.ui.adapters.ComparesViewPagerAdapter;
 import com.geekhub.choosehelper.utils.ImageUtils;
+import com.geekhub.choosehelper.utils.ModelConverter;
 import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.Utils;
 import com.geekhub.choosehelper.utils.db.DbUsersManager;
+import com.geekhub.choosehelper.utils.firebase.FirebaseConstants;
 import com.geekhub.choosehelper.utils.firebase.FirebaseUsersManager;
 
 import java.util.ArrayList;
@@ -68,22 +77,27 @@ public class MainActivity extends BaseSignInActivity
     @Bind(R.id.main_search_container)
     FrameLayout mSearchContainer;
 
-    // navigation header view
     private View mNavHeaderView;
+
+    private Firebase mFirebaseUser;
+
+    // load user just one time
+    private boolean mIsUserLoaded = false;
+
+    // is need to exit from app
+    private boolean mIsNeedToExit = false;
 
     // realm
     private User mCurrentUser;
     private RealmChangeListener mUserListener = () -> {
-        if (mCurrentUser != null && mCurrentUser.isLoaded()) {
+        if (!mIsUserLoaded && mCurrentUser != null && mCurrentUser.isLoaded()) {
+            mIsUserLoaded = true;
             updateNavDrawerHeader(mCurrentUser);
         }
     };
 
     // search fragment
     private SearchComparesFragment mSearchComparesFragment = new SearchComparesFragment();
-
-    // is need to exit from app
-    private boolean mIsNeedToExit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,10 +110,16 @@ public class MainActivity extends BaseSignInActivity
         mTabLayout.setupWithViewPager(mViewPager);
         mNavigationView.setNavigationItemSelectedListener(this);
 
+        // firebase reference
+        mFirebaseUser = new Firebase(FirebaseConstants.FB_REF_MAIN)
+                .child(FirebaseConstants.FB_REF_USERS)
+                .child(Prefs.getUserId());
+
         // requests
-        fetchCurrentUserFromDb();
         if (Utils.hasInternet(getApplicationContext())) {
-            FirebaseUsersManager.saveUserFromFirebase(Prefs.getUserId());
+            fetchCurrentUserFromNetwork();
+        } else {
+            fetchCurrentUserFromDb();
         }
     }
 
@@ -239,6 +259,21 @@ public class MainActivity extends BaseSignInActivity
         mCurrentUser.addChangeListener(mUserListener);
     }
 
+    private void fetchCurrentUserFromNetwork() {
+        mFirebaseUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                NetworkUser networkUser = dataSnapshot.getValue(NetworkUser.class);
+                DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser, Prefs.getUserId()));
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                // TODO toast or dialog of exception
+            }
+        });
+    }
+
     private void setupToolbar() {
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
@@ -252,12 +287,14 @@ public class MainActivity extends BaseSignInActivity
     }
 
     private void updateNavDrawerHeader(User user) {
-        if (mNavHeaderView == null) {
+        /*if (mNavHeaderView == null) {
             mNavHeaderView = mNavigationView.inflateHeaderView(R.layout.navigation_header_layout);
         } else {
             mNavigationView.removeHeaderView(mNavHeaderView);
             mNavHeaderView = mNavigationView.inflateHeaderView(R.layout.navigation_header_layout);
-        }
+        }*/
+        mNavigationView.removeHeaderView(mNavHeaderView);
+        mNavHeaderView = mNavigationView.inflateHeaderView(R.layout.navigation_header_layout);
 
         ImageView ivAvatar = (ImageView) mNavHeaderView.findViewById(R.id.nav_header_avatar);
         TextView tvFullName = (TextView) mNavHeaderView.findViewById(R.id.nav_header_name);

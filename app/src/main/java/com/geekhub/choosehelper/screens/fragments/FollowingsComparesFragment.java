@@ -56,16 +56,12 @@ public class FollowingsComparesFragment extends BaseFragment {
     @Bind(R.id.followings_cmps_btn_cmps_available)
     Button mBtnNewComparesAvailable;
 
-    /**
-     * firebase references and queries
-     **/
+    // firebase references and queries
     private Firebase mFirebaseCompares;
     private Query mQueryCompares;
     private Firebase mFirebaseLikes;
 
-    /**
-     * realm
-     **/
+    // realm
     private ArrayList<String> mUsersIds = new ArrayList<>();
 
     private RealmResults<Compare> mCompares;
@@ -107,7 +103,7 @@ public class FollowingsComparesFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        /** firebase references **/
+        // firebase references
         mFirebaseCompares = new Firebase(FirebaseConstants.FB_REF_MAIN)
                 .child(FirebaseConstants.FB_REF_COMPARES);
 
@@ -117,26 +113,13 @@ public class FollowingsComparesFragment extends BaseFragment {
         mFirebaseLikes = new Firebase(FirebaseConstants.FB_REF_MAIN)
                 .child(FirebaseConstants.FB_REF_LIKES);
 
-        /** requests **/
+        // requests
         fetchComparesFromDb();
         if (Utils.hasInternet(getContext())) {
             fetchComparesFromNetwork();
-            //addListenerForNewValues();
         }
 
-        /*mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (dy - 10 > 0) {
-                    mBtnNewComparesAvailable.setVisibility(View.GONE);
-                } else if (dy + 5 < 0 && mIsNeedToShowUpdateBtnWhileScroll) {
-                    mBtnNewComparesAvailable.setVisibility(View.VISIBLE);
-                }
-            }
-        });*/
-
-        /** swipe refresh layout **/
+        // swipe refresh layout
         mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
@@ -172,9 +155,7 @@ public class FollowingsComparesFragment extends BaseFragment {
         mCompares.removeChangeListener(mComparesListener);
     }
 
-    /**
-     * update UI method
-     **/
+    // update UI method
 //    private void updateUi(List<Compare> compares) {
 //        setProgressVisibility(false);
 //
@@ -244,18 +225,14 @@ public class FollowingsComparesFragment extends BaseFragment {
 //        }
 //    }
 
-    /**
-     * get information about compare from local database
-     **/
+    // get information about compare from local database
     private void fetchComparesFromDb() {
         setProgressVisibility(true);
         mCompares = DbComparesManager.getCompares();
         mCompares.addChangeListener(mComparesListener);
     }
 
-    /**
-     * notify about new compares
-     **/
+    // notify about new compares
     private void addListenerForNewValues() {
         mFirebaseCompares.addValueEventListener(new ValueEventListener() {
             @Override
@@ -275,9 +252,7 @@ public class FollowingsComparesFragment extends BaseFragment {
         });
     }
 
-    /**
-     * get information about compare from firebase
-     **/
+    // get information about compare from firebase
     private void fetchComparesFromNetwork() {
         mQueryCompares.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -304,12 +279,10 @@ public class FollowingsComparesFragment extends BaseFragment {
         });
     }
 
-    /**
-     * get details information about compares from firebase
-     **/
+    // get details information about compares from firebase
     private void fetchDetailsFromNetwork(List<Compare> compares, NetworkCompare networkCompare,
                                          String compareId, int size) {
-        /** likes **/
+        // likes
         Query queryDetails = mFirebaseLikes.orderByChild(FirebaseConstants.FB_REF_COMPARE_ID)
                 .equalTo(compareId);
         queryDetails.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -321,7 +294,7 @@ public class FollowingsComparesFragment extends BaseFragment {
                         likedVariant = snapshot.getValue(NetworkLike.class).getVariantNumber();
                     }
                 }
-                /** compare author **/
+                // compare author
                 final int tempLikedVariant = likedVariant;
                 new Firebase(FirebaseConstants.FB_REF_MAIN)
                         .child(FirebaseConstants.FB_REF_USERS)
@@ -356,9 +329,7 @@ public class FollowingsComparesFragment extends BaseFragment {
         });
     }
 
-    /**
-     * methods for show progress
-     **/
+    // methods for show progress
     private void hideRefreshing() {
         if (mSwipeRefreshLayout != null && mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);
