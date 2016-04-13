@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -18,14 +18,15 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:layout_below="@id/toolbar_details"
         android:background="@color/colorBackgroundComment">
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipe_to_refresh_details"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/details_rv"
@@ -37,12 +38,12 @@
         </android.support.v4.widget.SwipeRefreshLayout>
 
         <!--<ProgressBar-->
-            <!--android:id="@+id/progress_bar_details"-->
-            <!--style="?android:attr/progressBarStyleSmall"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:visibility="gone" />-->
+        <!--android:id="@+id/progress_bar_details"-->
+        <!--style="?android:attr/progressBarStyleSmall"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:visibility="gone" />-->
 
         <View
             android:id="@+id/toolbar_shadow_details"
@@ -50,27 +51,39 @@
             android:layout_height="6dp"
             android:background="@drawable/toolbar_shadow" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/shadow_comment" />
+
     </FrameLayout>
 
-    <android.support.percent.PercentRelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/comment_add_shadow_layout">
+        android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/details_et_comment_text"
+        <android.support.percent.PercentRelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter your comment"
-            app:layout_widthPercent="75%" />
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/comment_add_shadow_layout">
 
-        <Button
-            android:id="@+id/details_btn_add_comment"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="Add"
-            app:layout_widthPercent="25%" />
+            <EditText
+                android:id="@+id/details_et_comment_text"
+                android:layout_height="wrap_content"
+                android:hint="Enter your comment"
+                app:layout_widthPercent="75%" />
 
-    </android.support.percent.PercentRelativeLayout>
+            <Button
+                android:id="@+id/details_btn_add_comment"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="Add"
+                app:layout_widthPercent="25%" />
 
-</RelativeLayout>
+        </android.support.percent.PercentRelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

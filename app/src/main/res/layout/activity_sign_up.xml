@@ -37,12 +37,6 @@
                 android:layout_marginTop="18dp">
 
                 <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:src="@drawable/circle" />
-
-                <ImageView
                     android:id="@+id/iv_sign_up_photo"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
@@ -63,7 +57,13 @@
                     android:layout_gravity="center_horizontal|bottom"
                     android:layout_marginBottom="15dp"
                     android:text="Photo"
-                    android:textColor="@color/colorTextSecondary" />
+                    android:textColor="#aeaeae" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:src="@drawable/circle_avatar_selector" />
             </FrameLayout>
 
             <android.support.design.widget.TextInputLayout
