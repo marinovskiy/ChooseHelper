@@ -1,13 +1,26 @@
 package com.geekhub.choosehelper.screens.fragments;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v14.preference.PreferenceFragment;
+import android.support.v7.preference.Preference;
+import android.view.View;
 
 import com.geekhub.choosehelper.R;
+import com.geekhub.choosehelper.screens.activities.MainActivity;
 
-public class SettingsFragment extends PreferenceFragmentCompat/* implements OnSharedPreferenceChangeListener*/ {
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
 
-    /*@BindString(R.string.settings_categories)
+import butterknife.BindString;
+import butterknife.ButterKnife;
+
+import static android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+
+public class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
+
+    @BindString(R.string.settings_categories)
     String mSettingsCategories;
 
     @BindString(R.string.settings_numbers_of_compares)
@@ -21,20 +34,26 @@ public class SettingsFragment extends PreferenceFragmentCompat/* implements OnSh
 
     public static SettingsFragment newInstance() {
         return new SettingsFragment();
-    }*/
+    }
 
-    /*@Override
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-    }*/
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        addPreferencesFromResource(R.xml.settings);
+    }
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
-        addPreferencesFromResource(R.xml.qwerty);
+
     }
 
-    /*@Override
+    @Override
     public void onResume() {
         super.onResume();
         getPreferenceManager().getSharedPreferences()
@@ -52,9 +71,9 @@ public class SettingsFragment extends PreferenceFragmentCompat/* implements OnSh
     public void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
-    }*/
+    }
 
-    /*@Override
+    @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Preference preference = findPreference(key);
         if (key.equals(mSettingsCategories)) {
@@ -82,5 +101,5 @@ public class SettingsFragment extends PreferenceFragmentCompat/* implements OnSh
         } else if (key.equals(mSettingsLanguage)) {
             preference.setSummary(sharedPreferences.getString(key, ""));
         }
-    }*/
+    }
 }

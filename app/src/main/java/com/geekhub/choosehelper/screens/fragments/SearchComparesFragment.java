@@ -197,16 +197,6 @@ public class SearchComparesFragment extends BaseFragment {
                 }
             });
 
-            // click listener for popup menu
-            adapter.setOnItemClickListenerPopup((view, position) -> {
-                String compareId = compares.get(position).getId();
-                if (compares.get(position).getAuthor().getId().equals(Prefs.getUserId())) {
-                    Utils.showOwnerPopupMenu(getContext(), view, compareId);
-                } else {
-                    Utils.showUserPopupMenu(getContext(), view, compareId);
-                }
-            });
-
             // click listener for author
             adapter.setOnItemClickListenerAuthor((view, position) -> {
                 Intent userIntent = new Intent(getActivity(), ProfileActivity.class);

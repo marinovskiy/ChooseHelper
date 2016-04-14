@@ -1,4 +1,12 @@
 package com.geekhub.choosehelper.screens.activities;
 
-public class EditProfileActivity {
+import android.os.Bundle;
+
+public class EditProfileActivity extends BaseSignInActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
 }
