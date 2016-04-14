@@ -36,18 +36,35 @@ import butterknife.Bind;
 
 public class SearchComparesFragment extends BaseFragment {
 
+    private static final String BUNDLE_KEY_USER_ID = "bundle_key_user_id";
+
     @Bind(R.id.recycler_view_search_fragment)
     RecyclerView mRecyclerView;
 
     // firebase references and queries
     private Firebase mFirebaseCompares;
     private Firebase mFirebaseLikes;
+    private Query mQueryUserCompares;
+
+    private String mUserId;
 
     public SearchComparesFragment() {
     }
 
-    public static SearchComparesFragment newInstance() {
-        return new SearchComparesFragment();
+    public static SearchComparesFragment newInstance(String userId) {
+        SearchComparesFragment searchComparesFragment = new SearchComparesFragment();
+        Bundle args = new Bundle();
+        args.putString(BUNDLE_KEY_USER_ID, userId);
+        searchComparesFragment.setArguments(args);
+        return searchComparesFragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mUserId = getArguments().getString(BUNDLE_KEY_USER_ID);
+        }
     }
 
     @Override
@@ -67,33 +84,64 @@ public class SearchComparesFragment extends BaseFragment {
 
         mFirebaseLikes = new Firebase(FirebaseConstants.FB_REF_MAIN)
                 .child(FirebaseConstants.FB_REF_LIKES);
+
+        if (mUserId != null) {
+            mQueryUserCompares = mFirebaseCompares.orderByChild(FirebaseConstants.FB_REF_USER_ID)
+                    .equalTo(mUserId);
+        }
     }
 
     // get information about compares from firebase
     public void searchCompares(String query) {
-        mFirebaseCompares.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                List<Compare> compares = new ArrayList<>();
-                int snapshotSize = 0;
-                for (DataSnapshot compareSnapshot : dataSnapshot.getChildren()) {
-                    NetworkCompare networkCompare = compareSnapshot.getValue(NetworkCompare.class);
-                    List<NetworkVariant> networkVariants = networkCompare.getVariants();
-                    if (networkVariants.get(0).getDescription().contains(query) ||
-                            networkVariants.get(1).getDescription().contains(query)) {
-                        snapshotSize++;
-                        fetchDetailsFromNetwork(compares, networkCompare, compareSnapshot.getKey(),
-                                snapshotSize);
+        if (mUserId == null) {
+            mFirebaseCompares.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    List<Compare> compares = new ArrayList<>();
+                    int snapshotSize = 0;
+                    for (DataSnapshot compareSnapshot : dataSnapshot.getChildren()) {
+                        NetworkCompare networkCompare = compareSnapshot.getValue(NetworkCompare.class);
+                        List<NetworkVariant> networkVariants = networkCompare.getVariants();
+                        if (networkVariants.get(0).getDescription().contains(query) ||
+                                networkVariants.get(1).getDescription().contains(query)) {
+                            snapshotSize++;
+                            fetchDetailsFromNetwork(compares, networkCompare, compareSnapshot.getKey(),
+                                    snapshotSize);
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                //hideRefreshing();
-                Utils.showMessage(getContext(), getString(R.string.toast_error_message));
-            }
-        });
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                    //hideRefreshing();
+                    Utils.showMessage(getContext(), getString(R.string.toast_error_message));
+                }
+            });
+        } else {
+            mQueryUserCompares.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    List<Compare> compares = new ArrayList<>();
+                    int snapshotSize = 0;
+                    for (DataSnapshot compareSnapshot : dataSnapshot.getChildren()) {
+                        NetworkCompare networkCompare = compareSnapshot.getValue(NetworkCompare.class);
+                        List<NetworkVariant> networkVariants = networkCompare.getVariants();
+                        if (networkVariants.get(0).getDescription().contains(query) ||
+                                networkVariants.get(1).getDescription().contains(query)) {
+                            snapshotSize++;
+                            fetchDetailsFromNetwork(compares, networkCompare, compareSnapshot.getKey(),
+                                    snapshotSize);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                    //hideRefreshing();
+                    Utils.showMessage(getContext(), getString(R.string.toast_error_message));
+                }
+            });
+        }
     }
 
     // get details information about compares from firebase
@@ -153,8 +201,7 @@ public class SearchComparesFragment extends BaseFragment {
 
         ComparesAdapter adapter;
         if (mRecyclerView.getAdapter() == null) {
-            adapter = new ComparesAdapter(compares.subList(0, compares.size() < Prefs.getNumberOfCompares() - 1
-                    ? compares.size() : Prefs.getNumberOfCompares() - 1));
+            adapter = new ComparesAdapter(compares);
             mRecyclerView.setAdapter(adapter);
 
             // click listener for details
@@ -212,8 +259,7 @@ public class SearchComparesFragment extends BaseFragment {
             });
         } else {
             adapter = (ComparesAdapter) mRecyclerView.getAdapter();
-            adapter.updateList(compares.subList(0, compares.size() < Prefs.getNumberOfCompares() - 1
-                    ? compares.size() : Prefs.getNumberOfCompares() - 1));
+            adapter.updateList(compares);
             adapter.notifyDataSetChanged();
         }
     }

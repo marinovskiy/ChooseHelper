@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,7 +63,7 @@ public class FollowingsComparesFragment extends BaseFragment {
     private Firebase mFirebaseLikes;
 
     // realm
-    private ArrayList<String> mUsersIds = new ArrayList<>();
+    private ArrayList<String> mAuthorIds = new ArrayList<>();
 
     private RealmResults<Compare> mCompares;
 
@@ -76,11 +77,11 @@ public class FollowingsComparesFragment extends BaseFragment {
 
     }
 
-    public static FollowingsComparesFragment newInstance(/*ArrayList<String> usersIds*/) {
+    public static FollowingsComparesFragment newInstance(/*ArrayList<String> authorIds*/) {
         FollowingsComparesFragment fragment = new FollowingsComparesFragment();
-        //Bundle bundle = new Bundle();
-        //bundle.putStringArrayList(INTENT_KEY_USERS_IDS, usersIds);
-        //fragment.setArguments(bundle);
+        /*Bundle bundle = new Bundle();
+        bundle.putStringArrayList(INTENT_KEY_USERS_IDS, authorIds);
+        fragment.setArguments(bundle);*/
         return fragment;
     }
 
@@ -88,7 +89,10 @@ public class FollowingsComparesFragment extends BaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         /*if (getArguments() != null) {
-            mUsersIds = getArguments().getStringArrayList(INTENT_KEY_USERS_IDS);
+            mAuthorIds = getArguments().getStringArrayList(INTENT_KEY_USERS_IDS);
+            for (String authorsId : mAuthorIds) {
+                Log.i("followerstags", "mAuthorsIds =" + authorsId);
+            }
         }*/
     }
 
