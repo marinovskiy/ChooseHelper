@@ -11,6 +11,9 @@
         android:name="android.hardware.camera"
         android:required="true" />
 
+    <uses-sdk xmlns:tools="http://schemas.android.com/tools"
+        tools:overrideLibrary="android.support.v14.preference" />
+
     <application
         android:name=".ChooseHelperApplication"
         android:allowBackup="true"

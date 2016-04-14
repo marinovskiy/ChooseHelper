@@ -3,15 +3,15 @@ package com.geekhub.choosehelper.screens.activities;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.geekhub.choosehelper.R;
-import com.geekhub.choosehelper.screens.fragments.SettingsFragment;
 
 import butterknife.Bind;
 
-public class SettingsActivity extends BaseSignInActivity {
+public class SettingsActivity extends AppCompatActivity {
 
     @Bind(R.id.toolbar_settings)
     Toolbar mToolbar;
@@ -24,13 +24,6 @@ public class SettingsActivity extends BaseSignInActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         setupToolbar();
-        if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container_settings,
-                            SettingsFragment.newInstance(),
-                            SettingsFragment.class.getSimpleName())
-                    .commit();
-        }
     }
 
     private void setupToolbar() {

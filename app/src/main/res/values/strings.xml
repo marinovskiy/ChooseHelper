@@ -85,6 +85,7 @@
     <string name="status_closed">Closed</string>
     <string name="toast_click_again_exit">Click again for exit</string>
     <string name="pd_wait_please">Wait please...</string>
+    <string name="search_hint_user_compares">Search user compares...</string>
 
     <string-array name="categories">
         <item>Entertainment</item>

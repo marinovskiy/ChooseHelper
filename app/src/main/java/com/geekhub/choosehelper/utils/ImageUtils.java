@@ -22,9 +22,7 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 public class ImageUtils {
 
-    /**
-     * methods for load image to view
-     **/
+    // methods for load image to view
     public static void loadImage(ImageView imageView, String url) {
         Glide.with(imageView.getContext())
                 .load(url)
@@ -51,9 +49,7 @@ public class ImageUtils {
                 + Prefs.getUserId() + "/" + file.getName();
     }
 
-    /**
-     * method for get uri for camera picture
-     **/
+    // method for get uri for camera picture
     public static Uri getPhotoUri(Context context, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
@@ -61,9 +57,7 @@ public class ImageUtils {
         return Uri.parse(path);
     }
 
-    /**
-     * methods for get uri for gallery picture
-     **/
+    // methods for get uri for gallery picture
     @SuppressWarnings("NewApi")
     public static String getFilePath(Context context, Uri uri) throws URISyntaxException {
         final boolean needToCheckUri = Build.VERSION.SDK_INT >= 19;

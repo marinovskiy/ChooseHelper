@@ -1,24 +1,13 @@
 package com.geekhub.choosehelper.screens.fragments;
 
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.view.View;
+import android.support.v7.preference.PreferenceFragmentCompat;
 
 import com.geekhub.choosehelper.R;
 
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
+public class SettingsFragment extends PreferenceFragmentCompat/* implements OnSharedPreferenceChangeListener*/ {
 
-import butterknife.BindString;
-import butterknife.ButterKnife;
-
-public class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
-
-    @BindString(R.string.settings_categories)
+    /*@BindString(R.string.settings_categories)
     String mSettingsCategories;
 
     @BindString(R.string.settings_numbers_of_compares)
@@ -32,21 +21,20 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 
     public static SettingsFragment newInstance() {
         return new SettingsFragment();
-    }
+    }*/
 
-    @Override
+    /*@Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-    }
+    }*/
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.settings);
+    public void onCreatePreferences(Bundle bundle, String s) {
+        addPreferencesFromResource(R.xml.qwerty);
     }
 
-    @Override
+    /*@Override
     public void onResume() {
         super.onResume();
         getPreferenceManager().getSharedPreferences()
@@ -64,13 +52,13 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
     public void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
-    }
+    }*/
 
-    @Override
+    /*@Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Preference preference = findPreference(key);
         if (key.equals(mSettingsCategories)) {
-            AllComparesFragment.sIsNeedToAutoUpdate = true;
+            MainActivity.sIsNeedToAutoUpdate = true;
             Set<String> categoriesSet = sharedPreferences.getStringSet(key, new HashSet<>());
             String categoriesString = "";
             if (categoriesSet.size() != 0) {
@@ -88,11 +76,11 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
             }
             preference.setSummary(categoriesString);
         } else if (key.equals(mSettingsNumbersOfCompares)) {
-            AllComparesFragment.sIsNeedToAutoUpdate = true;
+            MainActivity.sIsNeedToAutoUpdate = true;
             preference.setSummary(String.format(Locale.getDefault(), "Show %s compares in main",
                     sharedPreferences.getString(key, "")));
         } else if (key.equals(mSettingsLanguage)) {
             preference.setSummary(sharedPreferences.getString(key, ""));
         }
-    }
+    }*/
 }

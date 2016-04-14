@@ -20,9 +20,7 @@ import io.realm.RealmConfiguration;
 
 public class ChooseHelperApplication extends Application {
 
-    /**
-     * primary keys (id) for realm
-     **/
+    // primary keys (id) for realm
     public static AtomicLong sVariantPrimaryKey;
     public static AtomicLong sFollowerPrimaryKey;
     public static AtomicLong sFollowingPrimaryKey;

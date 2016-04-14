@@ -70,6 +70,9 @@ public class MainActivity extends BaseSignInActivity
 
     private View mNavHeaderView;
 
+    // is need to reload compares (using after add new compare etc.)
+    public static boolean sIsNeedToAutoUpdate = false;
+
     private Firebase mFirebaseUser;
 
     // is need to exit from app

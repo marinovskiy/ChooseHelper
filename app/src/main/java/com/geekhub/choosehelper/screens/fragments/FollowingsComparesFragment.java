@@ -2,11 +2,9 @@ package com.geekhub.choosehelper.screens.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,10 +20,10 @@ import com.geekhub.choosehelper.models.db.Compare;
 import com.geekhub.choosehelper.models.db.Following;
 import com.geekhub.choosehelper.models.db.User;
 import com.geekhub.choosehelper.models.network.NetworkCompare;
-import com.geekhub.choosehelper.models.network.NetworkFollowing;
 import com.geekhub.choosehelper.models.network.NetworkLike;
 import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.screens.activities.DetailsActivity;
+import com.geekhub.choosehelper.screens.activities.MainActivity;
 import com.geekhub.choosehelper.screens.activities.ProfileActivity;
 import com.geekhub.choosehelper.ui.adapters.ComparesAdapter1;
 import com.geekhub.choosehelper.utils.ModelConverter;
@@ -53,9 +51,7 @@ public class FollowingsComparesFragment extends BaseFragment {
     SwipeRefreshLayout mSwipeRefreshLayout;
 
     // firebase references and queries
-    private Firebase mFirebaseUser;
     private Firebase mFirebaseCompares;
-    private Query mQueryCompares;
     private Firebase mFirebaseLikes;
 
     // realm
@@ -104,29 +100,17 @@ public class FollowingsComparesFragment extends BaseFragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // firebase references
-        mFirebaseUser = new Firebase(FirebaseConstants.FB_REF_MAIN)
-                .child(FirebaseConstants.FB_REF_USERS)
-                .child(Prefs.getUserId())
-                .child(FirebaseConstants.FB_REF_FOLLOWINGS);
-
         mFirebaseCompares = new Firebase(FirebaseConstants.FB_REF_MAIN)
                 .child(FirebaseConstants.FB_REF_COMPARES);
-
-        mQueryCompares = mFirebaseCompares/*.orderByChild(FirebaseConstants.FB_REF_DATE)*/
-                .limitToFirst(20); // TODO make variable or constant or etc.
 
         mFirebaseLikes = new Firebase(FirebaseConstants.FB_REF_MAIN)
                 .child(FirebaseConstants.FB_REF_LIKES);
 
         // requests
-        //if (mAuthorIds != null && !mAuthorIds.isEmpty()) {
         fetchComparesFromDb();
         if (Utils.hasInternet(getContext())) {
             fetchComparesFromNetwork();
-        }
-        /*} else {
-            // TODO show empty view no followings yet
-        }*/
+        }// TODO show empty view no followings yet
 
         // swipe refresh layout
         mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -148,7 +132,10 @@ public class FollowingsComparesFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        fetchComparesFromNetwork();
+        if (MainActivity.sIsNeedToAutoUpdate) {
+            MainActivity.sIsNeedToAutoUpdate = false;
+            fetchComparesFromNetwork();
+        }
     }
 
     @Override
@@ -157,6 +144,90 @@ public class FollowingsComparesFragment extends BaseFragment {
         if (mCompares != null && mComparesListener != null) {
             mCompares.removeChangeListener(mComparesListener);
         }
+    }
+
+    // get information about compare from local database
+    private void fetchComparesFromDb() {
+        setProgressVisibility(true);
+        mCompares = DbComparesManager.getCompares();
+        mCompares.addChangeListener(mComparesListener);
+    }
+
+    // get information about compare from firebase
+    private void fetchComparesFromNetwork() {
+        mFirebaseCompares.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<Compare> compares = new ArrayList<>();
+                int snapshotSize = (int) dataSnapshot.getChildrenCount();
+                if (snapshotSize == 0)
+                    hideRefreshing();
+                for (DataSnapshot compareSnapshot : dataSnapshot.getChildren()) {
+                    NetworkCompare networkCompare = compareSnapshot.getValue(NetworkCompare.class);
+                    fetchDetailsFromNetwork(compares, networkCompare,
+                            compareSnapshot.getKey(), snapshotSize);
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                hideRefreshing();
+                Utils.showMessage(getContext(), getString(R.string.toast_error_try_later));
+            }
+        });
+    }
+
+    // get details information about compares from firebase
+    private void fetchDetailsFromNetwork(List<Compare> compares, NetworkCompare networkCompare,
+                                         String compareId, int size) {
+
+        // likes
+        Query queryDetails = mFirebaseLikes.orderByChild(FirebaseConstants.FB_REF_COMPARE_ID)
+                .equalTo(compareId);
+        queryDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot likeSnapshot) {
+                int likedVariant = -1;
+                for (DataSnapshot snapshot : likeSnapshot.getChildren()) {
+                    if (snapshot.getValue(NetworkLike.class).getUserId().equals(Prefs.getUserId())) {
+                        likedVariant = snapshot.getValue(NetworkLike.class).getVariantNumber();
+                    }
+                }
+
+                // compares author
+                final int tempLikedVariant = likedVariant;
+                new Firebase(FirebaseConstants.FB_REF_MAIN)
+                        .child(FirebaseConstants.FB_REF_USERS)
+                        .child(networkCompare.getUserId())
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot authorSnapshot) {
+                                compares.add(ModelConverter.convertToCompare(networkCompare,
+                                        compareId,
+                                        authorSnapshot.getValue(NetworkUser.class),
+                                        networkCompare.getUserId(),
+                                        tempLikedVariant));
+
+                                if (compares.size() == size) {
+                                    DbComparesManager.saveCompares(compares);
+                                    hideRefreshing();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
+                                hideRefreshing();
+                                Utils.showMessage(getContext(),
+                                        getString(R.string.toast_error_try_later));
+                            }
+                        });
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Utils.showMessage(getContext(), getString(R.string.toast_error_try_later));
+            }
+        });
     }
 
     // update UI method
@@ -225,104 +296,6 @@ public class FollowingsComparesFragment extends BaseFragment {
             adapter.updateList(compares);
             adapter.notifyDataSetChanged();
         }
-    }
-
-    // get information about compare from local database
-    private void fetchComparesFromDb() {
-        setProgressVisibility(true);
-        mCompares = DbComparesManager.getCompares();
-        mCompares.addChangeListener(mComparesListener);
-    }
-
-    // get information about compare from firebase
-    private void fetchComparesFromNetwork() {
-        mFirebaseUser.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                    NetworkFollowing networkFollowing = dataSnapshot1.getValue(NetworkFollowing.class);
-                    mQueryCompares.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            List<Compare> compares = new ArrayList<>();
-                            int snapshotSize = (int) dataSnapshot.getChildrenCount();
-                            if (snapshotSize == 0)
-                                hideRefreshing();
-                            for (DataSnapshot compareSnapshot : dataSnapshot.getChildren()) {
-                                NetworkCompare networkCompare = compareSnapshot.getValue(NetworkCompare.class);
-                                //String authorId = networkCompare.getUserId();
-                                //if (networkFollowing.getUserId().equals(authorId)) {
-                                    fetchDetailsFromNetwork(compares, networkCompare,
-                                            compareSnapshot.getKey(), snapshotSize);
-                                //}
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(FirebaseError firebaseError) {
-                            hideRefreshing();
-                            Toast.makeText(getContext(), "Error! Please, try later", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
-    }
-
-    // get details information about compares from firebase
-    private void fetchDetailsFromNetwork(List<Compare> compares, NetworkCompare networkCompare,
-                                         String compareId, int size) {
-        // likes
-        Query queryDetails = mFirebaseLikes.orderByChild(FirebaseConstants.FB_REF_COMPARE_ID)
-                .equalTo(compareId);
-        queryDetails.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot likeSnapshot) {
-                int likedVariant = -1;
-                for (DataSnapshot snapshot : likeSnapshot.getChildren()) {
-                    if (snapshot.getValue(NetworkLike.class).getUserId().equals(Prefs.getUserId())) {
-                        likedVariant = snapshot.getValue(NetworkLike.class).getVariantNumber();
-                    }
-                }
-                // compare author
-                final int tempLikedVariant = likedVariant;
-                new Firebase(FirebaseConstants.FB_REF_MAIN)
-                        .child(FirebaseConstants.FB_REF_USERS)
-                        .child(networkCompare.getUserId())
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot authorSnapshot) {
-                                compares.add(ModelConverter.convertToCompare(networkCompare,
-                                        compareId,
-                                        authorSnapshot.getValue(NetworkUser.class),
-                                        networkCompare.getUserId(),
-                                        tempLikedVariant));
-
-                                if (compares.size() == size) {
-                                    DbComparesManager.saveCompares(compares);
-                                }
-                                //updateUi(compares);
-                                hideRefreshing();
-                            }
-
-                            @Override
-                            public void onCancelled(FirebaseError firebaseError) {
-                                hideRefreshing();
-                                Toast.makeText(getContext(), "Error! Please, try later", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                Toast.makeText(getContext(), "Error! Please, try later", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     // methods for show progress

@@ -36,13 +36,12 @@ import butterknife.Bind;
 
 public class SearchUserComparesFragment extends BaseFragment {
 
-    private static final String BUNDLE_KEY_USER_ID = "bundle_key_user_id";
+    private static final String SEARCH_BUNDLE_KEY_USER_ID = "search_bundle_key_user_id";
 
     @Bind(R.id.recycler_view_search_fragment)
     RecyclerView mRecyclerView;
 
     // firebase references and queries
-    private Firebase mFirebaseCompares;
     private Firebase mFirebaseLikes;
     private Query mQueryUserCompares;
 
@@ -54,7 +53,7 @@ public class SearchUserComparesFragment extends BaseFragment {
     public static SearchUserComparesFragment newInstance(String userId) {
         SearchUserComparesFragment searchComparesFragment = new SearchUserComparesFragment();
         Bundle args = new Bundle();
-        args.putString(BUNDLE_KEY_USER_ID, userId);
+        args.putString(SEARCH_BUNDLE_KEY_USER_ID, userId);
         searchComparesFragment.setArguments(args);
         return searchComparesFragment;
     }
@@ -63,7 +62,7 @@ public class SearchUserComparesFragment extends BaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mUserId = getArguments().getString(BUNDLE_KEY_USER_ID);
+            mUserId = getArguments().getString(SEARCH_BUNDLE_KEY_USER_ID);
         }
     }
 
@@ -79,13 +78,12 @@ public class SearchUserComparesFragment extends BaseFragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // firebase references
-        mFirebaseCompares = new Firebase(FirebaseConstants.FB_REF_MAIN)
-                .child(FirebaseConstants.FB_REF_COMPARES);
-
         mFirebaseLikes = new Firebase(FirebaseConstants.FB_REF_MAIN)
                 .child(FirebaseConstants.FB_REF_LIKES);
 
-        mQueryUserCompares = mFirebaseCompares.orderByChild(FirebaseConstants.FB_REF_USER_ID)
+        mQueryUserCompares = new Firebase(FirebaseConstants.FB_REF_MAIN)
+                .child(FirebaseConstants.FB_REF_COMPARES)
+                .orderByChild(FirebaseConstants.FB_REF_USER_ID)
                 .equalTo(mUserId);
     }
 
@@ -110,7 +108,7 @@ public class SearchUserComparesFragment extends BaseFragment {
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-                //hideRefreshing();
+                //hideRefreshing(); // TODO progress dialog
                 Utils.showMessage(getContext(), getString(R.string.toast_error_message));
             }
         });

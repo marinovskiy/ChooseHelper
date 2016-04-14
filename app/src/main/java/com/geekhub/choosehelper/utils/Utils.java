@@ -18,9 +18,7 @@ import com.geekhub.choosehelper.utils.firebase.FirebaseComparesManager;
 
 public class Utils {
 
-    /**
-     * internet
-     **/
+    // internet
     public static boolean hasInternet(Context context) {
         if (context == null) {
             return false;
@@ -31,9 +29,7 @@ public class Utils {
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
-    /**
-     * dialogs
-     **/
+    // dialogs
     public static void showPhotoPickerDialog(Context context,
                                              DialogInterface.OnClickListener onClickListener) {
         AlertDialog alertDialog = new AlertDialog.Builder(context)
@@ -44,35 +40,18 @@ public class Utils {
         alertDialog.show();
     }
 
-    public static void showCompareDeleteDialog(Context context,
-                                               DialogInterface.OnClickListener onClickListener) {
-        AlertDialog alertDialog = new AlertDialog.Builder(context)
-                .setCancelable(false)
-                .setTitle("Delete compare?")
-                .setNegativeButton("cancel", onClickListener)
-                .setPositiveButton("delete", onClickListener)
-                .create();
-        alertDialog.show();
-    }
-
-    /**
-     * show message
-     **/
+    // show message
     public static void showMessage(Context context, String message) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
 
-    /**
-     * get other variant number for operations
-     **/
+    // get other variant number for operations
     public static int getOtherVariantNumber(int currentVariantNumber) {
         return currentVariantNumber == 0 ? 1 : 0;
     }
 
-    /**
-     * popup menu methods
-     **/
+    //* popup menu methods
     public static void showUserPopupMenu(Context context, View view, String compareId) {
         PopupMenu popupMenu = new PopupMenu(context, view);
         popupMenu.inflate(R.menu.menu_compare);
@@ -116,9 +95,7 @@ public class Utils {
         popupMenu.show();
     }
 
-    /**
-     * methods for block and unblock views when like is transacting to server
-     **/
+    // methods for block and unblock views when like is transacting to server
     public static void blockViews(CardView cardView, CheckBox checkBox1, CheckBox checkBox2) {
         cardView.setClickable(false);
         checkBox1.setClickable(false);

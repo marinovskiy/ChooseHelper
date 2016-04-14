@@ -10,7 +10,6 @@ import io.realm.RealmResults;
 
 public class DbUsersManager {
 
-    // save user to local database
     public static void saveUser(User user) {
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransaction(realm1 -> realm1.copyToRealmOrUpdate(user));
@@ -30,7 +29,7 @@ public class DbUsersManager {
                 .findFirst();
     }
 
-    public static RealmResults<User> getUserNotAsync(String userId) {
+    public static RealmResults<User> getUserByIdSync(String userId) {
         return Realm.getDefaultInstance()
                 .where(User.class)
                 .equalTo(DbFields.DB_ID, userId)

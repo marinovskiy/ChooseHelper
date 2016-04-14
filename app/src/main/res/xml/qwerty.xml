@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <MultiSelectListPreference
-        android:defaultValue="@array/categories"
-        android:entries="@array/categories"
-        android:entryValues="@array/categories"
-        android:key="@string/settings_categories"
-        android:summary="No categories selected"
-        android:title="Categories in main tab" />
+    <!--<android.support.v7.preference.MultiSelectListPreference-->
+        <!--android:defaultValue="@array/categories"-->
+        <!--android:entries="@array/categories"-->
+        <!--android:entryValues="@array/categories"-->
+        <!--android:key="@string/settings_categories"-->
+        <!--android:summary="No categories selected"-->
+        <!--android:title="Categories in main tab" />-->
 
-    <ListPreference
+    <android.support.v7.preference.ListPreference
         android:defaultValue="5"
         android:dialogTitle="Choose number of compares"
         android:entries="@array/numbers_of_compares"
@@ -20,7 +20,7 @@
         android:summary="Show %s compares in all tab"
         android:title="Number of all compares" />
 
-    <ListPreference
+    <android.support.v7.preference.ListPreference
         android:defaultValue="English"
         android:dialogTitle="Choose language of application"
         android:entries="@array/languages"
@@ -29,4 +29,4 @@
         android:summary="%s"
         android:title="Language" />
 
-</PreferenceScreen>
+</android.support.v7.preference.PreferenceScreen>

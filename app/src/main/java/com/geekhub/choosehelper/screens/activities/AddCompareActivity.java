@@ -119,7 +119,7 @@ public class AddCompareActivity extends BaseSignInActivity {
                 mNewCompare.setVariants(variants);
 
                 FirebaseComparesManager.addNewCompare(mNewCompare);
-                AllComparesFragment.sIsNeedToAutoUpdate = true;
+                MainActivity.sIsNeedToAutoUpdate = true;
                 finish();
                 return true;
             case android.R.id.home:

@@ -125,7 +125,7 @@ public class FollowersActivity extends BaseSignInActivity {
 
     private void fetchUsersFromDb() {
         for (String userId : mUserIds) {
-            mUsers = DbUsersManager.getUserNotAsync(userId);
+            mUsers = DbUsersManager.getUserByIdSync(userId);
         }
         mUsers.addChangeListener(mUserListener);
     }

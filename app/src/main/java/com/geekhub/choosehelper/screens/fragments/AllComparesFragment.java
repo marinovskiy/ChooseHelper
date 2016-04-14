@@ -23,6 +23,7 @@ import com.geekhub.choosehelper.models.network.NetworkCompare;
 import com.geekhub.choosehelper.models.network.NetworkLike;
 import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.screens.activities.DetailsActivity;
+import com.geekhub.choosehelper.screens.activities.MainActivity;
 import com.geekhub.choosehelper.screens.activities.ProfileActivity;
 import com.geekhub.choosehelper.ui.adapters.ComparesAdapter;
 import com.geekhub.choosehelper.utils.ModelConverter;
@@ -55,9 +56,6 @@ public class AllComparesFragment extends BaseFragment {
     @Bind(R.id.progress_bar_all_compares)
     ProgressBar mProgressBar;
 
-    // is need to reload compares (using after add new compare etc.)
-    public static boolean sIsNeedToAutoUpdate = false;
-
     // firebase references
     private Query mQueryCompares;
     private Firebase mFirebaseLikes;
@@ -83,7 +81,6 @@ public class AllComparesFragment extends BaseFragment {
     };
 
     public AllComparesFragment() {
-
     }
 
     public static AllComparesFragment newInstance() {
@@ -123,7 +120,7 @@ public class AllComparesFragment extends BaseFragment {
         // requests
         fetchComparesFromDb();
         if (Utils.hasInternet(getContext())) {
-            fetchComparesFromNetwork(mCategories);
+            fetchComparesFromNetwork();
         }
 
         mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -134,7 +131,7 @@ public class AllComparesFragment extends BaseFragment {
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
             mSwipeRefreshLayout.setRefreshing(true);
             if (Utils.hasInternet(getContext())) {
-                fetchComparesFromNetwork(mCategories);
+                fetchComparesFromNetwork();
             } else {
                 hideRefreshing();
                 Utils.showMessage(getContext(), getString(R.string.toast_no_internet));
@@ -145,13 +142,13 @@ public class AllComparesFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (sIsNeedToAutoUpdate) {
-            sIsNeedToAutoUpdate = false;
+        if (MainActivity.sIsNeedToAutoUpdate) {
+            MainActivity.sIsNeedToAutoUpdate = false;
             mCategories = mSharedPreferences
                     .getStringSet(getString(R.string.settings_categories), new HashSet<>());
             mNumberOfCompares = Integer.parseInt(mSharedPreferences
                     .getString(getString(R.string.settings_numbers_of_compares), "5"));
-            fetchComparesFromNetwork(mCategories);
+            fetchComparesFromNetwork();
         }
     }
 
@@ -169,12 +166,10 @@ public class AllComparesFragment extends BaseFragment {
     }
 
     // get information about compare from firebase
-    private void fetchComparesFromNetwork(Set<String> categories) {
+    private void fetchComparesFromNetwork() {
         mQueryCompares.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                /*List<String> keys = new ArrayList<>();
-                List<NetworkCompare> netCompares = new ArrayList<>();*/
                 List<Compare> compares = new ArrayList<>();
                 int snapshotSize = (int) dataSnapshot.getChildrenCount();
                 if (snapshotSize == 0) {
@@ -183,17 +178,7 @@ public class AllComparesFragment extends BaseFragment {
                 for (DataSnapshot compareSnapshot : dataSnapshot.getChildren()) {
                     NetworkCompare networkCompare = compareSnapshot.getValue(NetworkCompare.class);
                     fetchDetailsFromNetwork(compares, networkCompare, compareSnapshot.getKey(), snapshotSize);
-                    /*if (categories.contains(networkCompare.getCategory())) {
-                        keys.add(compareSnapshot.getKey());
-                        netCompares.add(networkCompare);
-                    }
-                    if (keys.size() == mNumberOfCompares) {
-                        break;
-                    }*/
                 }
-                /*for (int i = 0; i < netCompares.size(); i++) {
-                    fetchDetailsFromNetwork(compares, netCompares.get(i), keys.get(i), keys.size());
-                }*/
             }
 
             @Override

@@ -16,15 +16,11 @@ import com.geekhub.choosehelper.utils.Utils;
 
 public class FirebaseLikesManager {
 
-    /**
-     * firebase reference
-     **/
+    // firebase reference
     private static Firebase sFirebaseLikes = new Firebase(FirebaseConstants.FB_REF_MAIN)
             .child(FirebaseConstants.FB_REF_LIKES);
 
-    /**
-     * freezing views when like variant
-     **/
+    // freezing views when like variant
     private static CardView sMainView;
     private static CheckBox sClickedCheckBox;
     private static CheckBox sOtherCheckBox;
@@ -68,7 +64,6 @@ public class FirebaseLikesManager {
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-                //Toast.makeText(getContext(), "Error! Please, try later", Toast.LENGTH_SHORT).show();
             }
         });
     }

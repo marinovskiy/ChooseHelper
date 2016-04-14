@@ -51,7 +51,6 @@ public class FirebaseUsersManager {
         userInfo.put(FirebaseConstants.FB_REF_FULL_NAME, networkUser.getFullName());
         userInfo.put(FirebaseConstants.FB_REF_PHOTO_URL, networkUser.getPhotoUrl());
 
-        //if (isUserExist(Prefs.getUserId())) {
         firebase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -67,9 +66,6 @@ public class FirebaseUsersManager {
             public void onCancelled(FirebaseError firebaseError) {
             }
         });
-        /*} else if (!isUserExist(Prefs.getUserId())) {
-            firebase.setValue(userInfo);
-        }*/
     }
 
 }

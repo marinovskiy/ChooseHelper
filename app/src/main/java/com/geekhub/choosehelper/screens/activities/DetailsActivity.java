@@ -399,7 +399,7 @@ public class DetailsActivity extends BaseSignInActivity {
                             getString(R.string.toast_cannot_like_own));
                 } else {
                     Utils.blockViews(clickedCheckBox, otherCheckBox);
-                    AllComparesFragment.sIsNeedToAutoUpdate = true;
+                    MainActivity.sIsNeedToAutoUpdate = true;
                     FirebaseLikesManager.updateLike(mCompare.getId(), variantNumber,
                             null, clickedCheckBox, otherCheckBox);
                 }

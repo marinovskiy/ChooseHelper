@@ -21,10 +21,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <FrameLayout
-            android:id="@+id/fragment_container_settings"
+        <fragment
+            android:name="com.geekhub.choosehelper.screens.fragments.SettingsFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:tag="com.geekhub.choosehelper.screens.fragments.SettingsFragment" />
 
         <View
             android:id="@+id/toolbar_shadow_settings"
