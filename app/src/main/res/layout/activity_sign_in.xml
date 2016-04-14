@@ -134,21 +134,52 @@
             android:gravity="center_horizontal"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/sign_in_facebook"
-                android:layout_width="55dp"
-                android:layout_height="55dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:src="@mipmap/icon_facebook_circle" />
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
 
-            <ImageView
-                android:id="@+id/sign_in_google"
-                android:layout_width="55dp"
-                android:layout_height="55dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:src="@mipmap/icon_google_plus_circle" />
+                <View
+                    android:layout_width="57dp"
+                    android:layout_height="57dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="4dp"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/shadow_circle" />
+
+                <ImageView
+                    android:id="@+id/sign_in_facebook"
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:src="@drawable/social_button_facebook_selector" />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+                <View
+                    android:layout_width="57dp"
+                    android:layout_height="57dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="4dp"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/shadow_circle" />
+
+                <ImageView
+                    android:id="@+id/sign_in_google"
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:src="@drawable/social_button_google_selector" />
+
+
+            </FrameLayout>
 
         </LinearLayout>
 
