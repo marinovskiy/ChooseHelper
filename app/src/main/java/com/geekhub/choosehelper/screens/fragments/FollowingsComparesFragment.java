@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -25,7 +24,7 @@ import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.screens.activities.DetailsActivity;
 import com.geekhub.choosehelper.screens.activities.MainActivity;
 import com.geekhub.choosehelper.screens.activities.ProfileActivity;
-import com.geekhub.choosehelper.ui.adapters.ComparesAdapter1;
+import com.geekhub.choosehelper.ui.adapters.ComparesAdapter;
 import com.geekhub.choosehelper.utils.ModelConverter;
 import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.Utils;
@@ -234,9 +233,9 @@ public class FollowingsComparesFragment extends BaseFragment {
     private void updateUi(List<Compare> compares) {
         setProgressVisibility(false);
 
-        ComparesAdapter1 adapter;
+        ComparesAdapter adapter;
         if (mRecyclerView.getAdapter() == null) {
-            adapter = new ComparesAdapter1(compares);
+            adapter = new ComparesAdapter(compares);
             mRecyclerView.setAdapter(adapter);
 
             /** click listener for details **/
@@ -292,7 +291,7 @@ public class FollowingsComparesFragment extends BaseFragment {
                 startActivity(userIntent);
             });
         } else {
-            adapter = (ComparesAdapter1) mRecyclerView.getAdapter();
+            adapter = (ComparesAdapter) mRecyclerView.getAdapter();
             adapter.updateList(compares);
             adapter.notifyDataSetChanged();
         }

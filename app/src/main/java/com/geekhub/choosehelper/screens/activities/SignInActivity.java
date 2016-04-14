@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.geekhub.choosehelper.R;
-import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.Utils;
 
 import butterknife.Bind;
@@ -29,7 +28,7 @@ public class SignInActivity extends BaseSignInActivity {
         }*/
     }
 
-    @OnClick({/*R.id.sign_in_btn_login, */R.id.sign_in_tv_forgot_password, R.id.sign_in_google,
+    @OnClick({R.id.sign_in_btn_login, R.id.sign_in_tv_forgot_password, R.id.sign_in_google,
             R.id.sign_in_facebook, R.id.tv_create_an_account})
     public void onClick(View view) {
         switch (view.getId()) {
