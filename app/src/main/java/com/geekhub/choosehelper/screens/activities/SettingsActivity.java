@@ -27,7 +27,8 @@ public class SettingsActivity extends BaseSignInActivity {
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
                     .add(R.id.fragment_container_settings,
-                            new SettingsFragment())
+                            SettingsFragment.newInstance(),
+                            SettingsFragment.class.getSimpleName())
                     .commit();
         }
     }

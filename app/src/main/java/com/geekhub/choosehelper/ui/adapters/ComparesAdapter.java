@@ -33,11 +33,11 @@ public class ComparesAdapter extends RecyclerView.Adapter<ComparesAdapter.ViewHo
     private OnItemClickListener mOnItemClickListenerAuthor;
 
     public ComparesAdapter(List<Compare> compares) {
-        mCompares = compares;
+        this.mCompares = compares;
     }
 
     public void updateList(List<Compare> compares) {
-        mCompares = compares;
+        this.mCompares = compares;
     }
 
     @Override

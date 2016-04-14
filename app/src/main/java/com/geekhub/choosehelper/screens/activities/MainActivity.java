@@ -47,8 +47,6 @@ import io.realm.RealmChangeListener;
 public class MainActivity extends BaseSignInActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    public static final String INTENT_KEY_USER_NAME = "intent_key_user_name";
-
     @Bind(R.id.drawer_main)
     DrawerLayout mDrawerLayout;
 
@@ -86,7 +84,7 @@ public class MainActivity extends BaseSignInActivity
     };
 
     // search fragment
-    private SearchComparesFragment mSearchComparesFragment = new SearchComparesFragment();
+    private SearchComparesFragment mSearchComparesFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +96,8 @@ public class MainActivity extends BaseSignInActivity
         setupViewPager(mViewPager);
         mTabLayout.setupWithViewPager(mViewPager);
         mNavigationView.setNavigationItemSelectedListener(this);
+
+        mSearchComparesFragment = SearchComparesFragment.newInstance();
 
         // firebase reference
         mFirebaseUser = new Firebase(FirebaseConstants.FB_REF_MAIN)
@@ -114,9 +114,7 @@ public class MainActivity extends BaseSignInActivity
     @OnClick(R.id.fab_add_main)
     public void onFabClick() {
         if (Utils.hasInternet(this)) {
-            Intent intent = new Intent(this, AddCompareActivity.class);
-            intent.putExtra(INTENT_KEY_USER_NAME, sCurrentUser.getFullName());
-            startActivity(intent);
+            startActivity(new Intent(this, AddCompareActivity.class));
         } else {
             Utils.showMessage(this, getString(R.string.toast_no_internet));
         }
@@ -165,7 +163,7 @@ public class MainActivity extends BaseSignInActivity
         // exit from app
         if (!mIsNeedToExit) {
             mIsNeedToExit = true;
-            Utils.showMessage(getApplicationContext(), "Click again for exit");
+            Utils.showMessage(getApplicationContext(), getString(R.string.toast_click_again_exit));
             new Handler().postDelayed(() -> mIsNeedToExit = false, 2000);
         } else {
             finish();
@@ -243,27 +241,6 @@ public class MainActivity extends BaseSignInActivity
         }
     }
 
-    // get information about user from local database
-    private void fetchCurrentUserFromDb() {
-        sCurrentUser = DbUsersManager.getUserById(Prefs.getUserId());
-        sCurrentUser.addChangeListener(mUserListener);
-    }
-
-    private void fetchCurrentUserFromNetwork() {
-        mFirebaseUser.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                NetworkUser networkUser = dataSnapshot.getValue(NetworkUser.class);
-                DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser, Prefs.getUserId()));
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                // TODO toast or dialog of exception
-            }
-        });
-    }
-
     private void setupToolbar() {
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
@@ -311,7 +288,6 @@ public class MainActivity extends BaseSignInActivity
         }
     }
 
-
     private void setupViewPager(ViewPager viewPager) {
         ComparesViewPagerAdapter adapter = new ComparesViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(AllComparesFragment.newInstance(),
@@ -321,12 +297,27 @@ public class MainActivity extends BaseSignInActivity
         viewPager.setAdapter(adapter);
     }
 
-    /*public static ArrayList<String> getFollowingIds() {
-        ArrayList<String> usersIds = new ArrayList<>();
-        for (Following following : sCurrentUser.getFollowings()) {
-            usersIds.add(following.getUserId());
-        }
-        return usersIds;
-    }*/
+    // get information about user from local database
+    private void fetchCurrentUserFromDb() {
+        sCurrentUser = DbUsersManager.getUserById(Prefs.getUserId());
+        sCurrentUser.addChangeListener(mUserListener);
+    }
 
+    // get information about user from network
+    private void fetchCurrentUserFromNetwork() {
+        mFirebaseUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                NetworkUser networkUser = dataSnapshot.getValue(NetworkUser.class);
+                DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser,
+                        Prefs.getUserId()));
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Utils.showMessage(getApplicationContext(),
+                        getString(R.string.toast_error_try_later));
+            }
+        });
+    }
 }

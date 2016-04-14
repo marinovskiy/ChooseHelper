@@ -8,9 +8,9 @@ public class Comment extends RealmObject {
     @PrimaryKey
     private String id;
 
-    private User author;
-
     private long date;
+
+    private User author;
 
     private String commentText;
 
@@ -26,20 +26,20 @@ public class Comment extends RealmObject {
         this.id = id;
     }
 
-    public User getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(User author) {
-        this.author = author;
-    }
-
     public long getDate() {
         return date;
     }
 
     public void setDate(long date) {
         this.date = date;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
     }
 
     public String getCommentText() {

@@ -6,27 +6,20 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatSpinner;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.geekhub.choosehelper.R;
-import com.geekhub.choosehelper.models.db.User;
 import com.geekhub.choosehelper.models.network.NetworkCompare;
 import com.geekhub.choosehelper.models.network.NetworkVariant;
-import com.geekhub.choosehelper.utils.AmazonUtils;
 import com.geekhub.choosehelper.utils.ImageUtils;
 import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.Utils;
 
-import java.io.File;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -104,7 +97,8 @@ public class AddCompareFragment extends BaseFragment {
                             break;
                         case 1:
                             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                            if (cameraIntent.resolveActivity(getActivity()
+                                    .getPackageManager()) != null) {
                                 startActivityForResult(cameraIntent, RC_CAMERA_FIRST);
                             }
                             break;
@@ -124,7 +118,8 @@ public class AddCompareFragment extends BaseFragment {
                             break;
                         case 1:
                             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                            if (cameraIntent.resolveActivity(getActivity()
+                                    .getPackageManager()) != null) {
                                 startActivityForResult(cameraIntent, RC_CAMERA_SECOND);
                             }
                             break;
@@ -146,7 +141,7 @@ public class AddCompareFragment extends BaseFragment {
                         ImageUtils.loadImage(mAddCompareImgOne, mFirstImagePath);
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
-                        //TODO toast exception
+                        Utils.showMessage(getContext(), getString(R.string.toast_error_message));
                     }
                     break;
                 case RC_CAMERA_FIRST:
@@ -157,7 +152,7 @@ public class AddCompareFragment extends BaseFragment {
                         ImageUtils.loadImage(mAddCompareImgOne, mFirstImagePath);
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
-                        //TODO toast exception
+                        Utils.showMessage(getContext(), getString(R.string.toast_error_message));
                     }
                     break;
                 case RC_GALLERY_SECOND:
@@ -167,7 +162,7 @@ public class AddCompareFragment extends BaseFragment {
                         ImageUtils.loadImage(mAddCompareImgTwo, mSecondImagePath);
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
-                        //TODO toast exception
+                        Utils.showMessage(getContext(), getString(R.string.toast_error_message));
                     }
                     break;
                 case RC_CAMERA_SECOND:
@@ -178,7 +173,7 @@ public class AddCompareFragment extends BaseFragment {
                         ImageUtils.loadImage(mAddCompareImgTwo, mSecondImagePath);
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
-                        //TODO toast exception
+                        Utils.showMessage(getContext(), getString(R.string.toast_error_message));
                     }
                     break;
             }
@@ -188,24 +183,18 @@ public class AddCompareFragment extends BaseFragment {
     public NetworkCompare getNewCompare() {
         NetworkCompare networkCompare = new NetworkCompare();
 
+        // new compares information
         String question = mAddCompareEtQuestion.getText().toString();
         String category = mCategoriesSpinner.getSelectedItem().toString();
         String firstVariant = mAddCompareEtVariantOne.getText().toString();
         String secondVariant = mAddCompareEtVariantTwo.getText().toString();
 
-        /** check if user pick images. If he didn't - will be using standard image **/
-       /* if (mFirstImagePath != null) {
-            mFirstImageUrl = getUrlAndStartUpload(mFirstImagePath);
-        }
-        if (mSecondImagePath != null) {
-            mSecondImageUrl = getUrlAndStartUpload(mSecondImagePath);
-        }*/
-
-        /** create variants list of compare **/
+        // variants list of compare
         List<NetworkVariant> variants = new ArrayList<>();
         variants.add(new NetworkVariant(mFirstImagePath, firstVariant));
         variants.add(new NetworkVariant(mSecondImagePath, secondVariant));
 
+        // set information to new compare
         networkCompare.setOpen(true);
         networkCompare.setQuestion(question);
         networkCompare.setCategory(category);
@@ -215,17 +204,4 @@ public class AddCompareFragment extends BaseFragment {
 
         return networkCompare;
     }
-
-    private String getUrlAndStartUpload(String filePath) {
-        File file = new File(filePath);
-        TransferObserver transferObserver = AmazonUtils
-                .getTransferUtility(getContext())
-                .upload(AmazonUtils.BUCKET_NAME + AmazonUtils.FOLDER_IMAGES + "/" + Prefs.getUserId(),
-                        file.getName(),
-                        file);
-        AmazonUtils.uploadImage(transferObserver);
-        return AmazonUtils.BASE_URL + AmazonUtils.FOLDER_IMAGES + "/"
-                + Prefs.getUserId() + "/" + file.getName();
-    }
-
 }

@@ -75,6 +75,16 @@
     <string name="settings_numbers_of_compares">settings_numbers_of_compares</string>
     <string name="settings_language">settings_language</string>
     <string name="settings_categories">settings_categories</string>
+    <string name="title_new_compare">New compare</string>
+    <string name="title_preview">Preview</string>
+    <string name="toast_gp_sign_in_error">"Sign in error: "</string>
+    <string name="toast_empty_comment">You can\'t post an empty comment</string>
+    <string name="toast_cannot_comment_closed">This compare has been closed. You cannot comment closed compare</string>
+    <string name="toast_error_try_later">Error! Please, try later</string>
+    <string name="status_open">Open</string>
+    <string name="status_closed">Closed</string>
+    <string name="toast_click_again_exit">Click again for exit</string>
+    <string name="pd_wait_please">Wait please...</string>
 
     <string-array name="categories">
         <item>Entertainment</item>

@@ -29,4 +29,11 @@ public class DbUsersManager {
                 .equalTo(DbFields.DB_ID, Prefs.getUserId())
                 .findFirst();
     }
+
+    public static RealmResults<User> getUserNotAsync(String userId) {
+        return Realm.getDefaultInstance()
+                .where(User.class)
+                .equalTo(DbFields.DB_ID, userId)
+                .findAll();
+    }
 }

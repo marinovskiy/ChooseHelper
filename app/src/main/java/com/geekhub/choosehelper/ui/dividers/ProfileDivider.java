@@ -21,7 +21,6 @@ public class ProfileDivider extends RecyclerView.ItemDecoration {
         int left = parent.getPaddingLeft();
         int right = parent.getWidth() - parent.getPaddingRight();
 
-        //int childCount = parent.getChildCount();
         int childCount = 3;
         for (int i = 0; i < childCount; i++) {
             if (i != childCount - 1) {

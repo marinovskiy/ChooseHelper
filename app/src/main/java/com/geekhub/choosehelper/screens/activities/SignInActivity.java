@@ -33,7 +33,7 @@ public class SignInActivity extends BaseSignInActivity {
             R.id.sign_in_facebook, R.id.tv_create_an_account})
     public void onClick(View view) {
         switch (view.getId()) {
-            /*case R.id.sign_in_btn_login:
+            case R.id.sign_in_btn_login:
                 String email = mEtSignInEmail.getText().toString();
                 String password = mEtSignInPassword.getText().toString();
 
@@ -42,7 +42,7 @@ public class SignInActivity extends BaseSignInActivity {
                 } else {
                     loginEmailPassword(email, password);
                 }
-                break;*/
+                break;
             case R.id.sign_in_tv_forgot_password:
                 //TODO forgot password
                 break;

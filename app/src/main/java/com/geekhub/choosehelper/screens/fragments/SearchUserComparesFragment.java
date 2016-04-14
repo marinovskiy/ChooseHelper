@@ -34,7 +34,9 @@ import java.util.List;
 
 import butterknife.Bind;
 
-public class SearchComparesFragment extends BaseFragment {
+public class SearchUserComparesFragment extends BaseFragment {
+
+    private static final String BUNDLE_KEY_USER_ID = "bundle_key_user_id";
 
     @Bind(R.id.recycler_view_search_fragment)
     RecyclerView mRecyclerView;
@@ -42,17 +44,27 @@ public class SearchComparesFragment extends BaseFragment {
     // firebase references and queries
     private Firebase mFirebaseCompares;
     private Firebase mFirebaseLikes;
+    private Query mQueryUserCompares;
 
-    public SearchComparesFragment() {
+    private String mUserId;
+
+    public SearchUserComparesFragment() {
     }
 
-    public static SearchComparesFragment newInstance() {
-        return new SearchComparesFragment();
+    public static SearchUserComparesFragment newInstance(String userId) {
+        SearchUserComparesFragment searchComparesFragment = new SearchUserComparesFragment();
+        Bundle args = new Bundle();
+        args.putString(BUNDLE_KEY_USER_ID, userId);
+        searchComparesFragment.setArguments(args);
+        return searchComparesFragment;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mUserId = getArguments().getString(BUNDLE_KEY_USER_ID);
+        }
     }
 
     @Override
@@ -72,11 +84,14 @@ public class SearchComparesFragment extends BaseFragment {
 
         mFirebaseLikes = new Firebase(FirebaseConstants.FB_REF_MAIN)
                 .child(FirebaseConstants.FB_REF_LIKES);
+
+        mQueryUserCompares = mFirebaseCompares.orderByChild(FirebaseConstants.FB_REF_USER_ID)
+                .equalTo(mUserId);
     }
 
     // get information about compares from firebase
     public void searchCompares(String query) {
-        mFirebaseCompares.addListenerForSingleValueEvent(new ValueEventListener() {
+        mQueryUserCompares.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<Compare> compares = new ArrayList<>();
@@ -134,7 +149,7 @@ public class SearchComparesFragment extends BaseFragment {
 
                                 if (compares.size() == size) {
                                     updateUi(compares);
-                                    //hideRefreshing();
+                                    //hideRefreshing(); // TODO set progress dialog
                                 }
                             }
 

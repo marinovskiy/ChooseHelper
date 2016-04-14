@@ -10,19 +10,16 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.network.NetworkCompare;
 import com.geekhub.choosehelper.models.network.NetworkVariant;
 import com.geekhub.choosehelper.screens.fragments.AddCompareFragment;
 import com.geekhub.choosehelper.screens.fragments.AllComparesFragment;
 import com.geekhub.choosehelper.screens.fragments.PreviewFragment;
-import com.geekhub.choosehelper.utils.AmazonUtils;
-import com.geekhub.choosehelper.utils.Prefs;
+import com.geekhub.choosehelper.utils.ImageUtils;
 import com.geekhub.choosehelper.utils.db.DbUsersManager;
 import com.geekhub.choosehelper.utils.firebase.FirebaseComparesManager;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,10 +38,9 @@ public class AddCompareActivity extends BaseSignInActivity {
 
     private AddCompareFragment mAddCompareFragment;
 
-    private Menu mMenu;
-    private int mMenuType = 0;
-
     private NetworkCompare mNewCompare = new NetworkCompare();
+
+    private int mMenuType = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +62,7 @@ public class AddCompareActivity extends BaseSignInActivity {
     public void onBackPressed() {
         super.onBackPressed();
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("New compare");
+            getSupportActionBar().setTitle(R.string.title_new_compare);
         }
         mToolbar.setNavigationIcon(ContextCompat.getDrawable(getApplicationContext(),
                 R.drawable.icon_cancel));
@@ -81,16 +77,14 @@ public class AddCompareActivity extends BaseSignInActivity {
         } else {
             getMenuInflater().inflate(R.menu.menu_done, menu);
         }
-        //mMenu = menu;
-        //getMenuInflater().inflate(R.menu.menu_forward, menu);
         return true;
-        //return super.onCreateOptionsMenu(mMenu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_forward:
+
                 mNewCompare = mAddCompareFragment.getNewCompare();
 
                 String question = mNewCompare.getQuestion();
@@ -104,19 +98,26 @@ public class AddCompareActivity extends BaseSignInActivity {
                 }
                 return true;
             case R.id.action_done:
-                List<NetworkVariant> variants = mNewCompare.getVariants();
-                String firstImgUrl = "";
-                String secondImgUrl = "";
-                if (variants.get(0).getImageUrl() != null) {
-                    firstImgUrl = getUrlAndStartUpload(variants.get(0).getImageUrl());
+
+                List<NetworkVariant> prevVariants = mNewCompare.getVariants();
+                String firstImgUrl = null;
+                String secondImgUrl = null;
+
+                if (prevVariants.get(0).getImageUrl() != null) {
+                    firstImgUrl = ImageUtils.getUrlAndStartUpload(prevVariants.get(0).getImageUrl(),
+                            getApplicationContext());
                 }
-                if (variants.get(1).getImageUrl() != null) {
-                    secondImgUrl = getUrlAndStartUpload(variants.get(1).getImageUrl());
+                if (prevVariants.get(1).getImageUrl() != null) {
+                    secondImgUrl = ImageUtils.getUrlAndStartUpload(prevVariants.get(1).getImageUrl(),
+                            getApplicationContext());
                 }
-                List<NetworkVariant> variants1 = new ArrayList<>();
-                variants1.add(new NetworkVariant(firstImgUrl, variants.get(0).getDescription()));
-                variants1.add(new NetworkVariant(secondImgUrl, variants.get(1).getDescription()));
-                mNewCompare.setVariants(variants1);
+
+                List<NetworkVariant> variants = new ArrayList<>();
+                variants.add(new NetworkVariant(firstImgUrl, prevVariants.get(0).getDescription()));
+                variants.add(new NetworkVariant(secondImgUrl, prevVariants.get(1).getDescription()));
+
+                mNewCompare.setVariants(variants);
+
                 FirebaseComparesManager.addNewCompare(mNewCompare);
                 AllComparesFragment.sIsNeedToAutoUpdate = true;
                 finish();
@@ -145,7 +146,7 @@ public class AddCompareActivity extends BaseSignInActivity {
         mMenuType = 1;
         invalidateOptionsMenu();
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Preview");
+            getSupportActionBar().setTitle(R.string.title_preview);
         }
         mToolbar.setNavigationIcon(ContextCompat.getDrawable(getApplicationContext(),
                 R.drawable.icon_back));
@@ -158,16 +159,17 @@ public class AddCompareActivity extends BaseSignInActivity {
                 .commit();
     }
 
-    private String getUrlAndStartUpload(String filePath) {
+    // get url from filepath and upload image to amazon
+    /*private String getUrlAndStartUpload(String filePath) {
         File file = new File(filePath);
         TransferObserver transferObserver = AmazonUtils
                 .getTransferUtility(getApplicationContext())
-                .upload(AmazonUtils.BUCKET_NAME + AmazonUtils.FOLDER_IMAGES + "/" + Prefs.getUserId(),
+                .upload(AmazonUtils.BUCKET_NAME + AmazonUtils.FOLDER_IMAGES + "/"
+                        + Prefs.getUserId(),
                         file.getName(),
                         file);
         AmazonUtils.uploadImage(transferObserver);
         return AmazonUtils.BASE_URL + AmazonUtils.FOLDER_IMAGES + "/"
                 + Prefs.getUserId() + "/" + file.getName();
-    }
-
+    }*/
 }

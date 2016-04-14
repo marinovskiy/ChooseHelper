@@ -3,13 +3,9 @@ package com.geekhub.choosehelper.screens.fragments;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
-import android.preference.MultiSelectListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.geekhub.choosehelper.R;
 
@@ -31,6 +27,13 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
     @BindString(R.string.settings_language)
     String mSettingsLanguage;
 
+    public SettingsFragment() {
+    }
+
+    public static SettingsFragment newInstance() {
+        return new SettingsFragment();
+    }
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -41,31 +44,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings);
-        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        /*Set<String> categoriesSet = sp.getStringSet(mSettingsCategories, new HashSet<>());
-        String categoriesString = "";
-        if (categoriesSet.size() != 0) {
-            int i = 0;
-            for (String s : categoriesSet) {
-                if (i == (categoriesSet.size() - 1)) {
-                    categoriesString = categoriesString + s;
-                } else {
-                    categoriesString = categoriesString + s + ", ";
-                }
-                i++;
-            }
-        } else {
-            categoriesString = "No categories selected";
-        }*/
     }
-
-    /*@Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        SharedPreferences sp = getPreferenceScreen().getSharedPreferences();
-        MultiSelectListPreference listPreference = (MultiSelectListPreference) getPreferenceManager().findPreference(mSettingsCategories);
-        listPreference.setSummary("test");
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }*/
 
     @Override
     public void onResume() {

@@ -11,9 +11,11 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.widget.ImageView;
 
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.bumptech.glide.Glide;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.net.URISyntaxException;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
@@ -36,8 +38,21 @@ public class ImageUtils {
                 .into(imageView);
     }
 
+    public static String getUrlAndStartUpload(String filePath, Context context) {
+        File file = new File(filePath);
+        TransferObserver transferObserver = AmazonUtils
+                .getTransferUtility(context)
+                .upload(AmazonUtils.BUCKET_NAME + AmazonUtils.FOLDER_IMAGES + "/"
+                                + Prefs.getUserId(),
+                        file.getName(),
+                        file);
+        AmazonUtils.uploadImage(transferObserver);
+        return AmazonUtils.BASE_URL + AmazonUtils.FOLDER_IMAGES + "/"
+                + Prefs.getUserId() + "/" + file.getName();
+    }
+
     /**
-     * methods for get uri for camera picture
+     * method for get uri for camera picture
      **/
     public static Uri getPhotoUri(Context context, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();

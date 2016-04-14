@@ -27,7 +27,7 @@ import com.geekhub.choosehelper.models.network.NetworkLike;
 import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.screens.activities.DetailsActivity;
 import com.geekhub.choosehelper.screens.activities.ProfileActivity;
-import com.geekhub.choosehelper.ui.adapters.ComparesAdapter;
+import com.geekhub.choosehelper.ui.adapters.ComparesAdapter1;
 import com.geekhub.choosehelper.utils.ModelConverter;
 import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.Utils;
@@ -178,9 +178,9 @@ public class FollowingsComparesFragment extends BaseFragment {
     private void updateUi(List<Compare> compares) {
         setProgressVisibility(false);
 
-        ComparesAdapter adapter;
+        ComparesAdapter1 adapter;
         if (mRecyclerView.getAdapter() == null) {
-            adapter = new ComparesAdapter(compares);
+            adapter = new ComparesAdapter1(compares);
             mRecyclerView.setAdapter(adapter);
 
             /** click listener for details **/
@@ -236,7 +236,7 @@ public class FollowingsComparesFragment extends BaseFragment {
                 startActivity(userIntent);
             });
         } else {
-            adapter = (ComparesAdapter) mRecyclerView.getAdapter();
+            adapter = (ComparesAdapter1) mRecyclerView.getAdapter();
             adapter.updateList(compares);
             adapter.notifyDataSetChanged();
         }

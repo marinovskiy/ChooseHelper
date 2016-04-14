@@ -89,7 +89,7 @@
             android:name="io.fabric.ApiKey"
             android:value="b77f77b940ea374ce7ca53f6b55e0dcd219e2094" />
 
-        <activity android:name=".screens.activities.ViewImageActivity"></activity>
+        <activity android:name=".screens.activities.ImageViewActivity"></activity>
     </application>
 
 </manifest>

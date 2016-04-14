@@ -198,9 +198,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:drawableRight="@drawable/icon_comments"
+            android:drawablePadding="6dp"
             android:textColor="@color/colorTextSecondary"
             android:textSize="@dimen/medium_text_size"
-            tools:text="Closed" />
+            tools:text="12" />
 
     </RelativeLayout>
 

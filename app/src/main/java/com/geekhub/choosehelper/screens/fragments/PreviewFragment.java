@@ -9,17 +9,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.db.User;
 import com.geekhub.choosehelper.models.network.NetworkCompare;
-import com.geekhub.choosehelper.utils.AmazonUtils;
 import com.geekhub.choosehelper.utils.DateUtils;
 import com.geekhub.choosehelper.utils.ImageUtils;
-import com.geekhub.choosehelper.utils.Prefs;
-import com.geekhub.choosehelper.utils.firebase.FirebaseComparesManager;
-
-import java.io.File;
 
 import butterknife.Bind;
 
@@ -71,7 +65,7 @@ public class PreviewFragment extends BaseFragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         if (sAuthor.getPhotoUrl() != null) {
@@ -91,28 +85,10 @@ public class PreviewFragment extends BaseFragment {
 
         mTvAuthor.setText(sAuthor.getFullName());
         mTvDate.setText(DateUtils.convertDateTime(sNewCompare.getDate()));
-        mTvStatus.setText("Open");
+        mTvStatus.setText(getString(R.string.status_open));
         mTvQuestion.setText(sNewCompare.getQuestion());
         mTvFirstVariant.setText(sNewCompare.getVariants().get(0).getDescription());
         mTvSecondVariant.setText(sNewCompare.getVariants().get(1).getDescription());
         mTvCategory.setText(sNewCompare.getCategory());
     }
-
-    public void addNewCompare() {
-        FirebaseComparesManager.addNewCompare(sNewCompare);
-        AllComparesFragment.sIsNeedToAutoUpdate = true;
-    }
-
-    private String getUrlAndStartUpload(String filePath) {
-        File file = new File(filePath);
-        TransferObserver transferObserver = AmazonUtils
-                .getTransferUtility(getContext())
-                .upload(AmazonUtils.BUCKET_NAME + AmazonUtils.FOLDER_IMAGES + "/" + Prefs.getUserId(),
-                        file.getName(),
-                        file);
-        AmazonUtils.uploadImage(transferObserver);
-        return AmazonUtils.BASE_URL + AmazonUtils.FOLDER_IMAGES + "/"
-                + Prefs.getUserId() + "/" + file.getName();
-    }
-
 }

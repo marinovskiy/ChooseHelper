@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -44,8 +43,6 @@ import butterknife.ButterKnife;
 
 public class BaseSignInActivity extends AppCompatActivity
         implements GoogleApiClient.OnConnectionFailedListener {
-
-    private static final String LOG_TAG = BaseSignInActivity.class.getSimpleName();
 
     /**
      * CONSTANTS
@@ -98,7 +95,6 @@ public class BaseSignInActivity extends AppCompatActivity
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken,
                                                        AccessToken currentAccessToken) {
-                Log.i(LOG_TAG, "onCurrentAccessTokenChanged: ");
                 BaseSignInActivity.this.onFacebookAccessTokenChange(currentAccessToken);
             }
         };
@@ -165,7 +161,8 @@ public class BaseSignInActivity extends AppCompatActivity
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.i(LOG_TAG, connectionResult.toString());
+        Utils.showMessage(this,
+                getString(R.string.toast_gp_sign_in_error) + connectionResult.getErrorMessage());
     }
 
     private void getGoogleOAuthTokenAndLogin(final String emailAddress) {
@@ -184,12 +181,12 @@ public class BaseSignInActivity extends AppCompatActivity
                     token = GoogleAuthUtil.getToken(BaseSignInActivity.this, emailAddress, scope);
                 } catch (IOException transientEx) {
                     /* network or server error */
-                    Log.i(LOG_TAG, "Error authenticating with Google: " + transientEx);
+                    Utils.showMessage(getApplicationContext(),
+                            getString(R.string.toast_gp_sign_in_error) + transientEx);
                     errorMessage = "Network error: " + transientEx.getMessage();
                 } catch (GoogleAuthException authEx) {
                     /* The call is not ever expected to succeed assuming you have already verified that
                      * Google Play services is installed. */
-                    Log.i(LOG_TAG, "Error authenticating with Google: " + authEx.getMessage(), authEx);
                     errorMessage = "Error authenticating with Google: " + authEx.getLocalizedMessage();
                 }
 
@@ -221,19 +218,16 @@ public class BaseSignInActivity extends AppCompatActivity
                     @Override
                     public void onSuccess(LoginResult loginResult) {
                         showProgressDialog();
-                        Log.i(LOG_TAG, "onSuccess: " + loginResult);
                     }
 
                     @Override
                     public void onCancel() {
                         hideProgressDialog();
-                        Log.i(LOG_TAG, "onCancel: ");
                     }
 
                     @Override
                     public void onError(FacebookException error) {
                         hideProgressDialog();
-                        Log.i(LOG_TAG, "onError: " + error.getMessage());
                     }
                 });
     }
@@ -254,7 +248,7 @@ public class BaseSignInActivity extends AppCompatActivity
      **/
     protected void loginEmailPassword(String email, String password) {
         if (email.equals("") || password.equals("")) {
-            Utils.showMessage(getApplicationContext(), "You did not fill all fields");
+            Utils.showMessage(this, getString(R.string.toast_empty_fields));
         } else {
             showProgressDialog();
             mFirebase.authWithPassword(email, password, new AuthResultHandler(LOGIN_TYPE_PASSWORD));
@@ -282,7 +276,6 @@ public class BaseSignInActivity extends AppCompatActivity
                     Prefs.setLoggedType(Prefs.FIREBASE_LOGIN);
                     break;
             }
-            Log.i(LOG_TAG, provider + " auth successful");
             setAuthenticatedUser(authData);
         }
 
@@ -319,8 +312,7 @@ public class BaseSignInActivity extends AppCompatActivity
             LoginManager.getInstance().logOut();
         } else if (Prefs.getLoggedType() == Prefs.GOOGLE_LOGIN) {
             if (mGoogleApiClient.isConnected()) {
-                Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(status ->
-                        Log.i(LOG_TAG, "onResult: " + status.getStatusMessage()));
+                Auth.GoogleSignInApi.signOut(mGoogleApiClient);
             }
         }
         DbComparesManager.clearCompares();

@@ -9,17 +9,17 @@ public class Compare extends RealmObject {
     @PrimaryKey
     private String id;
 
-    private String question;
+    private long date;
 
     private User author;
+
+    private boolean isOpen;
+
+    private String question;
 
     private RealmList<Variant> variants;
 
     private RealmList<Comment> comments;
-
-    private long date;
-
-    private boolean isOpen;
 
     private int likedVariant;
 
@@ -36,12 +36,12 @@ public class Compare extends RealmObject {
         this.id = id;
     }
 
-    public String getQuestion() {
-        return question;
+    public long getDate() {
+        return date;
     }
 
-    public void setQuestion(String question) {
-        this.question = question;
+    public void setDate(long date) {
+        this.date = date;
     }
 
     public User getAuthor() {
@@ -52,6 +52,22 @@ public class Compare extends RealmObject {
         this.author = author;
     }
 
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    public void setOpen(boolean open) {
+        isOpen = open;
+    }
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
     public RealmList<Variant> getVariants() {
         return variants;
     }
@@ -60,28 +76,12 @@ public class Compare extends RealmObject {
         this.variants = variants;
     }
 
-    public long getDate() {
-        return date;
-    }
-
-    public void setDate(long date) {
-        this.date = date;
-    }
-
     public RealmList<Comment> getComments() {
         return comments;
     }
 
     public void setComments(RealmList<Comment> comments) {
         this.comments = comments;
-    }
-
-    public boolean isOpen() {
-        return isOpen;
-    }
-
-    public void setOpen(boolean open) {
-        isOpen = open;
     }
 
     public int getLikedVariant() {

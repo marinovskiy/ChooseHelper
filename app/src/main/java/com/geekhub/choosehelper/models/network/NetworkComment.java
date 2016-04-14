@@ -14,13 +14,6 @@ public class NetworkComment {
 
     }
 
-    public NetworkComment(String compareId, String userId, long date, String commentText) {
-        this.compareId = compareId;
-        this.userId = userId;
-        this.date = date;
-        this.commentText = commentText;
-    }
-
     public String getCompareId() {
         return compareId;
     }

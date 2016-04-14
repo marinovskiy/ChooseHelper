@@ -12,7 +12,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -39,6 +38,7 @@ import com.geekhub.choosehelper.models.network.NetworkLike;
 import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.models.ui.UserInfo;
 import com.geekhub.choosehelper.screens.fragments.SearchComparesFragment;
+import com.geekhub.choosehelper.screens.fragments.SearchUserComparesFragment;
 import com.geekhub.choosehelper.ui.adapters.ComparesAdapter;
 import com.geekhub.choosehelper.ui.adapters.ProfileAdapter;
 import com.geekhub.choosehelper.ui.dividers.ProfileDivider;
@@ -124,7 +124,7 @@ public class ProfileActivity extends BaseSignInActivity {
 
     private ProgressDialog mProgressDialog;
     // search fragment
-    private SearchComparesFragment mSearchComparesFragment;
+    private SearchUserComparesFragment mSearchUserComparesFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,7 +135,7 @@ public class ProfileActivity extends BaseSignInActivity {
         mUserId = getIntent().getStringExtra(INTENT_KEY_USER_ID);
         mUserName = getIntent().getStringExtra(INTENT_KEY_USER_NAME);
 
-        mSearchComparesFragment = SearchComparesFragment.newInstance(mUserId);
+        mSearchUserComparesFragment = SearchUserComparesFragment.newInstance(mUserId);
 
         // setup toolbar
         setupToolbar();
@@ -185,7 +185,7 @@ public class ProfileActivity extends BaseSignInActivity {
             fetchProfileFromNetwork();
         }
 
-        // recycler view
+        // recycler views
         mRecyclerViewProfile.setNestedScrollingEnabled(false);
         mRecyclerViewProfile.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerViewProfile.addItemDecoration(new ProfileDivider(this));
@@ -252,7 +252,7 @@ public class ProfileActivity extends BaseSignInActivity {
                     @Override
                     public boolean onMenuItemActionCollapse(MenuItem item) {
                         getSupportFragmentManager().beginTransaction()
-                                .remove(mSearchComparesFragment)
+                                .remove(mSearchUserComparesFragment)
                                 .commit();
                         mSearchContainer.setVisibility(View.GONE);
                         mIvUserAvatar.setVisibility(View.VISIBLE);
@@ -268,7 +268,7 @@ public class ProfileActivity extends BaseSignInActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 searchView.clearFocus();
-                mSearchComparesFragment.searchCompares(query);
+                mSearchUserComparesFragment.searchCompares(query);
                 return false;
             }
 
@@ -296,8 +296,7 @@ public class ProfileActivity extends BaseSignInActivity {
                     mSwipeRefreshLayout.setVisibility(View.GONE);
                     mSearchContainer.setVisibility(View.VISIBLE);
                     getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.profile_search_container,
-                                    mSearchComparesFragment,
+                            .replace(R.id.profile_search_container, mSearchUserComparesFragment,
                                     SearchComparesFragment.class.getSimpleName())
                             .addToBackStack(SearchComparesFragment.class.getSimpleName())
                             .commit();
@@ -643,7 +642,7 @@ public class ProfileActivity extends BaseSignInActivity {
                     if (firebaseError == null) {
                         mProfileBtnFollow.setText(R.string.btn_label_unfollow);
                     } else {
-                        Toast.makeText(ProfileActivity.this, "Oops! Dont", Toast.LENGTH_SHORT).show();
+                        Utils.showMessage(getApplicationContext(), getString(R.string.toast_error_message));
                     }
                     hideProgressDialog();
                     mProfileBtnFollow.setClickable(true);
@@ -662,28 +661,14 @@ public class ProfileActivity extends BaseSignInActivity {
         mQueryFollowers.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot followersSnapshot) {
+
                 // delete from followers
                 for (DataSnapshot snapshot : followersSnapshot.getChildren()) {
                     NetworkFollower networkFollower = snapshot.getValue(NetworkFollower.class);
                     if (networkFollower.getFollowerId().equals(Prefs.getUserId())) {
                         mFirebaseFollowers.child(snapshot.getKey()).setValue(null, (firebaseError, firebase) -> {
                             if (firebaseError == null) {
-                                // test
-                                mFirebaseFollowings.orderByChild("userId").equalTo(mUserId)
-                                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                Log.i("followingstags", "onDataChange: " + dataSnapshot.hasChildren());
-                                                Log.i("followingstags", "onDataChange: " + mFirebaseFollowings.getRef());
-                                                Log.i("followingstags", "onDataChange: " + dataSnapshot.getValue());
-                                            }
 
-                                            @Override
-                                            public void onCancelled(FirebaseError firebaseError) {
-
-                                            }
-                                        });
-                                // end test
                                 // delete from followings
                                 mFirebaseFollowings.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
@@ -693,13 +678,13 @@ public class ProfileActivity extends BaseSignInActivity {
                                                     .getValue(NetworkFollowing.class);
                                             if (networkFollowing.getUserId().equals(mUserId)) {
                                                 snapshot.getRef().setValue(null, (firebaseError, firebase) -> {
-                                                    Log.i("followingstags", "snapshot: " + snapshot.getRef());
+
                                                     // unfreeze button and change text
                                                     if (firebaseError == null) {
                                                         mProfileBtnFollow.setText(R.string.btn_label_follow);
                                                         fetchProfileFromNetwork();
                                                     } else {
-                                                        Toast.makeText(ProfileActivity.this, "Oops! Dont", Toast.LENGTH_SHORT).show();
+                                                        Utils.showMessage(getApplicationContext(), getString(R.string.toast_error_message));
                                                     }
                                                     hideProgressDialog();
                                                     mProfileBtnFollow.setClickable(true);
@@ -707,23 +692,6 @@ public class ProfileActivity extends BaseSignInActivity {
                                                 break;
                                             }
                                         }
-//                                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                                            NetworkFollowing networkFollowing = snapshot
-//                                                    .getValue(NetworkFollowing.class);
-//                                            if (networkFollowing.getUserId().equals(mUserId)) {
-//                                                snapshot.getRef().setValue(null, (firebaseError, firebase) -> {
-//                                                    // unfreeze button and change text
-//                                                    if (firebaseError == null) {
-//                                                        mProfileBtnFollow.setText(R.string.btn_label_follow);
-//                                                        fetchProfileFromNetwork();
-//                                                    } else {
-//                                                        Toast.makeText(ProfileActivity.this, "Oops! Dont", Toast.LENGTH_SHORT).show();
-//                                                    }
-//                                                    mProfileBtnFollow.setClickable(true);
-//                                                });
-//                                                break;
-//                                            }
-//                                        }
                                     }
 
                                     @Override
@@ -733,7 +701,8 @@ public class ProfileActivity extends BaseSignInActivity {
                                     }
                                 });
                             } else {
-                                Toast.makeText(ProfileActivity.this, "Oops! Dont", Toast.LENGTH_SHORT).show();
+                                Utils.showMessage(getApplicationContext(),
+                                        getString(R.string.toast_error_message));
                             }
                         });
                     }
@@ -747,10 +716,11 @@ public class ProfileActivity extends BaseSignInActivity {
         });
     }
 
+    // methods for show progress
     private void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage("Wait please...");
+            mProgressDialog.setMessage(getString(R.string.pd_wait_please));
             mProgressDialog.setCancelable(false);
         }
         mProgressDialog.show();
@@ -761,5 +731,4 @@ public class ProfileActivity extends BaseSignInActivity {
             mProgressDialog.hide();
         }
     }
-
 }

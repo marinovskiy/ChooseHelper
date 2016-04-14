@@ -19,17 +19,20 @@ import com.geekhub.choosehelper.models.db.User;
 import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.ui.adapters.UsersAdapter;
 import com.geekhub.choosehelper.utils.ModelConverter;
+import com.geekhub.choosehelper.utils.Utils;
+import com.geekhub.choosehelper.utils.db.DbUsersManager;
 import com.geekhub.choosehelper.utils.firebase.FirebaseConstants;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 
 public class FollowersActivity extends BaseSignInActivity {
 
     public static final String INTENT_KEY_FOLLOWERS_TITLE = "intent_key_followers_title";
-
     public static final String INTENT_KEY_FOLLOWERS_LIST = "intent_key_followers_list";
 
     @Bind(R.id.toolbar_followers)
@@ -42,22 +45,21 @@ public class FollowersActivity extends BaseSignInActivity {
     RecyclerView mRecyclerView;
 
     @Bind(R.id.swipe_to_refresh_followers)
-    SwipeRefreshLayout mSwipeToRefreshFollowers;
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
-    private String mToolbarTitle;
+    // firebase references and queries
+    Firebase mFirebaseUsers;
 
-    /**
-     * realm
-     **/
-    private List<String> mUsersIds = new ArrayList<>();
+    // realm
+    private List<String> mUserIds = new ArrayList<>();
 
-    /*private RealmResults<User> mUsers;
+    private RealmResults<User> mUsers;
 
     private RealmChangeListener mUserListener = () -> {
         if (mUsers != null && mUsers.isLoaded()) {
             updateUi(mUsers);
         }
-    };*/
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,18 +68,47 @@ public class FollowersActivity extends BaseSignInActivity {
         setupToolbar();
 
         if (getIntent() != null) {
-            mToolbarTitle = getIntent().getStringExtra(INTENT_KEY_FOLLOWERS_TITLE);
+            String toolbarTitle = getIntent().getStringExtra(INTENT_KEY_FOLLOWERS_TITLE);
             if (getSupportActionBar() != null) {
-                getSupportActionBar().setTitle(mToolbarTitle);
+                getSupportActionBar().setTitle(toolbarTitle);
             }
+            mUserIds = getIntent().getStringArrayListExtra(INTENT_KEY_FOLLOWERS_LIST);
+        }
 
-            mUsersIds = getIntent().getStringArrayListExtra(INTENT_KEY_FOLLOWERS_LIST);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-            fetchUsersFromNetwork();
+        mFirebaseUsers = new Firebase(FirebaseConstants.FB_REF_MAIN)
+                .child(FirebaseConstants.FB_REF_USERS);
+
+        if (mUserIds.size() != 0) {
+            fetchUsersFromDb();
+            if (Utils.hasInternet(this)) {
+                fetchUsersFromNetwork();
+            }
         } else {
             // TODO show empty view
         }
+
+        mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+        mSwipeRefreshLayout.setOnRefreshListener(() -> {
+            mSwipeRefreshLayout.setRefreshing(true);
+            if (Utils.hasInternet(getApplicationContext())) {
+                fetchUsersFromNetwork();
+            } else {
+                mSwipeRefreshLayout.setRefreshing(false);
+                Utils.showMessage(this, getString(R.string.toast_no_internet));
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mUsers.removeChangeListener(mUserListener);
     }
 
     private void setupToolbar() {
@@ -92,6 +123,13 @@ public class FollowersActivity extends BaseSignInActivity {
         }
     }
 
+    private void fetchUsersFromDb() {
+        for (String userId : mUserIds) {
+            mUsers = DbUsersManager.getUserNotAsync(userId);
+        }
+        mUsers.addChangeListener(mUserListener);
+    }
+
     private void fetchUsersFromNetwork() {
         new Firebase(FirebaseConstants.FB_REF_MAIN)
                 .child(FirebaseConstants.FB_REF_USERS)
@@ -100,11 +138,11 @@ public class FollowersActivity extends BaseSignInActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         List<User> users = new ArrayList<>();
                         if (dataSnapshot.getChildrenCount() == 0) {
-                            //hideRefreshing();
+                            hideRefreshing();
                         }
                         for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                             String userId = userSnapshot.getKey();
-                            if (mUsersIds.contains(userId)) {
+                            if (mUserIds.contains(userId)) {
                                 NetworkUser networkUser = userSnapshot.getValue(NetworkUser.class);
                                 users.add(ModelConverter.convertToUser(networkUser, userId));
                             }
@@ -118,7 +156,9 @@ public class FollowersActivity extends BaseSignInActivity {
 
                     @Override
                     public void onCancelled(FirebaseError firebaseError) {
-                        //toast exception
+                        hideRefreshing();
+                        Utils.showMessage(getApplicationContext(),
+                                getString(R.string.toast_error_try_later));
                     }
                 });
     }
@@ -139,6 +179,13 @@ public class FollowersActivity extends BaseSignInActivity {
             adapter = (UsersAdapter) mRecyclerView.getAdapter();
             adapter.updateList(users);
             adapter.notifyDataSetChanged();
+        }
+    }
+
+    // methods for show progress
+    private void hideRefreshing() {
+        if (mSwipeRefreshLayout != null && mSwipeRefreshLayout.isRefreshing()) {
+            mSwipeRefreshLayout.setRefreshing(false);
         }
     }
 }
