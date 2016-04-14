@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.widget.Toast;
 
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.screens.fragments.ImageViewFragment;
@@ -44,6 +43,7 @@ public class ImageViewActivity extends BaseSignInActivity {
             mPosition = getIntent().getIntExtra(INTENT_KEY_POSITION, 0);
             setupToolbar();
             setupViewPager(mViewPager);
+            mViewPager.setCurrentItem(mPosition);
         }
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -53,7 +53,6 @@ public class ImageViewActivity extends BaseSignInActivity {
 
             @Override
             public void onPageSelected(int position) {
-                Toast.makeText(ImageViewActivity.this, "pos = " + position, Toast.LENGTH_SHORT).show();
                 if (getSupportActionBar() != null) {
                     getSupportActionBar().setTitle(mDescriptions.get(position));
                 }
@@ -63,7 +62,6 @@ public class ImageViewActivity extends BaseSignInActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
-
     }
 
     private void setupToolbar() {
@@ -80,8 +78,8 @@ public class ImageViewActivity extends BaseSignInActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         ImagesViewPagerAdapter adapter = new ImagesViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(ImageViewFragment.newInstance(mImageUrls.get(0), mLikes.get(0)));
-        adapter.addFragment(ImageViewFragment.newInstance(mImageUrls.get(1), mLikes.get(1)));
+        //adapter.addFragment(ImageViewFragment.newInstance(mImageUrls.get(0), mLikes.get(0)));
+        //adapter.addFragment(ImageViewFragment.newInstance(mImageUrls.get(1), mLikes.get(1)));
         viewPager.setAdapter(adapter);
     }
 }

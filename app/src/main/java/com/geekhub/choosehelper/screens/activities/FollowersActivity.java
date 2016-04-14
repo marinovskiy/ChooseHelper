@@ -108,7 +108,9 @@ public class FollowersActivity extends BaseSignInActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mUsers.removeChangeListener(mUserListener);
+        if (mUsers != null && mUserListener != null) {
+            mUsers.removeChangeListener(mUserListener);
+        }
     }
 
     private void setupToolbar() {

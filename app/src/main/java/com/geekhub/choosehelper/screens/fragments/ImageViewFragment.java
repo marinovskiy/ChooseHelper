@@ -15,8 +15,9 @@ import butterknife.Bind;
 
 public class ImageViewFragment extends BaseFragment {
 
-    private static final String BUNDLE_KEY_IMAGE_URL = "bundle_key_imamge_url";
-    private static final String BUNDLE_KEY_LIKES = "bundle_key_likes";
+    private static final String IMAGE_VIEW_BUNDLE_KEY_IMAGE_URL = "bundle_key_image_view_url";
+    private static final String IMAGE_VIEW_BUNDLE_KEY_LIKES = "bundle_key_image_view_likes";
+    private static final String IMAGE_VIEW_BUNDLE_KEY_LIKED_VARIANT = "bundle_key_image_view_liked_variant";
 
     @Bind(R.id.view_image_iv_image)
     ImageView mImageView;
@@ -26,22 +27,25 @@ public class ImageViewFragment extends BaseFragment {
 
     private String mImageUrl;
     private int mLikes;
+    private int mLikedVariant;
 
-    public static ImageViewFragment newInstance(String imageUrl, String likes) {
+    public static ImageViewFragment newInstance(String imageUrl, String likes, int likedVariant) {
         ImageViewFragment imageViewFragment = new ImageViewFragment();
         Bundle args = new Bundle();
-        args.putString(BUNDLE_KEY_IMAGE_URL, imageUrl);
-        args.putInt(BUNDLE_KEY_LIKES, Integer.parseInt(likes));
+        args.putString(IMAGE_VIEW_BUNDLE_KEY_IMAGE_URL, imageUrl);
+        args.putInt(IMAGE_VIEW_BUNDLE_KEY_LIKES, Integer.parseInt(likes));
+        args.putInt(IMAGE_VIEW_BUNDLE_KEY_LIKED_VARIANT, likedVariant);
         imageViewFragment.setArguments(args);
         return imageViewFragment;
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mImageUrl = getArguments().getString(BUNDLE_KEY_IMAGE_URL);
-            mLikes = getArguments().getInt(BUNDLE_KEY_LIKES);
+            mImageUrl = getArguments().getString(IMAGE_VIEW_BUNDLE_KEY_IMAGE_URL);
+            mLikes = getArguments().getInt(IMAGE_VIEW_BUNDLE_KEY_LIKES);
+            mLikedVariant = getArguments().getInt(IMAGE_VIEW_BUNDLE_KEY_LIKED_VARIANT);
         }
     }
 
@@ -55,5 +59,6 @@ public class ImageViewFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         ImageUtils.loadImage(mImageView, mImageUrl);
         mChLikes.setText(String.valueOf(mLikes));
+
     }
 }

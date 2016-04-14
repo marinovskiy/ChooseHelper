@@ -4,6 +4,6 @@
         android:id="@+id/action_details_compare"
         android:title="Details" />
     <item
-        android:id="@+id/action_share_compare"
-        android:title="Share" />
+        android:id="@+id/action_follow_author"
+        android:title="Follow author" />
 </menu>

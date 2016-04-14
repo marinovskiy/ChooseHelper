@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/black"
     tools:context=".screens.activities.ImageViewActivity">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar_view_image"
@@ -15,28 +20,4 @@
         app:title="Neapol"
         app:titleTextColor="@android:color/white" />
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/view_pager_image_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <!--<ImageView-->
-    <!--android:id="@+id/view_image_iv"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_centerVertical="true"-->
-    <!--android:src="@drawable/test_img" />-->
-
-    <!--<CheckBox-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_alignParentBottom="true"-->
-    <!--android:layout_marginBottom="16dp"-->
-    <!--android:layout_marginLeft="16dp"-->
-    <!--android:button="@drawable/icon_like_white_selector"-->
-    <!--android:paddingLeft="6dp"-->
-    <!--android:text="123"-->
-    <!--android:textColor="@android:color/white"-->
-    <!--android:textSize="16sp" />-->
-
-</RelativeLayout>
+</FrameLayout>

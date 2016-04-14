@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
@@ -10,11 +8,11 @@
     <LinearLayout
         android:id="@+id/ll_login_top"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/sign_in_top_shadow"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:weightSum="1"
-        app:layout_heightPercent="62%">
+        android:weightSum="1">
 
         <TextView
             android:layout_width="wrap_content"
@@ -75,34 +73,22 @@
 
         </android.support.design.widget.TextInputLayout>
 
-        <FrameLayout
+        <Button
+            android:id="@+id/sign_in_btn_login"
+            style="@style/AppTheme.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="17dp"
-                android:background="@drawable/shadow_button"
-                tools:targetApi="JELLY_BEAN" />
-
-            <Button
-                android:id="@+id/sign_in_btn_login"
-                style="@style/AppTheme.Button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/button_sign_selector"
-                android:text="@string/label_login" />
-        </FrameLayout>
+            android:layout_marginTop="24dp"
+            android:background="@drawable/button_sign_selector"
+            android:text="@string/label_login" />
 
         <TextView
             android:id="@+id/sign_in_tv_forgot_password"
+            style="?borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="14dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginBottom="12dp"
+            android:layout_marginTop="12dp"
             android:layout_weight="0.07"
             android:padding="10dp"
             android:text="Forgot password?"
@@ -114,15 +100,16 @@
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/ll_login_top"
         android:gravity="center_horizontal"
-        android:orientation="vertical"
-        app:layout_heightPercent="33%">
+        android:orientation="vertical">
 
         <TextView
-            style="?borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="16dp"
             android:text="Log In Using"
             android:textAllCaps="false"
             android:textColor="#03A9F4"
@@ -197,4 +184,4 @@
         android:textColor="#03A9F4"
         android:textSize="16sp" />
 
-</android.support.percent.PercentRelativeLayout>
+</RelativeLayout>

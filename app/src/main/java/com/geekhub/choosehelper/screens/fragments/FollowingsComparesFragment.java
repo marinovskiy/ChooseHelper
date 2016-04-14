@@ -75,7 +75,7 @@ public class FollowingsComparesFragment extends BaseFragment {
                     compares.add(compare);
                 }
             }
-            updateUi(compares);
+            updateUi(Realm.getDefaultInstance().copyFromRealm(compares));
         }
     };
 
@@ -241,7 +241,8 @@ public class FollowingsComparesFragment extends BaseFragment {
             /** click listener for details **/
             adapter.setOnItemClickListener((view, position) -> {
                 Intent intent = new Intent(getActivity(), DetailsActivity.class);
-                intent.putExtra(DetailsActivity.INTENT_KEY_COMPARE_ID, compares.get(position).getId());
+                intent.putExtra(DetailsActivity.INTENT_KEY_COMPARE_ID,
+                        compares.get(position).getId());
                 startActivity(intent);
             });
 
@@ -268,16 +269,6 @@ public class FollowingsComparesFragment extends BaseFragment {
                     clickedCheckBox.setChecked(false);
                     int newValue = Integer.parseInt(clickedCheckBox.getText().toString()) - 1;
                     clickedCheckBox.setText(String.valueOf(newValue));
-                }
-            });
-
-            /** click listener for popup menu **/
-            adapter.setOnItemClickListenerPopup((view, position) -> {
-                String compareId = compares.get(position).getId();
-                if (compares.get(position).getAuthor().getId().equals(Prefs.getUserId())) {
-                    Utils.showOwnerPopupMenu(getContext(), view, compareId);
-                } else {
-                    Utils.showUserPopupMenu(getContext(), view, compareId);
                 }
             });
 

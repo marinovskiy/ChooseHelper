@@ -9,7 +9,6 @@ import java.util.List;
 
 public class ImagesViewPagerAdapter extends FragmentPagerAdapter {
 
-    //private final List<String> mFragmentTitleList = new ArrayList<>();
     private final List<Fragment> mFragmentList = new ArrayList<>();
 
     public ImagesViewPagerAdapter(FragmentManager fm) {
@@ -26,13 +25,7 @@ public class ImagesViewPagerAdapter extends FragmentPagerAdapter {
         return mFragmentList != null ? mFragmentList.size() : 0;
     }
 
-    public void addFragment(Fragment fragment/*, String title*/) {
+    public void addFragment(Fragment fragment) {
         mFragmentList.add(fragment);
-        //mFragmentTitleList.add(title);
     }
-
-    /*@Override
-    public CharSequence getPageTitle(int position) {
-        return mFragmentTitleList.get(position);
-    }*/
 }

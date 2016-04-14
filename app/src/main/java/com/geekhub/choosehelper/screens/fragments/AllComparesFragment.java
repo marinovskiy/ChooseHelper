@@ -23,6 +23,7 @@ import com.geekhub.choosehelper.models.network.NetworkCompare;
 import com.geekhub.choosehelper.models.network.NetworkLike;
 import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.screens.activities.DetailsActivity;
+import com.geekhub.choosehelper.screens.activities.ImageViewActivity;
 import com.geekhub.choosehelper.screens.activities.MainActivity;
 import com.geekhub.choosehelper.screens.activities.ProfileActivity;
 import com.geekhub.choosehelper.ui.adapters.ComparesAdapter;
@@ -155,7 +156,9 @@ public class AllComparesFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mCompares.removeChangeListener(mComparesListener);
+        if (mCompares != null && mComparesListener != null) {
+            mCompares.removeChangeListener(mComparesListener);
+        }
     }
 
     // get information about compare from local database
@@ -262,16 +265,6 @@ public class AllComparesFragment extends BaseFragment {
                 }
             });
 
-            // click listener for popup menu
-            adapter.setOnItemClickListenerPopup((view, position) -> {
-                String compareId = compares.get(position).getId();
-                if (compares.get(position).getAuthor().getId().equals(Prefs.getUserId())) {
-                    Utils.showOwnerPopupMenu(getContext(), view, compareId);
-                } else {
-                    Utils.showUserPopupMenu(getContext(), view, compareId);
-                }
-            });
-
             // click listener for details
             adapter.setOnItemClickListener((view, position) -> {
                 Intent intent = new Intent(getActivity(), DetailsActivity.class);
@@ -306,6 +299,31 @@ public class AllComparesFragment extends BaseFragment {
                     clickedCheckBox.setText(String.valueOf(newValue));
                 }
             });
+
+            adapter.setOnImageClickListener((view, position, variantNumber) -> {
+
+                Intent intent = new Intent(getActivity(), ImageViewActivity.class);
+
+                ArrayList<String> imageUrls = new ArrayList<>();
+                imageUrls.add(compares.get(position).getVariants().get(0).getImageUrl());
+                imageUrls.add(compares.get(position).getVariants().get(1).getImageUrl());
+
+                ArrayList<String> likes = new ArrayList<>();
+                likes.add(String.valueOf(compares.get(position).getVariants().get(0).getLikes()));
+                likes.add(String.valueOf(compares.get(position).getVariants().get(1).getLikes()));
+
+                ArrayList<String> descriptions = new ArrayList<>();
+                descriptions.add(compares.get(position).getVariants().get(0).getDescription());
+                descriptions.add(compares.get(position).getVariants().get(1).getDescription());
+
+                intent.putStringArrayListExtra(ImageViewActivity.INTENT_KEY_IMAGE_URLS, imageUrls);
+                intent.putStringArrayListExtra(ImageViewActivity.INTENT_KEY_LIKES, likes);
+                intent.putStringArrayListExtra(ImageViewActivity.INTENT_KEY_IMAGE_DESCRIPTIONS, descriptions);
+
+                intent.putExtra(ImageViewActivity.INTENT_KEY_POSITION, variantNumber);
+                startActivity(intent);
+            });
+
         } else {
             adapter = (ComparesAdapter) mRecyclerView.getAdapter();
             adapter.updateList(compares);

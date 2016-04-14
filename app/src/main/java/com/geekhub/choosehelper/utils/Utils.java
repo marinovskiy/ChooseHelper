@@ -45,54 +45,9 @@ public class Utils {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
-
     // get other variant number for operations
     public static int getOtherVariantNumber(int currentVariantNumber) {
         return currentVariantNumber == 0 ? 1 : 0;
-    }
-
-    //* popup menu methods
-    public static void showUserPopupMenu(Context context, View view, String compareId) {
-        PopupMenu popupMenu = new PopupMenu(context, view);
-        popupMenu.inflate(R.menu.menu_compare);
-        popupMenu.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.action_details_compare:
-                    Intent intent = new Intent(context, DetailsActivity.class);
-                    intent.putExtra(DetailsActivity.INTENT_KEY_COMPARE_ID, compareId);
-                    context.startActivity(intent);
-                    return true;
-                case R.id.action_share_compare:
-                    //TODO share compare
-                    return true;
-                default:
-                    return false;
-            }
-        });
-        popupMenu.show();
-    }
-
-    public static void showOwnerPopupMenu(Context context, View view, String compareId) {
-        PopupMenu popupMenu = new PopupMenu(context, view);
-        popupMenu.inflate(R.menu.menu_compare_owner);
-        popupMenu.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.action_edit_status:
-                    // TODO change status
-                    return true;
-                case R.id.action_details_compare:
-                    Intent intent = new Intent(context, DetailsActivity.class);
-                    intent.putExtra(DetailsActivity.INTENT_KEY_COMPARE_ID, compareId);
-                    context.startActivity(intent);
-                    return true;
-                case R.id.action_share_compare:
-                    //TODO share compare
-                    return true;
-                default:
-                    return false;
-            }
-        });
-        popupMenu.show();
     }
 
     // methods for block and unblock views when like is transacting to server

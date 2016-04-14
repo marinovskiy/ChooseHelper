@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.firebase.client.Firebase;
@@ -57,6 +58,9 @@ public class SignUpActivity extends BaseSignInActivity {
     @Bind(R.id.et_sign_up_repeat_password)
     EditText mEtSignUpRepeatPassword;
 
+    @Bind(R.id.tv_sign_up_photo_label)
+    TextView mTvPhotoLabel;
+
     private String mFullName;
     private String mEmail;
     private String mPassword;
@@ -77,7 +81,6 @@ public class SignUpActivity extends BaseSignInActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_sign_up_photo:
-            //case R.id.iv_sign_up_photo_load:
                 Utils.showPhotoPickerDialog(SignUpActivity.this, (dialog, which) -> {
                     switch (which) {
                         case 0:
@@ -110,16 +113,23 @@ public class SignUpActivity extends BaseSignInActivity {
                 }
                 break;
             case R.id.tv_already_have_an_account:
-                //onBackPressed();
+                onBackPressed();
 //                break;
 //                finish();
 //                this.overridePendingTransition(R.anim.slide_in_to_left, R.anim.do_nothing);
-                Intent intentSignIn = new Intent(SignUpActivity.this, SignInActivity.class);
-                startActivity(intentSignIn);
-                overridePendingTransition(R.anim.slide_in_to_right, R.anim.do_nothing);
-                finish();
+//                Intent intentSignIn = new Intent(SignUpActivity.this, SignInActivity.class);
+//                startActivity(intentSignIn);
+//                overridePendingTransition(R.anim.slide_in_to_right, R.anim.do_nothing);
+//                finish();
                 break;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+        SignUpActivity.this.overridePendingTransition(R.anim.slide_in_to_right, R.anim.do_nothing);
     }
 
     @Override
@@ -138,6 +148,7 @@ public class SignUpActivity extends BaseSignInActivity {
                     try {
                         mFilePath = ImageUtils.getFilePath(getApplicationContext(), avatarUri);
                         mIvAvatarLoad.setVisibility(View.VISIBLE);
+                        mTvPhotoLabel.setVisibility(View.GONE);
                         ImageUtils.loadCircleImage(mIvAvatarLoad, mFilePath);
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
@@ -150,6 +161,7 @@ public class SignUpActivity extends BaseSignInActivity {
                     try {
                         mFilePath = ImageUtils.getFilePath(getApplicationContext(), avatarUri);
                         mIvAvatarLoad.setVisibility(View.VISIBLE);
+                        mTvPhotoLabel.setVisibility(View.GONE);
                         ImageUtils.loadCircleImage(mIvAvatarLoad, mFilePath);
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
