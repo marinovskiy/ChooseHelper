@@ -167,13 +167,27 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <Button
-                android:id="@+id/btn_sign_up"
-                style="@style/AppTheme.Button"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_sign_selector"
-                android:text="SIGN UP" />
+                android:layout_marginTop="24dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="17dp"
+                    android:background="@drawable/shadow_button"
+                    tools:targetApi="JELLY_BEAN" />
+
+                <Button
+                    android:id="@+id/btn_sign_up"
+                    style="@style/AppTheme.Button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/button_sign_selector"
+                    android:text="SIGN UP" />
+            </FrameLayout>
 
 
             <TextView
