@@ -20,7 +20,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_below="@id/toolbar_details"
         android:background="@color/colorBackgroundComment">
 
         <android.support.v4.widget.SwipeRefreshLayout
@@ -36,13 +35,13 @@
 
         </android.support.v4.widget.SwipeRefreshLayout>
 
-        <!--<ProgressBar-->
-        <!--android:id="@+id/progress_bar_details"-->
-        <!--style="?android:attr/progressBarStyleSmall"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="center"-->
-        <!--android:visibility="gone" />-->
+        <ProgressBar
+            android:id="@+id/progress_bar_details"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
 
         <View
             android:id="@+id/toolbar_shadow_details"
@@ -66,7 +65,6 @@
         <android.support.percent.PercentRelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:background="@drawable/comment_add_shadow_layout">
 
             <EditText

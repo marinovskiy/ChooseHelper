@@ -7,7 +7,7 @@
         android:entryValues="@array/categories"
         android:key="@string/settings_categories"
         android:summary="No categories selected"
-        android:title="Categories of compares" />
+        android:title="Categories in main tab" />
 
     <ListPreference
         android:defaultValue="5"
@@ -15,8 +15,8 @@
         android:entries="@array/numbers_of_compares"
         android:entryValues="@array/numbers_of_compares"
         android:key="@string/settings_numbers_of_compares"
-        android:summary="Show %s compares in main"
-        android:title="Number of compares" />
+        android:summary="Show %s compares in all tab"
+        android:title="Number of all compares" />
 
     <ListPreference
         android:defaultValue="English"

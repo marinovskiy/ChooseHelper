@@ -5,6 +5,6 @@ import android.widget.TextView;
 
 public interface OnSwitchChangeListener {
 
-    void onSwitchChanged(SwitchCompat switchCompat, TextView tvStatus);
+    void onSwitchChanged(SwitchCompat switchCompat, boolean isChecked, TextView tvStatus);
 
 }

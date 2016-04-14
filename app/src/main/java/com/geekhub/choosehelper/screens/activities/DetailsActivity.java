@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
@@ -65,12 +66,10 @@ public class DetailsActivity extends BaseSignInActivity {
     @Bind(R.id.details_et_comment_text)
     EditText mDetailsEtCommentText;
 
-    /*@Bind(R.id.progress_bar_details)
-    ProgressBar mCommentsProgressBar;*/
+    @Bind(R.id.progress_bar_details)
+    ProgressBar mCommentsProgressBar;
 
-    /**
-     * firebase references and queries
-     **/
+    // firebase references and queries
     private Firebase mFirebaseCompare;
 
     private Firebase mFirebaseLikes;
@@ -83,14 +82,15 @@ public class DetailsActivity extends BaseSignInActivity {
 
     private Firebase mFirebaseCompares;
 
-    /**
-     * realm
-     **/
+    private boolean mStatus;
+
+    // realm
     private String mCompareId;
     private Compare mCompare;
 
     private RealmChangeListener mComparesListener = () -> {
         if (mCompare != null && mCompare.isLoaded()) {
+            mStatus = mCompare.isOpen();
             updateUi(mCompare);
         }
     };
@@ -131,16 +131,7 @@ public class DetailsActivity extends BaseSignInActivity {
 
             mFirebaseCompares = new Firebase(FirebaseConstants.FB_REF_MAIN)
                     .child(FirebaseConstants.FB_REF_COMPARES);
-
-            /** requests **/
-            fetchCompareFromDb();
-            if (Utils.hasInternet(getApplicationContext())) {
-                fetchCompareFromNetwork();
-            }
-        } else {
-            // TODO show empty view
         }
-
         /** swipe refresh layout **/
         mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
@@ -150,6 +141,9 @@ public class DetailsActivity extends BaseSignInActivity {
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
             mSwipeRefreshLayout.setRefreshing(true);
             if (Utils.hasInternet(getApplicationContext())) {
+                if (mCompare.isValid() && mStatus != mCompare.isOpen()) {
+                    updateCompareStatus(mStatus);
+                }
                 fetchCompareFromNetwork();
             } else {
                 Toast.makeText(this, R.string.toast_no_internet, Toast.LENGTH_SHORT).show();
@@ -167,6 +161,24 @@ public class DetailsActivity extends BaseSignInActivity {
             addComment(commentText);
         } else {
             Toast.makeText(this, "You can't post an empty comment", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /** requests **/
+        fetchCompareFromDb();
+        if (Utils.hasInternet(getApplicationContext())) {
+            fetchCompareFromNetwork();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mCompare.isValid() && mStatus != mCompare.isOpen()) {
+            updateCompareStatus(mStatus);
         }
     }
 
@@ -220,7 +232,7 @@ public class DetailsActivity extends BaseSignInActivity {
         setProgressVisibility(false);
 
         DetailsAdapter adapter;
-        if (mRecyclerView.getAdapter() == null) {
+        if (mRecyclerView != null && mRecyclerView.getAdapter() == null) {
             adapter = new DetailsAdapter(compare);
             mRecyclerView.setAdapter(adapter);
 
@@ -277,7 +289,11 @@ public class DetailsActivity extends BaseSignInActivity {
                 }
             });
 
-            adapter.setOnSwitchChangeListener((switchCompat, tvStatus) -> {
+            adapter.setOnSwitchChangeListener((switchCompat, isChecked, tvStatus) -> {
+                tvStatus.setText(isChecked ? "Open" : "Closed");
+                mStatus = isChecked;
+            });
+            /*adapter.setOnSwitchChangeListener((switchCompat, tvStatus) -> {
                 if (!Utils.hasInternet(getApplicationContext())) {
                     Utils.showMessage(getApplicationContext(),
                             getString(R.string.toast_no_internet));
@@ -291,8 +307,8 @@ public class DetailsActivity extends BaseSignInActivity {
                         tvStatus.setText("Closed");
                     }
                 }
-            });
-        } else {
+            });*/
+        } else if (mRecyclerView != null) {
             adapter = (DetailsAdapter) mRecyclerView.getAdapter();
             adapter.updateCompare(compare);
             adapter.notifyDataSetChanged();
@@ -304,13 +320,9 @@ public class DetailsActivity extends BaseSignInActivity {
     }
 
     private void updateCompareStatus(boolean status) {
-        Firebase firebase = new Firebase(FirebaseConstants.FB_REF_MAIN)
-                .child(FirebaseConstants.FB_REF_COMPARES)
-                .child(mCompareId);
-
         Map<String, Object> map = new HashMap<>();
         map.put(FirebaseConstants.FB_REF_STATUS, status);
-        firebase.updateChildren(map);
+        mFirebaseCompare.updateChildren(map);
         fetchCompareFromNetwork();
     }
 
@@ -387,6 +399,9 @@ public class DetailsActivity extends BaseSignInActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 RealmList<Comment> comments = new RealmList<>();
+                if (dataSnapshot.getChildrenCount() == 0) {
+                    hideRefreshing();
+                }
                 for (DataSnapshot commentsSnapshot : dataSnapshot.getChildren()) {
                     NetworkComment networkComment = commentsSnapshot.getValue(NetworkComment.class);
                     /** their authors **/

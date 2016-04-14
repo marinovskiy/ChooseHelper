@@ -21,21 +21,26 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.db.Following;
 import com.geekhub.choosehelper.models.db.User;
+import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.screens.fragments.AllComparesFragment;
 import com.geekhub.choosehelper.screens.fragments.FollowingsComparesFragment;
 import com.geekhub.choosehelper.screens.fragments.SearchComparesFragment;
 import com.geekhub.choosehelper.ui.adapters.ComparesViewPagerAdapter;
 import com.geekhub.choosehelper.utils.ImageUtils;
+import com.geekhub.choosehelper.utils.ModelConverter;
 import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.Utils;
 import com.geekhub.choosehelper.utils.db.DbUsersManager;
-import com.geekhub.choosehelper.utils.firebase.FirebaseUsersManager;
+import com.geekhub.choosehelper.utils.firebase.FirebaseConstants;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -68,22 +73,27 @@ public class MainActivity extends BaseSignInActivity
     @Bind(R.id.main_search_container)
     FrameLayout mSearchContainer;
 
-    // navigation header view
     private View mNavHeaderView;
 
+    private Firebase mFirebaseUser;
+
+    // load user just one time
+    //private boolean mIsUserLoaded = false;
+
+    // is need to exit from app
+    private boolean mIsNeedToExit = false;
+
     // realm
-    private User mCurrentUser;
+    private static User sCurrentUser;
     private RealmChangeListener mUserListener = () -> {
-        if (mCurrentUser != null && mCurrentUser.isLoaded()) {
-            updateNavDrawerHeader(mCurrentUser);
+        if (/*!mIsUserLoaded && */sCurrentUser != null && sCurrentUser.isLoaded()) {
+            //mIsUserLoaded = true;
+            updateNavDrawerHeader(sCurrentUser);
         }
     };
 
     // search fragment
     private SearchComparesFragment mSearchComparesFragment = new SearchComparesFragment();
-
-    // is need to exit from app
-    private boolean mIsNeedToExit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,18 +106,23 @@ public class MainActivity extends BaseSignInActivity
         mTabLayout.setupWithViewPager(mViewPager);
         mNavigationView.setNavigationItemSelectedListener(this);
 
+        // firebase reference
+        mFirebaseUser = new Firebase(FirebaseConstants.FB_REF_MAIN)
+                .child(FirebaseConstants.FB_REF_USERS)
+                .child(Prefs.getUserId());
+
         // requests
         fetchCurrentUserFromDb();
         if (Utils.hasInternet(getApplicationContext())) {
-            FirebaseUsersManager.saveUserFromFirebase(Prefs.getUserId());
+            fetchCurrentUserFromNetwork();
         }
     }
 
     @OnClick(R.id.fab_add_main)
     public void onFabClick() {
-        if (mCurrentUser != null) {
+        if (sCurrentUser != null) {
             Intent intent = new Intent(this, AddCompareActivity.class);
-            intent.putExtra(INTENT_KEY_USER_NAME, mCurrentUser.getFullName());
+            intent.putExtra(INTENT_KEY_USER_NAME, sCurrentUser.getFullName());
             startActivity(intent);
         }
     }
@@ -119,7 +134,7 @@ public class MainActivity extends BaseSignInActivity
                 mDrawerLayout.closeDrawers();
                 Intent userIntent = new Intent(this, ProfileActivity.class);
                 userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID, Prefs.getUserId());
-                userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME, mCurrentUser.getFullName());
+                userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME, sCurrentUser.getFullName());
                 startActivity(userIntent);
                 return true;
             case R.id.action_nav_settings:
@@ -235,8 +250,23 @@ public class MainActivity extends BaseSignInActivity
 
     // get information about user from local database
     private void fetchCurrentUserFromDb() {
-        mCurrentUser = DbUsersManager.getUserById(Prefs.getUserId());
-        mCurrentUser.addChangeListener(mUserListener);
+        sCurrentUser = DbUsersManager.getUserById(Prefs.getUserId());
+        sCurrentUser.addChangeListener(mUserListener);
+    }
+
+    private void fetchCurrentUserFromNetwork() {
+        mFirebaseUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                NetworkUser networkUser = dataSnapshot.getValue(NetworkUser.class);
+                DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser, Prefs.getUserId()));
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                // TODO toast or dialog of exception
+            }
+        });
     }
 
     private void setupToolbar() {
@@ -252,10 +282,19 @@ public class MainActivity extends BaseSignInActivity
     }
 
     private void updateNavDrawerHeader(User user) {
-        if (mNavHeaderView == null) {
-            mNavHeaderView = mNavigationView.inflateHeaderView(R.layout.navigation_header_layout);
-        } else {
+//        if (mNavHeaderView == null) {
+//            mNavHeaderView = mNavigationView.inflateHeaderView(R.layout.navigation_header_layout);
+//        } else {
+//            mNavigationView.removeHeaderView(mNavHeaderView);
+//            mNavHeaderView = mNavigationView.inflateHeaderView(R.layout.navigation_header_layout);
+//        }
+        //mNavigationView.removeHeaderView(mNavHeaderView);
+        //mNavHeaderView = mNavigationView.inflateHeaderView(R.layout.navigation_header_layout);
+
+        try {
             mNavigationView.removeHeaderView(mNavHeaderView);
+            mNavHeaderView = mNavigationView.inflateHeaderView(R.layout.navigation_header_layout);
+        } catch (NullPointerException e) {
             mNavHeaderView = mNavigationView.inflateHeaderView(R.layout.navigation_header_layout);
         }
 
@@ -274,7 +313,7 @@ public class MainActivity extends BaseSignInActivity
             mDrawerLayout.closeDrawers();
             Intent userIntent = new Intent(this, ProfileActivity.class);
             userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID, Prefs.getUserId());
-            userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME, mCurrentUser.getFullName());
+            userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME, sCurrentUser.getFullName());
             startActivity(userIntent);
         });
 
@@ -286,17 +325,14 @@ public class MainActivity extends BaseSignInActivity
         ComparesViewPagerAdapter adapter = new ComparesViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(AllComparesFragment.newInstance(),
                 getString(R.string.tab_label_all));
-        adapter.addFragment(FollowingsComparesFragment
-                        .newInstance(/*getFollowingsIds(mCurrentUser.getFollowings())*/),
+        adapter.addFragment(FollowingsComparesFragment.newInstance(),
                 getString(R.string.tab_label_followings));
         viewPager.setAdapter(adapter);
     }
 
-
-    // TODO replace to utils or manager
-    private ArrayList<String> getFollowingsIds(List<Following> followings) {
+    private static ArrayList<String> getFollowingIds() {
         ArrayList<String> usersIds = new ArrayList<>();
-        for (Following following : followings) {
+        for (Following following : sCurrentUser.getFollowings()) {
             usersIds.add(following.getUserId());
         }
         return usersIds;

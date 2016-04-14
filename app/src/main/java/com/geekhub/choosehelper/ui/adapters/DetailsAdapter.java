@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -83,7 +84,7 @@ public class DetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return position == 0;
     }
 
-    class HeaderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class HeaderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
         LinearLayout mLlAuthor;
 
@@ -131,7 +132,8 @@ public class DetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             mLlAuthor.setOnClickListener(this);
             mChLikeFirst.setOnClickListener(this);
             mChLikeSecond.setOnClickListener(this);
-            mSwitchStatus.setOnClickListener(this);
+            //mSwitchStatus.setOnClickListener(this);
+            mSwitchStatus.setOnCheckedChangeListener(this);
         }
 
         @Override
@@ -151,10 +153,13 @@ public class DetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     updateLikeView(mChLikeSecond, mChLikeFirst);
                     mOnLikeDetailsListener.onLike(mChLikeSecond, mChLikeFirst, getAdapterPosition(), 1);
                 }
-            } else if (id == mSwitchStatus.getId()) {
-                if (mOnSwitchChangeListener != null) {
-                    mOnSwitchChangeListener.onSwitchChanged(mSwitchStatus, mTvStatus);
-                }
+            }
+        }
+
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if (mOnSwitchChangeListener != null) {
+                mOnSwitchChangeListener.onSwitchChanged(mSwitchStatus, isChecked, mTvStatus);
             }
         }
 
