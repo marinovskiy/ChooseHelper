@@ -101,6 +101,6 @@
         <item>Russian</item>
     </string-array>
 
-    <string-array name="empty_array"/>
+    <string-array name="empty_array" />
 
 </resources>

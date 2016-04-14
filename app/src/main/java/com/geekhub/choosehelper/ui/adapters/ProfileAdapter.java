@@ -56,7 +56,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            if (getAdapterPosition() != mList.size() - 1)
+            //if (getAdapterPosition() != mList.size() - 1)
                 itemView.setOnClickListener(this);
         }
 

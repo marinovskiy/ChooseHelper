@@ -7,6 +7,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ServerValue;
 import com.geekhub.choosehelper.models.network.NetworkCompare;
 import com.geekhub.choosehelper.models.network.NetworkVariant;
+import com.geekhub.choosehelper.utils.Prefs;
 
 import java.util.List;
 
@@ -30,6 +31,15 @@ public class FirebaseComparesManager {
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
 
             }
+        });
+    }
+
+    public static void addNewCompare(NetworkCompare networkCompare) {
+        Firebase firebase = new Firebase(FirebaseConstants.FB_REF_MAIN)
+                .child(FirebaseConstants.FB_REF_COMPARES);
+        firebase.push().setValue(networkCompare, ServerValue.TIMESTAMP,
+                (firebaseError, firebase1) -> {
+
         });
     }
 

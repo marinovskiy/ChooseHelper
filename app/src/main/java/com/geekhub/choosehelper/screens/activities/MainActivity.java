@@ -26,7 +26,6 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.geekhub.choosehelper.R;
-import com.geekhub.choosehelper.models.db.Following;
 import com.geekhub.choosehelper.models.db.User;
 import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.screens.fragments.AllComparesFragment;
@@ -39,8 +38,6 @@ import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.Utils;
 import com.geekhub.choosehelper.utils.db.DbUsersManager;
 import com.geekhub.choosehelper.utils.firebase.FirebaseConstants;
-
-import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -77,17 +74,13 @@ public class MainActivity extends BaseSignInActivity
 
     private Firebase mFirebaseUser;
 
-    // load user just one time
-    //private boolean mIsUserLoaded = false;
-
     // is need to exit from app
     private boolean mIsNeedToExit = false;
 
     // realm
     private static User sCurrentUser;
     private RealmChangeListener mUserListener = () -> {
-        if (/*!mIsUserLoaded && */sCurrentUser != null && sCurrentUser.isLoaded()) {
-            //mIsUserLoaded = true;
+        if (sCurrentUser != null && sCurrentUser.isLoaded()) {
             updateNavDrawerHeader(sCurrentUser);
         }
     };
@@ -120,10 +113,12 @@ public class MainActivity extends BaseSignInActivity
 
     @OnClick(R.id.fab_add_main)
     public void onFabClick() {
-        if (sCurrentUser != null) {
+        if (Utils.hasInternet(this)) {
             Intent intent = new Intent(this, AddCompareActivity.class);
             intent.putExtra(INTENT_KEY_USER_NAME, sCurrentUser.getFullName());
             startActivity(intent);
+        } else {
+            Utils.showMessage(this, getString(R.string.toast_no_internet));
         }
     }
 
@@ -282,44 +277,40 @@ public class MainActivity extends BaseSignInActivity
     }
 
     private void updateNavDrawerHeader(User user) {
-//        if (mNavHeaderView == null) {
-//            mNavHeaderView = mNavigationView.inflateHeaderView(R.layout.navigation_header_layout);
-//        } else {
-//            mNavigationView.removeHeaderView(mNavHeaderView);
-//            mNavHeaderView = mNavigationView.inflateHeaderView(R.layout.navigation_header_layout);
-//        }
-        //mNavigationView.removeHeaderView(mNavHeaderView);
-        //mNavHeaderView = mNavigationView.inflateHeaderView(R.layout.navigation_header_layout);
-
         try {
-            mNavigationView.removeHeaderView(mNavHeaderView);
-            mNavHeaderView = mNavigationView.inflateHeaderView(R.layout.navigation_header_layout);
-        } catch (NullPointerException e) {
-            mNavHeaderView = mNavigationView.inflateHeaderView(R.layout.navigation_header_layout);
+            if (mNavHeaderView == null) {
+                mNavHeaderView = mNavigationView.inflateHeaderView(R.layout.navigation_header_layout);
+            } else {
+                mNavigationView.removeHeaderView(mNavHeaderView);
+                mNavHeaderView = mNavigationView.inflateHeaderView(R.layout.navigation_header_layout);
+            }
+
+            ImageView ivAvatar = (ImageView) mNavHeaderView.findViewById(R.id.nav_header_avatar);
+            TextView tvFullName = (TextView) mNavHeaderView.findViewById(R.id.nav_header_name);
+            TextView tvEmail = (TextView) mNavHeaderView.findViewById(R.id.nav_header_email);
+
+            if (user.getPhotoUrl() != null) {
+                ImageUtils.loadCircleImage(ivAvatar, user.getPhotoUrl());
+            } else {
+                ivAvatar.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
+                        R.drawable.icon_no_avatar));
+            }
+
+            mNavHeaderView.setOnClickListener(v -> {
+                mDrawerLayout.closeDrawers();
+                Intent userIntent = new Intent(this, ProfileActivity.class);
+                userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID, Prefs.getUserId());
+                userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME, sCurrentUser.getFullName());
+                startActivity(userIntent);
+            });
+
+            tvFullName.setText(user.getFullName());
+            tvEmail.setText(user.getEmail());
+        } catch (NullPointerException | IllegalArgumentException ignored) {
+
         }
-
-        ImageView ivAvatar = (ImageView) mNavHeaderView.findViewById(R.id.nav_header_avatar);
-        TextView tvFullName = (TextView) mNavHeaderView.findViewById(R.id.nav_header_name);
-        TextView tvEmail = (TextView) mNavHeaderView.findViewById(R.id.nav_header_email);
-
-        if (user.getPhotoUrl() != null) {
-            ImageUtils.loadCircleImage(ivAvatar, user.getPhotoUrl());
-        } else {
-            ivAvatar.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
-                    R.drawable.icon_no_avatar));
-        }
-
-        ivAvatar.setOnClickListener(v -> {
-            mDrawerLayout.closeDrawers();
-            Intent userIntent = new Intent(this, ProfileActivity.class);
-            userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID, Prefs.getUserId());
-            userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME, sCurrentUser.getFullName());
-            startActivity(userIntent);
-        });
-
-        tvFullName.setText(user.getFullName());
-        tvEmail.setText(user.getEmail());
     }
+
 
     private void setupViewPager(ViewPager viewPager) {
         ComparesViewPagerAdapter adapter = new ComparesViewPagerAdapter(getSupportFragmentManager());
@@ -330,12 +321,12 @@ public class MainActivity extends BaseSignInActivity
         viewPager.setAdapter(adapter);
     }
 
-    private static ArrayList<String> getFollowingIds() {
+    /*public static ArrayList<String> getFollowingIds() {
         ArrayList<String> usersIds = new ArrayList<>();
         for (Following following : sCurrentUser.getFollowings()) {
             usersIds.add(following.getUserId());
         }
         return usersIds;
-    }
+    }*/
 
 }

@@ -290,24 +290,21 @@ public class DetailsActivity extends BaseSignInActivity {
             });
 
             adapter.setOnSwitchChangeListener((switchCompat, isChecked, tvStatus) -> {
-                tvStatus.setText(isChecked ? "Open" : "Closed");
-                mStatus = isChecked;
-            });
-            /*adapter.setOnSwitchChangeListener((switchCompat, tvStatus) -> {
-                if (!Utils.hasInternet(getApplicationContext())) {
-                    Utils.showMessage(getApplicationContext(),
-                            getString(R.string.toast_no_internet));
+                if (Utils.hasInternet(this)) {
+                    tvStatus.setText(isChecked ? "Open" : "Closed");
+                    mStatus = isChecked;
                 } else {
-                    AllComparesFragment.sIsNeedToAutoUpdate = true;
-                    if (switchCompat.isChecked()) {
-                        updateCompareStatus(true);
-                        tvStatus.setText("Open");
-                    } else {
-                        updateCompareStatus(false);
-                        tvStatus.setText("Closed");
-                    }
+                    Utils.showMessage(this, getString(R.string.toast_no_internet));
+                    switchCompat.setChecked(!isChecked);
                 }
-            });*/
+            });
+
+            adapter.setOnImageClickListener((view, position, variantNumber) -> {
+                Intent intent = new Intent(this, ViewImageActivity.class);
+                intent.putExtra(ViewImageActivity.INTENT_KEY_IMAGE_URL, compare.getVariants().get(variantNumber).getImageUrl());
+                intent.putExtra(ViewImageActivity.INTENT_KEY_IMAGE_TITLE, compare.getVariants().get(variantNumber).getDescription());
+                startActivity(intent);
+            });
         } else if (mRecyclerView != null) {
             adapter = (DetailsAdapter) mRecyclerView.getAdapter();
             adapter.updateCompare(compare);

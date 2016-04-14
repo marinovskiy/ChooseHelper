@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <MultiSelectListPreference
-        android:defaultValue="@array/empty_array"
+        android:defaultValue="@array/categories"
         android:entries="@array/categories"
         android:entryValues="@array/categories"
         android:key="@string/settings_categories"

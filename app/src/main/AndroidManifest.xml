@@ -41,12 +41,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".screens.activities.AddCompareActivity"
-            android:label="New compare"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".screens.activities.ProfileActivity"
+            android:name=".screens.activities.SettingsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
@@ -58,11 +53,16 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".screens.activities.EditCompareActivity"
+            android:name=".screens.activities.ProfileActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".screens.activities.FollowersActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".screens.activities.AddCompareActivity"
+            android:label="New compare"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
@@ -89,7 +89,7 @@
             android:name="io.fabric.ApiKey"
             android:value="b77f77b940ea374ce7ca53f6b55e0dcd219e2094" />
 
-        <activity android:name=".screens.activities.SettingsActivity"></activity>
+        <activity android:name=".screens.activities.ViewImageActivity"></activity>
     </application>
 
 </manifest>

@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.screens.activities.DetailsActivity;
-import com.geekhub.choosehelper.screens.activities.EditCompareActivity;
 import com.geekhub.choosehelper.utils.firebase.FirebaseComparesManager;
 
 public class Utils {
@@ -99,6 +98,9 @@ public class Utils {
         popupMenu.inflate(R.menu.menu_compare_owner);
         popupMenu.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
+                case R.id.action_edit_status:
+                    // TODO change status
+                    return true;
                 case R.id.action_details_compare:
                     Intent intent = new Intent(context, DetailsActivity.class);
                     intent.putExtra(DetailsActivity.INTENT_KEY_COMPARE_ID, compareId);
@@ -106,23 +108,6 @@ public class Utils {
                     return true;
                 case R.id.action_share_compare:
                     //TODO share compare
-                    return true;
-                case R.id.action_edit_compare:
-                    Intent intentEdit = new Intent(context, EditCompareActivity.class);
-                    intentEdit.putExtra(DetailsActivity.INTENT_KEY_COMPARE_ID, compareId);
-                    context.startActivity(intentEdit);
-                    return true;
-                case R.id.action_delete_compare:
-                    Utils.showCompareDeleteDialog(context, (dialog, which) -> {
-                        switch (which) {
-                            case -2:
-                                dialog.cancel();
-                                break;
-                            case -1:
-                                FirebaseComparesManager.deleteCompare(compareId);
-                                break;
-                        }
-                    });
                     return true;
                 default:
                     return false;

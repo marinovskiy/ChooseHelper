@@ -15,6 +15,7 @@ import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.db.Comment;
 import com.geekhub.choosehelper.models.db.Compare;
 import com.geekhub.choosehelper.ui.listeners.OnHeaderClickListener;
+import com.geekhub.choosehelper.ui.listeners.OnImageClickListener;
 import com.geekhub.choosehelper.ui.listeners.OnItemClickListener;
 import com.geekhub.choosehelper.ui.listeners.OnLikeDetailsListener;
 import com.geekhub.choosehelper.ui.listeners.OnSwitchChangeListener;
@@ -37,6 +38,7 @@ public class DetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private OnItemClickListener mOnItemClickListener;
     private OnLikeDetailsListener mOnLikeDetailsListener;
     private OnSwitchChangeListener mOnSwitchChangeListener;
+    private OnImageClickListener mOnImageClickListener;
 
     public DetailsAdapter(Compare compare) {
         mCompare = Realm.getDefaultInstance().copyFromRealm(compare);
@@ -112,6 +114,10 @@ public class DetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         SwitchCompat mSwitchStatus;
 
+        TextView mTvCategory;
+
+        TextView mTvCommentsCount;
+
         public HeaderViewHolder(View itemView) {
             super(itemView);
             //ButterKnife.bind(this, itemView);
@@ -128,11 +134,14 @@ public class DetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             mTvSecondVariant = (TextView) itemView.findViewById(R.id.details_tv_second_variant);
             mChLikeSecond = (CheckBox) itemView.findViewById(R.id.details_ch_like_second);
             mSwitchStatus = (SwitchCompat) itemView.findViewById(R.id.details_switch_status);
+            mTvCategory = (TextView) itemView.findViewById(R.id.details_tv_category);
+            mTvCommentsCount = (TextView) itemView.findViewById(R.id.details_tv_comments_count);
 
             mLlAuthor.setOnClickListener(this);
             mChLikeFirst.setOnClickListener(this);
             mChLikeSecond.setOnClickListener(this);
-            //mSwitchStatus.setOnClickListener(this);
+            mIvFirstImage.setOnClickListener(this);
+            mIvSecondImage.setOnClickListener(this);
             mSwitchStatus.setOnCheckedChangeListener(this);
         }
 
@@ -152,6 +161,14 @@ public class DetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 if (mOnLikeDetailsListener != null) {
                     updateLikeView(mChLikeSecond, mChLikeFirst);
                     mOnLikeDetailsListener.onLike(mChLikeSecond, mChLikeFirst, getAdapterPosition(), 1);
+                }
+            } else if (id == mIvFirstImage.getId()) {
+                if (mOnImageClickListener != null) {
+                    mOnImageClickListener.onImageClick(v, getAdapterPosition(), 0);
+                }
+            } else if (id == mIvSecondImage.getId()) {
+                if (mOnImageClickListener != null) {
+                    mOnImageClickListener.onImageClick(v, getAdapterPosition(), 1);
                 }
             }
         }
@@ -207,6 +224,9 @@ public class DetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
                 mTvStatus.setText("Closed");
             }
+
+            mTvCategory.setText(compare.getCategory());
+            mTvCommentsCount.setText(String.valueOf(compare.getComments().size()));
         }
 
         private void updateLikeView(CheckBox clickedCheckBox, CheckBox otherCheckBox) {
@@ -274,6 +294,10 @@ public class DetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public void setOnSwitchChangeListener(OnSwitchChangeListener onSwitchChangeListener) {
         mOnSwitchChangeListener = onSwitchChangeListener;
+    }
+
+    public void setOnImageClickListener(OnImageClickListener onImageClickListener) {
+        mOnImageClickListener = onImageClickListener;
     }
 
 }

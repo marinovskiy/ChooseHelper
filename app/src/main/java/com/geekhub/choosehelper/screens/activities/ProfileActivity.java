@@ -463,6 +463,8 @@ public class ProfileActivity extends BaseSignInActivity {
                     intent.putStringArrayListExtra(FollowersActivity.INTENT_KEY_FOLLOWERS_LIST,
                             getFollowingsIds(user.getFollowings()));
                     startActivity(intent);
+                } else if (position == 2) {
+                    mRecyclerViewCompares.scrollToPosition(0);
                 }
             });
         } else {

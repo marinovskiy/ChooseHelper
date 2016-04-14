@@ -1,6 +1,7 @@
 package com.geekhub.choosehelper.utils.db;
 
 import com.geekhub.choosehelper.models.db.User;
+import com.geekhub.choosehelper.utils.Prefs;
 
 import java.util.List;
 
@@ -20,5 +21,12 @@ public class DbUsersManager {
                 .where(User.class)
                 .equalTo(DbFields.DB_ID, userId)
                 .findFirstAsync();
+    }
+
+    public static User getCurrentUser() {
+        return Realm.getDefaultInstance()
+                .where(User.class)
+                .equalTo(DbFields.DB_ID, Prefs.getUserId())
+                .findFirst();
     }
 }

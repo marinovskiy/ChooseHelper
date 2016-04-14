@@ -77,7 +77,7 @@ public class SignUpActivity extends BaseSignInActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_sign_up_photo:
-            case R.id.iv_sign_up_photo_load:
+            //case R.id.iv_sign_up_photo_load:
                 Utils.showPhotoPickerDialog(SignUpActivity.this, (dialog, which) -> {
                     switch (which) {
                         case 0:
