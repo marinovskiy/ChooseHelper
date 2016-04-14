@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.geekhub.choosehelper.R;
-import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.Utils;
 
 import butterknife.Bind;
@@ -24,12 +23,9 @@ public class SignInActivity extends BaseSignInActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
-        /*if (Prefs.getLoggedType() != Prefs.NOT_LOGIN) {
-            startMainActivity();
-        }*/
     }
 
-    @OnClick({/*R.id.sign_in_btn_login, */R.id.sign_in_tv_forgot_password, R.id.sign_in_google,
+    @OnClick({R.id.sign_in_btn_login, R.id.sign_in_tv_forgot_password, R.id.sign_in_google,
             R.id.sign_in_facebook, R.id.tv_create_an_account})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -54,12 +50,9 @@ public class SignInActivity extends BaseSignInActivity {
                 break;
             case R.id.tv_create_an_account:
                 Intent intentSignUp = new Intent(SignInActivity.this, SignUpActivity.class);
-//                Bundle bndlanimation = ActivityOptions.makeCustomAnimation(getApplicationContext(),
-//                        R.anim.slide_in_to_left, R.anim.do_nothing).toBundle();
-//                startActivity(intentSignUp, bndlanimation);
                 startActivity(intentSignUp);
                 overridePendingTransition(R.anim.slide_in_to_left, R.anim.do_nothing);
-                finish();
+                //finish();
                 break;
         }
     }

@@ -183,35 +183,8 @@ public class DetailsActivity extends BaseSignInActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mCompare.removeChangeListener(mComparesListener);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (mCompare.isLoaded() && mCompare.getAuthor().getId().equals(Prefs.getUserId())) {
-            getMenuInflater().inflate(R.menu.menu_compare_owner, menu);
-        } else {
-            getMenuInflater().inflate(R.menu.menu_compare, menu);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            /*case R.id.action_details_compare_menu: //TODO exception
-                View view = this.findViewById(R.id.action_details_compare_menu);
-                if (mCompare.getAuthor().getId().equals(Prefs.getUserId())) {
-                    Utils.showOwnerPopupMenu(getApplicationContext(), view, mCompareId);
-                } else {
-                    Utils.showUserPopupMenu(getApplicationContext(), view, mCompareId);
-                }
-                return true;*/
-            default:
-                return super.onOptionsItemSelected(item);
+        if (mCompare != null && mComparesListener != null) {
+            mCompare.removeChangeListener(mComparesListener);
         }
     }
 
@@ -365,7 +338,7 @@ public class DetailsActivity extends BaseSignInActivity {
             });
 
             // click listener for comment's author
-            adapter.setOnItemClickListener((view, position) -> {
+            adapter.setOnCommentClickListener((view, position) -> {
                 if (compare.isValid()) {
                     Intent userIntent = new Intent(this, ProfileActivity.class);
                     userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID,

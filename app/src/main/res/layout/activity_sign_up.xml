@@ -11,6 +11,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:overScrollMode="never"
         android:scrollbars="none">
 
         <LinearLayout
@@ -42,7 +43,7 @@
                     android:layout_height="70dp"
                     android:layout_gravity="center_horizontal|top"
                     android:layout_marginTop="15dp"
-                    android:src="@drawable/icon_camera_big" />
+                    android:src="@drawable/icon_camera_big_selector" />
 
                 <ImageView
                     android:id="@+id/iv_sign_up_photo_load"
@@ -53,6 +54,7 @@
                     android:visibility="gone" />
 
                 <TextView
+                    android:id="@+id/tv_sign_up_photo_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal|bottom"
@@ -167,36 +169,21 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <FrameLayout
+            <Button
+                android:id="@+id/btn_sign_up"
+                style="@style/AppTheme.Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="17dp"
-                    android:background="@drawable/shadow_button"
-                    tools:targetApi="JELLY_BEAN" />
-
-                <Button
-                    android:id="@+id/btn_sign_up"
-                    style="@style/AppTheme.Button"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/button_sign_selector"
-                    android:text="SIGN UP" />
-            </FrameLayout>
-
+                android:layout_marginTop="24dp"
+                android:background="@drawable/button_sign_selector"
+                android:text="Sign up" />
 
             <TextView
                 android:id="@+id/tv_already_have_an_account"
                 style="?borderlessButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
                 android:text="Already have an Account?"
                 android:textAllCaps="false"
                 android:textColor="#03A9F4"

@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -25,7 +24,7 @@ import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.screens.activities.DetailsActivity;
 import com.geekhub.choosehelper.screens.activities.MainActivity;
 import com.geekhub.choosehelper.screens.activities.ProfileActivity;
-import com.geekhub.choosehelper.ui.adapters.ComparesAdapter1;
+import com.geekhub.choosehelper.ui.adapters.ComparesAdapter;
 import com.geekhub.choosehelper.utils.ModelConverter;
 import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.Utils;
@@ -76,7 +75,7 @@ public class FollowingsComparesFragment extends BaseFragment {
                     compares.add(compare);
                 }
             }
-            updateUi(compares);
+            updateUi(Realm.getDefaultInstance().copyFromRealm(compares));
         }
     };
 
@@ -234,15 +233,16 @@ public class FollowingsComparesFragment extends BaseFragment {
     private void updateUi(List<Compare> compares) {
         setProgressVisibility(false);
 
-        ComparesAdapter1 adapter;
+        ComparesAdapter adapter;
         if (mRecyclerView.getAdapter() == null) {
-            adapter = new ComparesAdapter1(compares);
+            adapter = new ComparesAdapter(compares);
             mRecyclerView.setAdapter(adapter);
 
             /** click listener for details **/
             adapter.setOnItemClickListener((view, position) -> {
                 Intent intent = new Intent(getActivity(), DetailsActivity.class);
-                intent.putExtra(DetailsActivity.INTENT_KEY_COMPARE_ID, compares.get(position).getId());
+                intent.putExtra(DetailsActivity.INTENT_KEY_COMPARE_ID,
+                        compares.get(position).getId());
                 startActivity(intent);
             });
 
@@ -272,16 +272,6 @@ public class FollowingsComparesFragment extends BaseFragment {
                 }
             });
 
-            /** click listener for popup menu **/
-            adapter.setOnItemClickListenerPopup((view, position) -> {
-                String compareId = compares.get(position).getId();
-                if (compares.get(position).getAuthor().getId().equals(Prefs.getUserId())) {
-                    Utils.showOwnerPopupMenu(getContext(), view, compareId);
-                } else {
-                    Utils.showUserPopupMenu(getContext(), view, compareId);
-                }
-            });
-
             /** click listener for author **/
             adapter.setOnItemClickListenerAuthor((view, position) -> {
                 Intent userIntent = new Intent(getActivity(), ProfileActivity.class);
@@ -292,7 +282,7 @@ public class FollowingsComparesFragment extends BaseFragment {
                 startActivity(userIntent);
             });
         } else {
-            adapter = (ComparesAdapter1) mRecyclerView.getAdapter();
+            adapter = (ComparesAdapter) mRecyclerView.getAdapter();
             adapter.updateList(compares);
             adapter.notifyDataSetChanged();
         }

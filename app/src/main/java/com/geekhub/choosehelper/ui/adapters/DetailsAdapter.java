@@ -35,10 +35,10 @@ public class DetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private Compare mCompare = new Compare();
 
     private OnHeaderClickListener mOnHeaderClickListener;
-    private OnItemClickListener mOnItemClickListener;
     private OnLikeDetailsListener mOnLikeDetailsListener;
-    private OnSwitchChangeListener mOnSwitchChangeListener;
     private OnImageClickListener mOnImageClickListener;
+    private OnSwitchChangeListener mOnSwitchChangeListener;
+    private OnItemClickListener mOnCommentClickListener;
 
     public DetailsAdapter(Compare compare) {
         mCompare = Realm.getDefaultInstance().copyFromRealm(compare);
@@ -58,7 +58,6 @@ public class DetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     .inflate(R.layout.details_header_layout, parent, false));
         }
         return null;
-        //throw new RuntimeException("there is no type that matches the type " + viewType + " + make sure your using types correctly");
     }
 
     @Override
@@ -86,7 +85,8 @@ public class DetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return position == 0;
     }
 
-    class HeaderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+    class HeaderViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
         LinearLayout mLlAuthor;
 
@@ -120,7 +120,6 @@ public class DetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         public HeaderViewHolder(View itemView) {
             super(itemView);
-            //ButterKnife.bind(this, itemView);
             mLlAuthor = (LinearLayout) itemView.findViewById(R.id.details_ll_author);
             mIvAvatar = (ImageView) itemView.findViewById(R.id.details_iv_avatar);
             mTvAuthor = (TextView) itemView.findViewById(R.id.details_tv_author);
@@ -155,12 +154,14 @@ public class DetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             } else if (id == mChLikeFirst.getId()) {
                 if (mOnLikeDetailsListener != null) {
                     updateLikeView(mChLikeFirst, mChLikeSecond);
-                    mOnLikeDetailsListener.onLike(mChLikeFirst, mChLikeSecond, getAdapterPosition(), 0);
+                    mOnLikeDetailsListener.onLike(mChLikeFirst, mChLikeSecond,
+                            getAdapterPosition(), 0);
                 }
             } else if (id == mChLikeSecond.getId()) {
                 if (mOnLikeDetailsListener != null) {
                     updateLikeView(mChLikeSecond, mChLikeFirst);
-                    mOnLikeDetailsListener.onLike(mChLikeSecond, mChLikeFirst, getAdapterPosition(), 1);
+                    mOnLikeDetailsListener.onLike(mChLikeSecond, mChLikeFirst,
+                            getAdapterPosition(), 1);
                 }
             } else if (id == mIvFirstImage.getId()) {
                 if (mOnImageClickListener != null) {
@@ -181,11 +182,14 @@ public class DetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
         private void bindHeader(Compare compare) {
+            // author's info and date
             if (compare.getAuthor().getPhotoUrl() != null) {
                 ImageUtils.loadCircleImage(mIvAvatar, compare.getAuthor().getPhotoUrl());
             }
             mTvAuthor.setText(compare.getAuthor().getFullName());
             mTvDate.setText(DateUtils.convertDateTime(compare.getDate()));
+
+            // question and variants
             mTvQuestion.setText(compare.getQuestion());
             mTvFirstVariant.setText(compare.getVariants().get(0).getDescription());
             mTvSecondVariant.setText(compare.getVariants().get(1).getDescription());
@@ -195,9 +199,10 @@ public class DetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             if (compare.getVariants().get(1).getImageUrl() != null) {
                 ImageUtils.loadImage(mIvSecondImage, compare.getVariants().get(1).getImageUrl());
             }
+
+            // likes
             mChLikeFirst.setText(String.valueOf(compare.getVariants().get(0).getLikes()));
             mChLikeSecond.setText(String.valueOf(compare.getVariants().get(1).getLikes()));
-
             if (compare.getLikedVariant() == 0) {
                 mChLikeFirst.setChecked(true);
                 mChLikeSecond.setChecked(false);
@@ -209,22 +214,23 @@ public class DetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 mChLikeSecond.setChecked(false);
             }
 
+            // status
             if (compare.getAuthor().getId().equals(Prefs.getUserId())) {
                 mSwitchStatus.setVisibility(View.VISIBLE);
             }
-
             if (compare.isOpen()) {
                 if (mSwitchStatus.getVisibility() == View.VISIBLE) {
                     mSwitchStatus.setChecked(true);
                 }
-                mTvStatus.setText("Open");
+                mTvStatus.setText(mTvStatus.getContext().getString(R.string.status_open));
             } else {
                 if (mSwitchStatus.getVisibility() == View.VISIBLE) {
                     mSwitchStatus.setChecked(false);
                 }
-                mTvStatus.setText("Closed");
+                mTvStatus.setText(mTvStatus.getContext().getString(R.string.status_closed));
             }
 
+            // category and comments count
             mTvCategory.setText(compare.getCategory());
             mTvCommentsCount.setText(String.valueOf(compare.getComments().size()));
         }
@@ -267,8 +273,8 @@ public class DetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         @Override
         public void onClick(View v) {
-            if (mOnItemClickListener != null) {
-                mOnItemClickListener.onItemClick(v, getAdapterPosition());
+            if (mOnCommentClickListener != null) {
+                mOnCommentClickListener.onItemClick(v, getAdapterPosition());
             }
         }
 
@@ -280,24 +286,28 @@ public class DetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
+    // click listener for compare's author
     public void setOnHeaderClickListener(OnHeaderClickListener onHeaderClickListener) {
         mOnHeaderClickListener = onHeaderClickListener;
     }
 
-    public void setOnLikeDetailsListener(OnLikeDetailsListener onLikeDetailsListener) {
-        mOnLikeDetailsListener = onLikeDetailsListener;
-    }
-
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        mOnItemClickListener = onItemClickListener;
-    }
-
-    public void setOnSwitchChangeListener(OnSwitchChangeListener onSwitchChangeListener) {
-        mOnSwitchChangeListener = onSwitchChangeListener;
-    }
-
+    // click listener for images
     public void setOnImageClickListener(OnImageClickListener onImageClickListener) {
         mOnImageClickListener = onImageClickListener;
     }
 
+    // click listener for likes
+    public void setOnLikeDetailsListener(OnLikeDetailsListener onLikeDetailsListener) {
+        mOnLikeDetailsListener = onLikeDetailsListener;
+    }
+
+    // change listener for compare's status
+    public void setOnSwitchChangeListener(OnSwitchChangeListener onSwitchChangeListener) {
+        mOnSwitchChangeListener = onSwitchChangeListener;
+    }
+
+    // click listener for comments
+    public void setOnCommentClickListener(OnItemClickListener onCommentClickListener) {
+        mOnCommentClickListener = onCommentClickListener;
+    }
 }

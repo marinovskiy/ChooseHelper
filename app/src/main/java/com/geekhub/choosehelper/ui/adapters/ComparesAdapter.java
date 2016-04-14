@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.db.Compare;
+import com.geekhub.choosehelper.ui.listeners.OnImageClickListener;
 import com.geekhub.choosehelper.ui.listeners.OnItemClickListener;
 import com.geekhub.choosehelper.ui.listeners.OnLikeListListener;
 import com.geekhub.choosehelper.utils.DateUtils;
@@ -27,10 +28,11 @@ public class ComparesAdapter extends RecyclerView.Adapter<ComparesAdapter.ViewHo
 
     private List<Compare> mCompares;
 
-    private OnLikeListListener mOnLikeListListener;
-    private OnItemClickListener mOnItemClickListener;
-    private OnItemClickListener mOnItemClickListenerPopup;
     private OnItemClickListener mOnItemClickListenerAuthor;
+    private OnItemClickListener mOnItemClickListenerPopup;
+    private OnItemClickListener mOnItemClickListener;
+    private OnImageClickListener mOnImageClickListener;
+    private OnLikeListListener mOnLikeListListener;
 
     public ComparesAdapter(List<Compare> compares) {
         this.mCompares = compares;
@@ -109,6 +111,8 @@ public class ComparesAdapter extends RecyclerView.Adapter<ComparesAdapter.ViewHo
             itemView.setOnClickListener(this);
             mImgMore.setOnClickListener(this);
             mLlAuthor.setOnClickListener(this);
+            mIvFirst.setOnClickListener(this);
+            mIvSecond.setOnClickListener(this);
             mChLikeFirst.setOnClickListener(this);
             mChLikeSecond.setOnClickListener(this);
         }
@@ -124,7 +128,15 @@ public class ComparesAdapter extends RecyclerView.Adapter<ComparesAdapter.ViewHo
                 if (mOnItemClickListenerPopup != null) {
                     mOnItemClickListenerPopup.onItemClick(v, getAdapterPosition());
                 }
-            } else if (id == mChLikeFirst.getId()) {
+            } else if (id == mIvFirst.getId()) {
+                if (mOnImageClickListener != null) {
+                    mOnImageClickListener.onImageClick(v, getAdapterPosition(), 0);
+                }
+            } else if (id == mIvSecond.getId()) {
+                if (mOnImageClickListener != null) {
+                    mOnImageClickListener.onImageClick(v, getAdapterPosition(), 1);
+                }
+            }else if (id == mChLikeFirst.getId()) {
                 if (mOnLikeListListener != null) {
                     updateLikeView(mChLikeFirst, mChLikeSecond);
                     mOnLikeListListener.onLike(mCardView, mChLikeFirst, mChLikeSecond, getAdapterPosition(), 0);
@@ -203,32 +215,28 @@ public class ComparesAdapter extends RecyclerView.Adapter<ComparesAdapter.ViewHo
         }
     }
 
-    /**
-     * click listener for profile_item_layout
-     **/
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        mOnItemClickListener = onItemClickListener;
-    }
-
-    /**
-     * click listener for like
-     **/
-    public void setOnLikeClickListener(OnLikeListListener onLikeListListener) {
-        mOnLikeListListener = onLikeListListener;
-    }
-
-    /**
-     * click listener for popup menu
-     **/
+    // click listener for popup menu
     public void setOnItemClickListenerPopup(OnItemClickListener onItemClickListenerPopup) {
         mOnItemClickListenerPopup = onItemClickListenerPopup;
     }
 
-    /**
-     * click listener for author
-     **/
+    // click listener for details
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
+    }
+
+    // click listener for images
+    public void setOnImageClickListener(OnImageClickListener onImageClickListener) {
+        mOnImageClickListener = onImageClickListener;
+    }
+
+    // click listener for likes
+    public void setOnLikeClickListener(OnLikeListListener onLikeListListener) {
+        mOnLikeListListener = onLikeListListener;
+    }
+
+    // click listener for author
     public void setOnItemClickListenerAuthor(OnItemClickListener onItemClickListenerAuthor) {
         mOnItemClickListenerAuthor = onItemClickListenerAuthor;
     }
-
 }

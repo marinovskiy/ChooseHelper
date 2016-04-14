@@ -157,6 +157,14 @@ public class MainActivity extends BaseSignInActivity
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (sCurrentUser != null && mUserListener != null) {
+            sCurrentUser.removeChangeListener(mUserListener);
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         // close navigation drawer
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {

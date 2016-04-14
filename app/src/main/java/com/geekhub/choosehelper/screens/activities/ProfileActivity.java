@@ -210,6 +210,7 @@ public class ProfileActivity extends BaseSignInActivity {
             mProfileBtnFollow.setClickable(false);
             showProgressDialog();
             updateFollow();
+            MainActivity.sIsNeedToAutoUpdate = true;
         } else {
             Utils.showMessage(this, getString(R.string.toast_no_internet));
         }
@@ -218,13 +219,19 @@ public class ProfileActivity extends BaseSignInActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mUser.removeChangeListener(mUserListener);
+        if (mUser != null && mUserListener != null) {
+            mUser.removeChangeListener(mUserListener);
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
+        if (mUserId.equals(Prefs.getUserId())) {
+            inflater.inflate(R.menu.menu_profile_owner, menu);
+        } else {
+            inflater.inflate(R.menu.menu_profile, menu);
+        }
 
         SearchView searchView = (SearchView)
                 MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
@@ -515,16 +522,6 @@ public class ProfileActivity extends BaseSignInActivity {
                     clickedCheckBox.setChecked(false);
                     int newValue = Integer.parseInt(clickedCheckBox.getText().toString()) - 1;
                     clickedCheckBox.setText(String.valueOf(newValue));
-                }
-            });
-
-            // click listener for popup menu
-            adapter.setOnItemClickListenerPopup((view, position) -> {
-                String compareId = compares.get(position).getId();
-                if (compares.get(position).getAuthor().getId().equals(Prefs.getUserId())) {
-                    Utils.showOwnerPopupMenu(getApplicationContext(), view, compareId);
-                } else {
-                    Utils.showUserPopupMenu(getApplicationContext(), view, compareId);
                 }
             });
         } else {
