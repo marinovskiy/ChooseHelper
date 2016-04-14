@@ -188,7 +188,11 @@ public class DetailsActivity extends BaseSignInActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_compare_settings, menu);
+        if (mCompare.isLoaded() && mCompare.getAuthor().getId().equals(Prefs.getUserId())) {
+            getMenuInflater().inflate(R.menu.menu_compare_owner, menu);
+        } else {
+            getMenuInflater().inflate(R.menu.menu_compare, menu);
+        }
         return true;
     }
 
@@ -198,14 +202,14 @@ public class DetailsActivity extends BaseSignInActivity {
             case android.R.id.home:
                 onBackPressed();
                 return true;
-            case R.id.action_details_compare_menu: //TODO exception
+            /*case R.id.action_details_compare_menu: //TODO exception
                 View view = this.findViewById(R.id.action_details_compare_menu);
                 if (mCompare.getAuthor().getId().equals(Prefs.getUserId())) {
                     Utils.showOwnerPopupMenu(getApplicationContext(), view, mCompareId);
                 } else {
                     Utils.showUserPopupMenu(getApplicationContext(), view, mCompareId);
                 }
-                return true;
+                return true;*/
             default:
                 return super.onOptionsItemSelected(item);
         }

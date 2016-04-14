@@ -6,36 +6,19 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.geekhub.choosehelper.models.network.NetworkFollowing;
 import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.utils.ModelConverter;
 import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.db.DbUsersManager;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FirebaseUsersManager {
 
     public static final String TAG = FirebaseUsersManager.class.getSimpleName();
-
-    public static boolean isUserExist(String id) {
-        final boolean[] result = new boolean[1];
-        Firebase firebase = new Firebase(FirebaseConstants.FB_REF_MAIN)
-                .child(FirebaseConstants.FB_REF_USERS)
-                .child(id);
-        firebase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                result[0] = dataSnapshot != null;
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                result[0] = false;
-            }
-        });
-        return result[0];
-    }
 
     public static void saveUserFromFirebase(String id) {
         Firebase firebase = new Firebase(FirebaseConstants.FB_REF_MAIN)
@@ -68,11 +51,25 @@ public class FirebaseUsersManager {
         userInfo.put(FirebaseConstants.FB_REF_FULL_NAME, networkUser.getFullName());
         userInfo.put(FirebaseConstants.FB_REF_PHOTO_URL, networkUser.getPhotoUrl());
 
-        if (isUserExist(Prefs.getUserId())) {
-            firebase.updateChildren(userInfo);
-        } else if (!isUserExist(Prefs.getUserId())) {
+        //if (isUserExist(Prefs.getUserId())) {
+        firebase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChildren()) {
+                    NetworkUser networkUser = dataSnapshot.getValue(NetworkUser.class);
+                    List<NetworkFollowing> networkFollowings = networkUser.getFollowings();
+                    userInfo.put(FirebaseConstants.FB_REF_FOLLOWINGS, networkFollowings);
+                }
+                firebase.setValue(userInfo);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
+        /*} else if (!isUserExist(Prefs.getUserId())) {
             firebase.setValue(userInfo);
-        }
+        }*/
     }
 
 }

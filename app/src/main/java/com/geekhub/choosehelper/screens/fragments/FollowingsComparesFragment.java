@@ -6,11 +6,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
@@ -23,6 +22,7 @@ import com.geekhub.choosehelper.models.db.Compare;
 import com.geekhub.choosehelper.models.db.Following;
 import com.geekhub.choosehelper.models.db.User;
 import com.geekhub.choosehelper.models.network.NetworkCompare;
+import com.geekhub.choosehelper.models.network.NetworkFollowing;
 import com.geekhub.choosehelper.models.network.NetworkLike;
 import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.screens.activities.DetailsActivity;
@@ -46,34 +46,41 @@ import io.realm.RealmResults;
 
 public class FollowingsComparesFragment extends BaseFragment {
 
-    public static final String INTENT_KEY_USERS_IDS = "intent_key_users_ids";
-
     @Bind(R.id.recycler_view_followings_compares)
     RecyclerView mRecyclerView;
 
     @Bind(R.id.swipe_to_refresh_follwings_compares)
     SwipeRefreshLayout mSwipeRefreshLayout;
 
-    @Bind(R.id.progress_bar_followings_compares)
-    ProgressBar mProgressBar;
-
-    @Bind(R.id.followings_cmps_btn_cmps_available)
-    Button mBtnNewComparesAvailable;
-
     // firebase references and queries
+    private Firebase mFirebaseUser;
     private Firebase mFirebaseCompares;
     private Query mQueryCompares;
     private Firebase mFirebaseLikes;
 
     // realm
     private User mCurrentUser;
-    private ArrayList<String> mAuthorIds = new ArrayList<>();
 
     private RealmResults<Compare> mCompares;
 
     private RealmChangeListener mComparesListener = () -> {
         if (mCompares != null && mCompares.isLoaded()) {
-            updateUi(mCompares);
+            mCurrentUser = Realm.getDefaultInstance()
+                    .where(User.class)
+                    .equalTo(DbFields.DB_ID, Prefs.getUserId())
+                    .findFirst();
+            List<Following> followings = mCurrentUser.getFollowings();
+            List<Compare> compares = new ArrayList<>();
+            List<String> followingIds = new ArrayList<>();
+            for (Following following : followings) {
+                followingIds.add(following.getUserId());
+            }
+            for (Compare compare : mCompares) {
+                if (followingIds.contains(compare.getAuthor().getId())) {
+                    compares.add(compare);
+                }
+            }
+            updateUi(compares);
         }
     };
 
@@ -82,22 +89,7 @@ public class FollowingsComparesFragment extends BaseFragment {
     }
 
     public static FollowingsComparesFragment newInstance(/*ArrayList<String> authorIds*/) {
-        FollowingsComparesFragment fragment = new FollowingsComparesFragment();
-        /*Bundle bundle = new Bundle();
-        bundle.putStringArrayList(INTENT_KEY_USERS_IDS, authorIds);
-        fragment.setArguments(bundle);*/
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        /*if (getArguments() != null) {
-            mAuthorIds = getArguments().getStringArrayList(INTENT_KEY_USERS_IDS);
-            for (String authorsId : mAuthorIds) {
-                Log.i("followerstags", "mAuthorsIds =" + authorsId);
-            }
-        }*/
+        return new FollowingsComparesFragment();
     }
 
     @Override
@@ -111,12 +103,12 @@ public class FollowingsComparesFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        mCurrentUser = Realm.getDefaultInstance().where(User.class).equalTo(DbFields.DB_ID, Prefs.getUserId()).findFirst();
-        for (Following following : mCurrentUser.getFollowings()) {
-            mAuthorIds.add(following.getUserId());
-        }
-
         // firebase references
+        mFirebaseUser = new Firebase(FirebaseConstants.FB_REF_MAIN)
+                .child(FirebaseConstants.FB_REF_USERS)
+                .child(Prefs.getUserId())
+                .child(FirebaseConstants.FB_REF_FOLLOWINGS);
+
         mFirebaseCompares = new Firebase(FirebaseConstants.FB_REF_MAIN)
                 .child(FirebaseConstants.FB_REF_COMPARES);
 
@@ -127,14 +119,14 @@ public class FollowingsComparesFragment extends BaseFragment {
                 .child(FirebaseConstants.FB_REF_LIKES);
 
         // requests
-        if (mAuthorIds != null && !mAuthorIds.isEmpty()) {
-            fetchComparesFromDb();
-            if (Utils.hasInternet(getContext())) {
-                fetchComparesFromNetwork();
-            }
-        } else {
-            // TODO show empty view no followings yet
+        //if (mAuthorIds != null && !mAuthorIds.isEmpty()) {
+        fetchComparesFromDb();
+        if (Utils.hasInternet(getContext())) {
+            fetchComparesFromNetwork();
         }
+        /*} else {
+            // TODO show empty view no followings yet
+        }*/
 
         // swipe refresh layout
         mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -152,13 +144,6 @@ public class FollowingsComparesFragment extends BaseFragment {
             }
         });
     }
-
-//    @OnClick(R.id.followings_cmps_btn_cmps_available)
-//    public void onClick() {
-//        mBtnNewComparesAvailable.setVisibility(View.GONE);
-//        mIsNeedToShowUpdateBtnWhileScroll = false;
-//        fetchComparesFromNetwork();
-//    }
 
     @Override
     public void onResume() {
@@ -249,49 +234,42 @@ public class FollowingsComparesFragment extends BaseFragment {
         mCompares.addChangeListener(mComparesListener);
     }
 
-    // notify about new compares
-    private void addListenerForNewValues() {
-        mFirebaseCompares.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                /*if (mIsNeedToShowUpdateBtn) {
-                    mIsNeedToShowUpdateBtnWhileScroll = true;
-                    mBtnNewComparesAvailable.setVisibility(View.VISIBLE);
-                } else {
-                    mIsNeedToShowUpdateBtn = true;
-                }*/
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
-    }
-
     // get information about compare from firebase
     private void fetchComparesFromNetwork() {
-        mQueryCompares.addListenerForSingleValueEvent(new ValueEventListener() {
+        mFirebaseUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<Compare> compares = new ArrayList<>();
-                int snapshotSize = (int) dataSnapshot.getChildrenCount();
-                if (snapshotSize == 0)
-                    hideRefreshing();
-                for (DataSnapshot compareSnapshot : dataSnapshot.getChildren()) {
-                    NetworkCompare networkCompare = compareSnapshot.getValue(NetworkCompare.class);
-                    String authorId = networkCompare.getUserId();
-                    if (mAuthorIds.contains(authorId)) {
-                        fetchDetailsFromNetwork(compares, networkCompare,
-                                compareSnapshot.getKey(), snapshotSize);
-                    }
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    NetworkFollowing networkFollowing = dataSnapshot1.getValue(NetworkFollowing.class);
+                    mQueryCompares.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            List<Compare> compares = new ArrayList<>();
+                            int snapshotSize = (int) dataSnapshot.getChildrenCount();
+                            if (snapshotSize == 0)
+                                hideRefreshing();
+                            for (DataSnapshot compareSnapshot : dataSnapshot.getChildren()) {
+                                NetworkCompare networkCompare = compareSnapshot.getValue(NetworkCompare.class);
+                                //String authorId = networkCompare.getUserId();
+                                //if (networkFollowing.getUserId().equals(authorId)) {
+                                    fetchDetailsFromNetwork(compares, networkCompare,
+                                            compareSnapshot.getKey(), snapshotSize);
+                                //}
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+                            hideRefreshing();
+                            Toast.makeText(getContext(), "Error! Please, try later", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-                hideRefreshing();
-                Toast.makeText(getContext(), "Error! Please, try later", Toast.LENGTH_SHORT).show();
+
             }
         });
     }
@@ -327,8 +305,9 @@ public class FollowingsComparesFragment extends BaseFragment {
 
                                 if (compares.size() == size) {
                                     DbComparesManager.saveCompares(compares);
-                                    hideRefreshing();
                                 }
+                                //updateUi(compares);
+                                hideRefreshing();
                             }
 
                             @Override
@@ -354,6 +333,6 @@ public class FollowingsComparesFragment extends BaseFragment {
     }
 
     private void setProgressVisibility(boolean visible) {
-        mProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
+        //mProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 }

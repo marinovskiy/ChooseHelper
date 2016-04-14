@@ -24,9 +24,9 @@ public class SignInActivity extends BaseSignInActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
-        if (Prefs.getLoggedType() != Prefs.NOT_LOGIN) {
+        /*if (Prefs.getLoggedType() != Prefs.NOT_LOGIN) {
             startMainActivity();
-        }
+        }*/
     }
 
     @OnClick({/*R.id.sign_in_btn_login, */R.id.sign_in_tv_forgot_password, R.id.sign_in_google,

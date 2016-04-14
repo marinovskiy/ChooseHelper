@@ -9,49 +9,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <FrameLayout
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_followings_compares"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recycler_view_followings_compares"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scrollbars="none" />
-
-                <Button
-                    android:id="@+id/followings_cmps_btn_cmps_available"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="16dp"
-                    android:background="@drawable/button_new_compares_selector"
-                    android:paddingLeft="12dp"
-                    android:paddingRight="12dp"
-                    android:text="@string/btn_label_new_compares_are_available"
-                    android:textAllCaps="false"
-                    android:textColor="@color/colorTextButton"
-                    android:textSize="@dimen/medium_text_size"
-                    android:visibility="gone" />
-
-            </RelativeLayout>
-
-        </FrameLayout>
+            android:layout_height="wrap_content"
+            android:scrollbars="none" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <ProgressBar
-        android:id="@+id/progress_bar_followings_compares"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone" />
+    <!--<ProgressBar-->
+        <!--android:id="@+id/progress_bar_followings_compares"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:visibility="gone" />-->
 
 </LinearLayout>

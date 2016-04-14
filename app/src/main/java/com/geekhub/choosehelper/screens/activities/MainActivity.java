@@ -309,14 +309,12 @@ public class MainActivity extends BaseSignInActivity
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 NetworkUser networkUser = dataSnapshot.getValue(NetworkUser.class);
-                DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser,
-                        Prefs.getUserId()));
+                DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser, Prefs.getUserId()));
             }
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-                Utils.showMessage(getApplicationContext(),
-                        getString(R.string.toast_error_try_later));
+                Utils.showMessage(getApplicationContext(), getString(R.string.toast_error_try_later));
             }
         });
     }

@@ -7,11 +7,9 @@ import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.firebase.client.DataSnapshot;
@@ -36,19 +34,17 @@ import com.geekhub.choosehelper.utils.firebase.FirebaseConstants;
 import com.geekhub.choosehelper.utils.firebase.FirebaseLikesManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import butterknife.Bind;
-import butterknife.OnClick;
 import io.realm.RealmChangeListener;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 public class AllComparesFragment extends BaseFragment {
-
-    private static final String TAG = AllComparesFragment.class.getName() + "1234567";
 
     @Bind(R.id.swipe_to_refresh_all_compares)
     SwipeRefreshLayout mSwipeRefreshLayout;
@@ -59,38 +55,24 @@ public class AllComparesFragment extends BaseFragment {
     @Bind(R.id.progress_bar_all_compares)
     ProgressBar mProgressBar;
 
-    @Bind(R.id.all_cmps_btn_cmps_available)
-    Button mBtnNewComparesAvailable;
-
-    // is need to call updateUi from realmChangeListener
-    private boolean mIsNeedToReloadFromDb = true;
-
-    // is need to reload compares (using after add etc.)
-    public static boolean sIsNeedToAutoUpdate = true;
-
-    //private boolean mIsNeedToShowUpdateBtn = false;
-    //private boolean mIsNeedToShowUpdateBtnWhileScroll = false;
+    // is need to reload compares (using after add new compare etc.)
+    public static boolean sIsNeedToAutoUpdate = false;
 
     // firebase references
-    private Firebase mFirebaseCompares;
     private Query mQueryCompares;
     private Firebase mFirebaseLikes;
 
     // settings preferences
     private int mNumberOfCompares;
     private Set<String> mCategories;
-    private String cat;
     private SharedPreferences mSharedPreferences;
 
     // realm
     private RealmResults<Compare> mCompares;
 
     private RealmChangeListener mComparesListener = () -> {
-        Log.i("mylogtags", "change listener 1");
-        if (mIsNeedToReloadFromDb && mCompares != null && mCompares.isLoaded()) {
-            Log.i("mylogtags", "change listener 2");
-            mIsNeedToReloadFromDb = false;
-            RealmQuery<Compare> query = mCompares.where().equalTo(DbFields.DB_CATEGORY, cat);
+        if (mCompares != null && mCompares.isLoaded()) {
+            RealmQuery<Compare> query = mCompares.where().equalTo(DbFields.DB_CATEGORY, "");
             for (String category : mCategories) {
                 query.or().equalTo(DbFields.DB_CATEGORY, category);
             }
@@ -118,22 +100,22 @@ public class AllComparesFragment extends BaseFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        // recycler view
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // get shared preferences (settings)
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        mNumberOfCompares = Integer.parseInt(mSharedPreferences.getString(getString(R.string.settings_numbers_of_compares), "0"));
-        mCategories = mSharedPreferences.getStringSet(getString(R.string.settings_categories), new HashSet<>());
-        for (String mCategory : mCategories) {
-            cat = mCategory;
+        mNumberOfCompares = Integer.parseInt(mSharedPreferences
+                .getString(getString(R.string.settings_numbers_of_compares), "5"));
+        mCategories = mSharedPreferences
+                .getStringSet(getString(R.string.settings_categories), new HashSet<>());
+        if (mCategories.size() == 0) {
+            mCategories.addAll(Arrays.asList(getResources().getStringArray(R.array.categories)));
         }
 
         // firebase references and queries
-        mFirebaseCompares = new Firebase(FirebaseConstants.FB_REF_MAIN)
-                .child(FirebaseConstants.FB_REF_COMPARES);
-
-        mQueryCompares = mFirebaseCompares.limitToLast(5);
+        mQueryCompares = new Firebase(FirebaseConstants.FB_REF_MAIN)
+                .child(FirebaseConstants.FB_REF_COMPARES)
+                .limitToLast(mNumberOfCompares * mCategories.size());
 
         mFirebaseLikes = new Firebase(FirebaseConstants.FB_REF_MAIN)
                 .child(FirebaseConstants.FB_REF_LIKES);
@@ -142,24 +124,8 @@ public class AllComparesFragment extends BaseFragment {
         fetchComparesFromDb();
         if (Utils.hasInternet(getContext())) {
             fetchComparesFromNetwork(mCategories);
-            // listener for new compares
-            addListenerForNewValues();
         }
 
-        // scroll listener for show or don't update button
-        /*mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (dy - 10 > 0) {
-                    mBtnNewComparesAvailable.setVisibility(View.GONE);
-                } else if (dy + 5 < 0 && mIsNeedToShowUpdateBtnWhileScroll) {
-                    mBtnNewComparesAvailable.setVisibility(View.VISIBLE);
-                }
-            }
-        });*/
-
-        // swipe refresh layout
         mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
@@ -170,17 +136,10 @@ public class AllComparesFragment extends BaseFragment {
             if (Utils.hasInternet(getContext())) {
                 fetchComparesFromNetwork(mCategories);
             } else {
+                hideRefreshing();
                 Utils.showMessage(getContext(), getString(R.string.toast_no_internet));
-                mSwipeRefreshLayout.setRefreshing(false);
             }
         });
-    }
-
-    @OnClick(R.id.all_cmps_btn_cmps_available)
-    public void onClick() {
-//        mBtnNewComparesAvailable.setVisibility(View.GONE);
-//        mIsNeedToShowUpdateBtnWhileScroll = false;
-//        fetchComparesFromNetwork();
     }
 
     @Override
@@ -188,12 +147,10 @@ public class AllComparesFragment extends BaseFragment {
         super.onResume();
         if (sIsNeedToAutoUpdate) {
             sIsNeedToAutoUpdate = false;
-            mCategories = mSharedPreferences.getStringSet(getString(R.string.settings_categories), new HashSet<>());
-            mNumberOfCompares = Integer.parseInt(mSharedPreferences.getString(getString(R.string.settings_numbers_of_compares), ""));
-            for (String mCategory : mCategories) {
-                cat = mCategory;
-                Log.i(TAG, "cat: " + cat);
-            }
+            mCategories = mSharedPreferences
+                    .getStringSet(getString(R.string.settings_categories), new HashSet<>());
+            mNumberOfCompares = Integer.parseInt(mSharedPreferences
+                    .getString(getString(R.string.settings_numbers_of_compares), "5"));
             fetchComparesFromNetwork(mCategories);
         }
     }
@@ -211,52 +168,32 @@ public class AllComparesFragment extends BaseFragment {
         mCompares.addChangeListener(mComparesListener);
     }
 
-    // notify about new compares
-    private void addListenerForNewValues() {
-        /*mFirebaseCompares.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (mIsNeedToShowUpdateBtn && !sIsNeedToAutoUpdate) {
-                    mIsNeedToShowUpdateBtnWhileScroll = true;
-                    mBtnNewComparesAvailable.setVisibility(View.VISIBLE);
-                } else {
-                    mIsNeedToShowUpdateBtn = true;
-                }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-            }
-        });*/
-    }
-
     // get information about compare from firebase
     private void fetchComparesFromNetwork(Set<String> categories) {
-        mIsNeedToReloadFromDb = true;
         mQueryCompares.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<String> keys = new ArrayList<>();
-                List<NetworkCompare> networkCompares = new ArrayList<>();
+                /*List<String> keys = new ArrayList<>();
+                List<NetworkCompare> netCompares = new ArrayList<>();*/
                 List<Compare> compares = new ArrayList<>();
                 int snapshotSize = (int) dataSnapshot.getChildrenCount();
                 if (snapshotSize == 0) {
                     hideRefreshing();
                 }
                 for (DataSnapshot compareSnapshot : dataSnapshot.getChildren()) {
-                    Log.i("mylogtags", "onDataChange: id = " + compareSnapshot.getKey());
                     NetworkCompare networkCompare = compareSnapshot.getValue(NetworkCompare.class);
-                    if (categories.contains(networkCompare.getCategory())) {
+                    fetchDetailsFromNetwork(compares, networkCompare, compareSnapshot.getKey(), snapshotSize);
+                    /*if (categories.contains(networkCompare.getCategory())) {
                         keys.add(compareSnapshot.getKey());
-                        networkCompares.add(networkCompare);
+                        netCompares.add(networkCompare);
                     }
                     if (keys.size() == mNumberOfCompares) {
                         break;
-                    }
+                    }*/
                 }
-                for (int i = 0; i < networkCompares.size(); i++) {
-                    fetchDetailsFromNetwork(compares, networkCompares.get(i), keys.get(i), keys.size());
-                }
+                /*for (int i = 0; i < netCompares.size(); i++) {
+                    fetchDetailsFromNetwork(compares, netCompares.get(i), keys.get(i), keys.size());
+                }*/
             }
 
             @Override
@@ -299,7 +236,6 @@ public class AllComparesFragment extends BaseFragment {
                                 if (compares.size() == size) {
                                     DbComparesManager.saveCompares(compares);
                                     hideRefreshing();
-                                    //updateUi(compares);
                                 }
                             }
 
@@ -324,72 +260,72 @@ public class AllComparesFragment extends BaseFragment {
         setProgressVisibility(false);
 
         ComparesAdapter adapter;
-        //if (mRecyclerView.getAdapter() == null) {
-        adapter = new ComparesAdapter(compares/*compares.subList(0, compares.size() < mNumberOfCompares
-                    ? compares.size() : mNumberOfCompares)*/);
-        mRecyclerView.setAdapter(adapter);
+        if (mRecyclerView.getAdapter() == null) {
+            adapter = new ComparesAdapter(compares);
+            mRecyclerView.setAdapter(adapter);
 
-        // click listener for author
-        adapter.setOnItemClickListenerAuthor((view, position) -> {
-            Intent userIntent = new Intent(getActivity(), ProfileActivity.class);
-            userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID,
-                    compares.get(position).getAuthor().getId());
-            userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME,
-                    compares.get(position).getAuthor().getFullName());
-            startActivity(userIntent);
-        });
+            // click listener for author
+            adapter.setOnItemClickListenerAuthor((view, position) -> {
+                try {
+                    Intent userIntent = new Intent(getActivity(), ProfileActivity.class);
+                    userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID,
+                            compares.get(position).getAuthor().getId());
+                    userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME,
+                            compares.get(position).getAuthor().getFullName());
+                    startActivity(userIntent);
+                } catch (IndexOutOfBoundsException ignored) {
+                }
+            });
 
-        // click listener for popup menu
-        adapter.setOnItemClickListenerPopup((view, position) -> {
-            String compareId = compares.get(position).getId();
-            if (compares.get(position).getAuthor().getId().equals(Prefs.getUserId())) {
-                Utils.showOwnerPopupMenu(getContext(), view, compareId);
-            } else {
-                Utils.showUserPopupMenu(getContext(), view, compareId);
-            }
-        });
+            // click listener for popup menu
+            adapter.setOnItemClickListenerPopup((view, position) -> {
+                String compareId = compares.get(position).getId();
+                if (compares.get(position).getAuthor().getId().equals(Prefs.getUserId())) {
+                    Utils.showOwnerPopupMenu(getContext(), view, compareId);
+                } else {
+                    Utils.showUserPopupMenu(getContext(), view, compareId);
+                }
+            });
 
-        // click listener for details
-        adapter.setOnItemClickListener((view, position) -> {
-            Intent intent = new Intent(getActivity(), DetailsActivity.class);
-            intent.putExtra(DetailsActivity.INTENT_KEY_COMPARE_ID,
-                    compares.get(position).getId());
-            startActivity(intent);
-        });
+            // click listener for details
+            adapter.setOnItemClickListener((view, position) -> {
+                Intent intent = new Intent(getActivity(), DetailsActivity.class);
+                intent.putExtra(DetailsActivity.INTENT_KEY_COMPARE_ID,
+                        compares.get(position).getId());
+                startActivity(intent);
+            });
 
-        // click listener for likes
-        adapter.setOnLikeClickListener((mainView, clickedCheckBox, otherCheckBox,
-                                        position, variantNumber) -> {
-            boolean isNeedToUnCheck = false;
-            if (!compares.get(position).isOpen()) { // if closed
-                isNeedToUnCheck = true;
-                Utils.showMessage(getContext(), getString(R.string.toast_cannot_like_closed));
-            } else if (!Utils.hasInternet(getContext())) { // if no internet
-                isNeedToUnCheck = true;
-                Utils.showMessage(getContext(), getString(R.string.toast_no_internet));
-            } else if (compares.get(position).getAuthor().getId().equals(Prefs.getUserId())) { // if user is owner
-                isNeedToUnCheck = true;
-                Utils.showMessage(getContext(), getString(R.string.toast_cannot_like_own));
-            } else { // update like
-                sIsNeedToAutoUpdate = false; // don't show update btn if like or unlike
-                Utils.blockViews(mainView, clickedCheckBox, otherCheckBox);
-                FirebaseLikesManager.updateLike(compares.get(position).getId(), variantNumber,
-                        mainView, clickedCheckBox, otherCheckBox);
-            }
-            // unCheck if need
-            if (isNeedToUnCheck) {
-                clickedCheckBox.setChecked(false);
-                int newValue = Integer.parseInt(clickedCheckBox.getText().toString()) - 1;
-                clickedCheckBox.setText(String.valueOf(newValue));
-            }
-        });
-        //} else {
-        //   adapter = (ComparesAdapter) mRecyclerView.getAdapter();
-        //  adapter.updateList(compares/*compares.subList(0, compares.size() < mNumberOfCompares ? compares.size() : mNumberOfCompares)*/);
-        //adapter.notifyDataSetChanged();
-        //}
-
-        //mRecyclerView.scrollToPosition(0);
+            // click listener for likes
+            adapter.setOnLikeClickListener((mainView, clickedCheckBox, otherCheckBox,
+                                            position, variantNumber) -> {
+                boolean isNeedToUnCheck = false;
+                if (!compares.get(position).isOpen()) { // if closed
+                    isNeedToUnCheck = true;
+                    Utils.showMessage(getContext(), getString(R.string.toast_cannot_like_closed));
+                } else if (!Utils.hasInternet(getContext())) { // if no internet
+                    isNeedToUnCheck = true;
+                    Utils.showMessage(getContext(), getString(R.string.toast_no_internet));
+                } else if (compares.get(position).getAuthor().getId().equals(Prefs.getUserId())) { // if user is owner
+                    isNeedToUnCheck = true;
+                    Utils.showMessage(getContext(), getString(R.string.toast_cannot_like_own));
+                } else { // update like
+                    //sIsNeedToAutoUpdate = true;
+                    Utils.blockViews(mainView, clickedCheckBox, otherCheckBox);
+                    FirebaseLikesManager.updateLike(compares.get(position).getId(), variantNumber,
+                            mainView, clickedCheckBox, otherCheckBox);
+                }
+                // unCheck if need
+                if (isNeedToUnCheck) {
+                    clickedCheckBox.setChecked(false);
+                    int newValue = Integer.parseInt(clickedCheckBox.getText().toString()) - 1;
+                    clickedCheckBox.setText(String.valueOf(newValue));
+                }
+            });
+        } else {
+            adapter = (ComparesAdapter) mRecyclerView.getAdapter();
+            adapter.updateList(compares);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     // methods for show progress
