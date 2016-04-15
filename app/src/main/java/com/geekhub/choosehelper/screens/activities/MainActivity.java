@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -15,7 +14,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,31 +22,25 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.db.User;
-import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.screens.fragments.AllComparesFragment;
 import com.geekhub.choosehelper.screens.fragments.FollowingsComparesFragment;
 import com.geekhub.choosehelper.screens.fragments.SearchComparesFragment;
-import com.geekhub.choosehelper.services.NotificationComparesService;
 import com.geekhub.choosehelper.ui.adapters.ComparesViewPagerAdapter;
 import com.geekhub.choosehelper.utils.ImageUtils;
-import com.geekhub.choosehelper.utils.ModelConverter;
 import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.Utils;
 import com.geekhub.choosehelper.utils.db.DbUsersManager;
-import com.geekhub.choosehelper.utils.firebase.FirebaseConstants;
+import com.geekhub.choosehelper.utils.firebase.FirebaseUsersManager;
 
 import butterknife.Bind;
 import butterknife.OnClick;
 import io.realm.RealmChangeListener;
 
-public class MainActivity extends BaseSignInActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+import static android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
+
+public class MainActivity extends BaseSignInActivity implements OnNavigationItemSelectedListener {
 
     @Bind(R.id.drawer_main)
     DrawerLayout mDrawerLayout;
@@ -79,13 +71,12 @@ public class MainActivity extends BaseSignInActivity
     // is need to reload compares (using after add new compare etc.)
     public static boolean sIsNeedToAutoUpdate = false;
 
-    private Firebase mFirebaseUser;
-
     // is need to exit from app
     private boolean mIsNeedToExit = false;
 
     // realm
     private User mCurrentUser;
+
     private RealmChangeListener mUserListener = () -> {
         if (mCurrentUser != null && mCurrentUser.isLoaded()) {
             updateNavDrawerHeader(mCurrentUser);
@@ -106,17 +97,13 @@ public class MainActivity extends BaseSignInActivity
         mTabLayout.setupWithViewPager(mViewPager);
         mNavigationView.setNavigationItemSelectedListener(this);
 
+        // search fragment
         mSearchComparesFragment = SearchComparesFragment.newInstance();
-
-        // firebase reference
-        mFirebaseUser = new Firebase(FirebaseConstants.FB_REF_MAIN)
-                .child(FirebaseConstants.FB_REF_USERS)
-                .child(Prefs.getUserId());
 
         // requests
         fetchCurrentUserFromDb();
         if (Utils.hasInternet(getApplicationContext())) {
-            fetchCurrentUserFromNetwork();
+            FirebaseUsersManager.saveUserFromFirebase(Prefs.getUserId());
         }
     }
 
@@ -166,11 +153,13 @@ public class MainActivity extends BaseSignInActivity
 
     @Override
     public void onBackPressed() {
+
         // close navigation drawer
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
             return;
         }
+
         // exit from app
         if (!mIsNeedToExit) {
             mIsNeedToExit = true;
@@ -205,7 +194,6 @@ public class MainActivity extends BaseSignInActivity
                         mSearchContainer.setVisibility(View.GONE);
                         mTabLayout.setVisibility(View.VISIBLE);
                         mViewPager.setVisibility(View.VISIBLE);
-                        showFab();
                         return true;
                     }
                 });
@@ -231,13 +219,11 @@ public class MainActivity extends BaseSignInActivity
         switch (item.getItemId()) {
             case R.id.action_search:
                 if (Utils.hasInternet(getApplicationContext())) {
-                    hideFab();
                     mTabLayout.setVisibility(View.GONE);
                     mViewPager.setVisibility(View.GONE);
                     mSearchContainer.setVisibility(View.VISIBLE);
                     getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.main_search_container,
-                                    mSearchComparesFragment,
+                            .replace(R.id.main_search_container, mSearchComparesFragment,
                                     SearchComparesFragment.class.getSimpleName())
                             .addToBackStack(SearchComparesFragment.class.getSimpleName())
                             .commit();
@@ -302,53 +288,14 @@ public class MainActivity extends BaseSignInActivity
 
     private void setupViewPager(ViewPager viewPager) {
         ComparesViewPagerAdapter adapter = new ComparesViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(AllComparesFragment.newInstance(),
-                getString(R.string.tab_label_all));
-        adapter.addFragment(FollowingsComparesFragment.newInstance(),
-                getString(R.string.tab_label_followings));
+        adapter.addFragment(AllComparesFragment.newInstance(), getString(R.string.tab_label_all));
+        adapter.addFragment(FollowingsComparesFragment.newInstance(), getString(R.string.tab_label_followings));
         viewPager.setAdapter(adapter);
     }
 
-    // get information about user from local database
+
     private void fetchCurrentUserFromDb() {
         mCurrentUser = DbUsersManager.getUserById(Prefs.getUserId());
         mCurrentUser.addChangeListener(mUserListener);
     }
-
-    // get information about user from network
-    private void fetchCurrentUserFromNetwork() {
-        mFirebaseUser.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot != null) {
-                    NetworkUser networkUser = dataSnapshot.getValue(NetworkUser.class);
-                    DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser,
-                            Prefs.getUserId()));
-                }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                Utils.showMessage(getApplicationContext(), getString(R.string.toast_error_try_later));
-            }
-        });
-    }
-
-    private void hideFab() {
-        CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) mFab.getLayoutParams();
-        p.setAnchorId(View.NO_ID);
-        mFab.setLayoutParams(p);
-        mFab.setVisibility(View.GONE);
-    }
-
-    private void showFab() {
-        CoordinatorLayout.LayoutParams p = new CoordinatorLayout.LayoutParams(CoordinatorLayout.LayoutParams.WRAP_CONTENT,
-                CoordinatorLayout.LayoutParams.WRAP_CONTENT);
-        p.anchorGravity = Gravity.BOTTOM | Gravity.END;
-        p.setAnchorId(R.id.view_pager_main);
-        //p.setMargins(...);
-        mFab.setLayoutParams(p);
-        mFab.setVisibility(View.VISIBLE);
-    }
-
 }

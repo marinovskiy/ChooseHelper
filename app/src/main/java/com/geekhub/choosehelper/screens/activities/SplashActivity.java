@@ -11,7 +11,6 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (Prefs.getLoggedType() != Prefs.NOT_LOGIN) {
             startActivity(new Intent(this, MainActivity.class));
         } else {

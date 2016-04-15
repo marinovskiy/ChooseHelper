@@ -47,7 +47,7 @@ public class FollowersActivity extends BaseSignInActivity {
     @Bind(R.id.swipe_to_refresh_followers)
     SwipeRefreshLayout mSwipeRefreshLayout;
 
-    // firebase references and queries
+    // firebase
     Firebase mFirebaseUsers;
 
     // realm
@@ -67,6 +67,8 @@ public class FollowersActivity extends BaseSignInActivity {
         setContentView(R.layout.activity_followers);
         setupToolbar();
 
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         if (getIntent() != null) {
             String toolbarTitle = getIntent().getStringExtra(INTENT_KEY_FOLLOWERS_TITLE);
             if (getSupportActionBar() != null) {
@@ -74,8 +76,6 @@ public class FollowersActivity extends BaseSignInActivity {
             }
             mUserIds = getIntent().getStringArrayListExtra(INTENT_KEY_FOLLOWERS_LIST);
         }
-
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         mFirebaseUsers = new Firebase(FirebaseConstants.FB_REF_MAIN)
                 .child(FirebaseConstants.FB_REF_USERS);
@@ -86,7 +86,7 @@ public class FollowersActivity extends BaseSignInActivity {
                 fetchUsersFromNetwork();
             }
         } else {
-            // TODO show empty view
+            // TODO show empty view no followers/followings
         }
 
         mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -167,6 +167,7 @@ public class FollowersActivity extends BaseSignInActivity {
 
     private void updateUi(List<User> users) {
         UsersAdapter adapter;
+
         if (mRecyclerView.getAdapter() == null) {
             adapter = new UsersAdapter(users);
             mRecyclerView.setAdapter(adapter);
@@ -175,16 +176,16 @@ public class FollowersActivity extends BaseSignInActivity {
             adapter.updateList(users);
             adapter.notifyDataSetChanged();
         }
+
+        // click listener for users
         adapter.setOnItemClickListener((view, position) -> {
             Intent intent = new Intent(this, ProfileActivity.class);
             intent.putExtra(ProfileActivity.INTENT_KEY_USER_ID, users.get(position).getId());
-            intent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME,
-                    users.get(position).getFullName());
+            intent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME, users.get(position).getFullName());
             startActivity(intent);
         });
     }
 
-    // methods for show progress
     private void hideRefreshing() {
         if (mSwipeRefreshLayout != null && mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);

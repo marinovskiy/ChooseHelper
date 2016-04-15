@@ -28,15 +28,19 @@ public class HelpActivity extends BaseSignInActivity {
     @Bind(R.id.help_rv)
     RecyclerView mRvTips;
 
-    private final int[] images = {R.drawable.logo, R.drawable.img_compare, R.drawable.img_create_compare,
-            R.drawable.img_search, R.drawable.img_settings, R.drawable.logo};
+    private final int[] images = {R.drawable.logo,
+            R.drawable.img_compare,
+            R.drawable.img_create_compare,
+            R.drawable.img_search,
+            R.drawable.img_settings,
+            R.drawable.logo};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
         setupToolbar();
-        setupRV(initTip());
+        setupRv(initTips());
     }
 
     private void setupToolbar() {
@@ -51,12 +55,12 @@ public class HelpActivity extends BaseSignInActivity {
         }
     }
 
-    private void setupRV(List<Tip> tips) {
+    private void setupRv(List<Tip> tips) {
         mRvTips.setLayoutManager(new LinearLayoutManager(this));
         mRvTips.setAdapter(new TipAdapter(tips, getBaseContext()));
     }
 
-    private List<Tip> initTip() {
+    private List<Tip> initTips() {
         List<Tip> list = new ArrayList<>();
         for (String title : getBaseContext().getResources().getStringArray(R.array.help_titles)) {
             Tip t = new Tip();

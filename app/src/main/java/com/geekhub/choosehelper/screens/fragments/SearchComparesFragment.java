@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -21,6 +22,7 @@ import com.geekhub.choosehelper.models.network.NetworkLike;
 import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.models.network.NetworkVariant;
 import com.geekhub.choosehelper.screens.activities.DetailsActivity;
+import com.geekhub.choosehelper.screens.activities.ImageViewActivity;
 import com.geekhub.choosehelper.screens.activities.ProfileActivity;
 import com.geekhub.choosehelper.ui.adapters.ComparesAdapter;
 import com.geekhub.choosehelper.utils.ModelConverter;
@@ -39,12 +41,12 @@ public class SearchComparesFragment extends BaseFragment {
     @Bind(R.id.recycler_view_search_fragment)
     RecyclerView mRecyclerView;
 
+    @Bind(R.id.progress_bar_search_compares)
+    ProgressBar mProgressBar;
+
     // firebase references and queries
     private Firebase mFirebaseCompares;
     private Firebase mFirebaseLikes;
-
-    public SearchComparesFragment() {
-    }
 
     public static SearchComparesFragment newInstance() {
         return new SearchComparesFragment();
@@ -76,6 +78,8 @@ public class SearchComparesFragment extends BaseFragment {
 
     // get information about compares from firebase
     public void searchCompares(String query) {
+        setProgressVisibility(true);
+
         mFirebaseCompares.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -95,7 +99,7 @@ public class SearchComparesFragment extends BaseFragment {
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-                //hideRefreshing();
+                setProgressVisibility(false);
                 Utils.showMessage(getContext(), getString(R.string.toast_error_message));
             }
         });
@@ -134,13 +138,12 @@ public class SearchComparesFragment extends BaseFragment {
 
                                 if (compares.size() == size) {
                                     updateUi(compares);
-                                    //hideRefreshing();
                                 }
                             }
 
                             @Override
                             public void onCancelled(FirebaseError firebaseError) {
-                                //hideRefreshing();
+                                setProgressVisibility(false);
                                 Utils.showMessage(getContext(),
                                         getString(R.string.toast_error_message));
                             }
@@ -149,6 +152,7 @@ public class SearchComparesFragment extends BaseFragment {
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
+                setProgressVisibility(false);
                 Utils.showMessage(getContext(), getString(R.string.toast_error_message));
             }
         });
@@ -156,7 +160,7 @@ public class SearchComparesFragment extends BaseFragment {
 
     // update UI method
     private void updateUi(List<Compare> compares) {
-        //setProgressVisibility(false);
+        setProgressVisibility(false);
 
         ComparesAdapter adapter;
         if (mRecyclerView.getAdapter() == null) {
@@ -167,6 +171,16 @@ public class SearchComparesFragment extends BaseFragment {
             adapter.updateList(compares);
             adapter.notifyDataSetChanged();
         }
+
+        // click listener for author
+        adapter.setOnItemClickListenerAuthor((view, position) -> {
+            Intent userIntent = new Intent(getActivity(), ProfileActivity.class);
+            userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID,
+                    compares.get(position).getAuthor().getId());
+            userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME,
+                    compares.get(position).getAuthor().getFullName());
+            startActivity(userIntent);
+        });
 
         // click listener for details
         adapter.setOnItemClickListener((view, position) -> {
@@ -179,17 +193,15 @@ public class SearchComparesFragment extends BaseFragment {
         // click listener for likes
         adapter.setOnLikeClickListener((mainView, clickedCheckBox, otherCheckBox,
                                         position, variantNumber) -> {
-            boolean isNeedToUnCheck = false;
+            boolean isNeedToUnCheck = true;
             if (!compares.get(position).isOpen()) { // if closed
-                isNeedToUnCheck = true;
                 Utils.showMessage(getContext(), getString(R.string.toast_cannot_like_closed));
             } else if (!Utils.hasInternet(getContext())) { // if no internet
-                isNeedToUnCheck = true;
                 Utils.showMessage(getContext(), getString(R.string.toast_no_internet));
             } else if (compares.get(position).getAuthor().getId().equals(Prefs.getUserId())) { // if user is owner
-                isNeedToUnCheck = true;
                 Utils.showMessage(getContext(), getString(R.string.toast_cannot_like_own));
             } else { // update like
+                isNeedToUnCheck = false;
                 Utils.blockViews(mainView, clickedCheckBox, otherCheckBox);
                 FirebaseLikesManager.updateLike(compares.get(position).getId(), variantNumber,
                         mainView, clickedCheckBox, otherCheckBox);
@@ -202,15 +214,28 @@ public class SearchComparesFragment extends BaseFragment {
             }
         });
 
-        // click listener for author
-        adapter.setOnItemClickListenerAuthor((view, position) -> {
-            Intent userIntent = new Intent(getActivity(), ProfileActivity.class);
-            userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID,
-                    compares.get(position).getAuthor().getId());
-            userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME,
-                    compares.get(position).getAuthor().getFullName());
-            startActivity(userIntent);
+
+        // click listener for full image size
+        adapter.setOnImageClickListener((view, position, variantNumber) -> {
+            Intent intent = new Intent(getActivity(), ImageViewActivity.class);
+
+            ArrayList<String> imageUrls = new ArrayList<>();
+            imageUrls.add(compares.get(position).getVariants().get(0).getImageUrl());
+            imageUrls.add(compares.get(position).getVariants().get(1).getImageUrl());
+
+            ArrayList<String> descriptions = new ArrayList<>();
+            descriptions.add(compares.get(position).getVariants().get(0).getDescription());
+            descriptions.add(compares.get(position).getVariants().get(1).getDescription());
+
+            intent.putStringArrayListExtra(ImageViewActivity.INTENT_KEY_IMAGE_URLS, imageUrls);
+            intent.putStringArrayListExtra(ImageViewActivity.INTENT_KEY_IMAGE_DESCRIPTIONS,
+                    descriptions);
+            intent.putExtra(ImageViewActivity.INTENT_KEY_POSITION, variantNumber);
+            startActivity(intent);
         });
     }
 
+    private void setProgressVisibility(boolean visible) {
+        mProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
 }

@@ -16,7 +16,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -118,14 +117,17 @@ public class ProfileActivity extends BaseSignInActivity {
     private Query mQueryCompares;
     private Firebase mFirebaseLikes;
 
+    // is need to reload information
     private boolean mIsNeedToUpdate = false;
 
-    private String mFilePath;
+    // is need to expand app bar layout
+    private boolean mIsNeedToExpand = false;
 
     private MenuItem mMenuItemChangePass;
 
-    // other
     private List<UserInfo> mUserInfoList = new ArrayList<>();
+
+    private String mFilePath;
 
     // realm
     private String mUserId;
@@ -137,8 +139,6 @@ public class ProfileActivity extends BaseSignInActivity {
             updateUi(mUser);
         }
     };
-
-    private boolean mIsNeedToExpand = false;
 
     private SearchUserComparesFragment mSearchUserComparesFragment;
 
@@ -272,9 +272,11 @@ public class ProfileActivity extends BaseSignInActivity {
                     try {
                         mFilePath = ImageUtils.getFilePath(getApplicationContext(), avatarUri);
                         ImageUtils.loadCircleImage(mIvUserAvatar, mFilePath);
-                        new Firebase(FirebaseConstants.FB_REF_MAIN).child(FirebaseConstants.FB_REF_USERS)
+                        new Firebase(FirebaseConstants.FB_REF_MAIN)
+                                .child(FirebaseConstants.FB_REF_USERS)
                                 .child(Prefs.getUserId())
-                                .child(FirebaseConstants.FB_REF_PHOTO_URL).setValue(ImageUtils.getUrlAndStartUpload(mFilePath, this));
+                                .child(FirebaseConstants.FB_REF_PHOTO_URL)
+                                .setValue(ImageUtils.getUrlAndStartUpload(mFilePath, this));
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
                         //TODO toast exception
@@ -303,7 +305,6 @@ public class ProfileActivity extends BaseSignInActivity {
             fetchProfileFromNetwork();
         }
     }
-
 
     @Override
     protected void onPause() {
@@ -405,8 +406,7 @@ public class ProfileActivity extends BaseSignInActivity {
                             .addToBackStack(SearchComparesFragment.class.getSimpleName())
                             .commit();
                 } else {
-                    Utils.showMessage(getApplicationContext(),
-                            getString(R.string.toast_cannot_search));
+                    Utils.showMessage(getApplicationContext(), getString(R.string.toast_cannot_search));
                 }
                 return true;
             default:
@@ -539,6 +539,7 @@ public class ProfileActivity extends BaseSignInActivity {
     private void updateUi(User user) {
         ImageUtils.loadImage(mIvUserAvatar, user.getPhotoUrl());
 
+        // clear and fill user info list
         mUserInfoList.clear();
         mUserInfoList.add(new UserInfo(user.getFollowers() != null ? user.getFollowers().size() : 0,
                 getString(R.string.label_followers)));
@@ -547,6 +548,7 @@ public class ProfileActivity extends BaseSignInActivity {
         mUserInfoList.add(new UserInfo(user.getCompares() != null ? user.getCompares().size() : 0,
                 getString(R.string.label_compares)));
 
+        // recycler view adapter
         ProfileAdapter adapter;
         if (mRecyclerViewProfile.getAdapter() == null) {
             adapter = new ProfileAdapter(mUserInfoList);
@@ -556,6 +558,7 @@ public class ProfileActivity extends BaseSignInActivity {
             adapter.updateList(mUserInfoList);
             adapter.notifyDataSetChanged();
         }
+
         adapter.setOnItemClickListener((view, position) -> {
             Intent intent = new Intent(this, FollowersActivity.class);
             intent.putExtra(INTENT_KEY_USER_ID, mUserId);
@@ -581,63 +584,62 @@ public class ProfileActivity extends BaseSignInActivity {
     }
 
     private void updateComparesList(List<Compare> compares) {
-
         ComparesAdapter adapter;
         if (mRecyclerViewCompares.getAdapter() == null) {
             adapter = new ComparesAdapter(compares);
             mRecyclerViewCompares.setAdapter(adapter);
-
-            // click listener for author
-            adapter.setOnItemClickListenerAuthor((view, position) -> {
-                Intent userIntent = new Intent(this, ProfileActivity.class);
-                userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID,
-                        compares.get(position).getAuthor().getId());
-                userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME,
-                        compares.get(position).getAuthor().getFullName());
-                startActivity(userIntent);
-            });
-
-            // click listener for details
-            adapter.setOnItemClickListener((view, position) -> {
-                Intent intent = new Intent(this, DetailsActivity.class);
-                intent.putExtra(DetailsActivity.INTENT_KEY_COMPARE_ID,
-                        compares.get(position).getId());
-                startActivity(intent);
-            });
-
-            // click listener for likes
-            adapter.setOnLikeClickListener((mainView, clickedCheckBox, otherCheckBox,
-                                            position, variantNumber) -> {
-                boolean isNeedToUnCheck = false;
-                if (!compares.get(position).isOpen()) { // if closed
-                    isNeedToUnCheck = true;
-                    Utils.showMessage(getApplicationContext(),
-                            getString(R.string.toast_cannot_like_closed));
-                } else if (!Utils.hasInternet(getApplicationContext())) { // if no internet
-                    isNeedToUnCheck = true;
-                    Utils.showMessage(getApplicationContext(),
-                            getString(R.string.toast_no_internet));
-                } else if (compares.get(position).getAuthor().getId().equals(Prefs.getUserId())) { // if user is owner
-                    isNeedToUnCheck = true;
-                    Utils.showMessage(getApplicationContext(),
-                            getString(R.string.toast_cannot_like_own));
-                } else { // update like
-                    Utils.blockViews(mainView, clickedCheckBox, otherCheckBox);
-                    FirebaseLikesManager.updateLike(compares.get(position).getId(), variantNumber,
-                            mainView, clickedCheckBox, otherCheckBox);
-                }
-                // unCheck if need
-                if (isNeedToUnCheck) {
-                    clickedCheckBox.setChecked(false);
-                    int newValue = Integer.parseInt(clickedCheckBox.getText().toString()) - 1;
-                    clickedCheckBox.setText(String.valueOf(newValue));
-                }
-            });
         } else {
             adapter = (ComparesAdapter) mRecyclerViewCompares.getAdapter();
             adapter.updateList(compares);
             adapter.notifyDataSetChanged();
         }
+
+        // click listener for author
+        adapter.setOnItemClickListenerAuthor((view, position) -> {
+            Intent userIntent = new Intent(this, ProfileActivity.class);
+            userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID,
+                    compares.get(position).getAuthor().getId());
+            userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME,
+                    compares.get(position).getAuthor().getFullName());
+            startActivity(userIntent);
+        });
+
+        // click listener for details
+        adapter.setOnItemClickListener((view, position) -> {
+            Intent intent = new Intent(this, DetailsActivity.class);
+            intent.putExtra(DetailsActivity.INTENT_KEY_COMPARE_ID,
+                    compares.get(position).getId());
+            startActivity(intent);
+        });
+
+        // click listener for likes
+        adapter.setOnLikeClickListener((mainView, clickedCheckBox, otherCheckBox,
+                                        position, variantNumber) -> {
+            boolean isNeedToUnCheck = false;
+            if (!compares.get(position).isOpen()) { // if closed
+                isNeedToUnCheck = true;
+                Utils.showMessage(getApplicationContext(),
+                        getString(R.string.toast_cannot_like_closed));
+            } else if (!Utils.hasInternet(getApplicationContext())) { // if no internet
+                isNeedToUnCheck = true;
+                Utils.showMessage(getApplicationContext(),
+                        getString(R.string.toast_no_internet));
+            } else if (compares.get(position).getAuthor().getId().equals(Prefs.getUserId())) { // if user is owner
+                isNeedToUnCheck = true;
+                Utils.showMessage(getApplicationContext(),
+                        getString(R.string.toast_cannot_like_own));
+            } else { // update like
+                Utils.blockViews(mainView, clickedCheckBox, otherCheckBox);
+                FirebaseLikesManager.updateLike(compares.get(position).getId(), variantNumber,
+                        mainView, clickedCheckBox, otherCheckBox);
+            }
+            // unCheck if need
+            if (isNeedToUnCheck) {
+                clickedCheckBox.setChecked(false);
+                int newValue = Integer.parseInt(clickedCheckBox.getText().toString()) - 1;
+                clickedCheckBox.setText(String.valueOf(newValue));
+            }
+        });
     }
 
     // methods for get list of userIds
@@ -798,15 +800,11 @@ public class ProfileActivity extends BaseSignInActivity {
         });
     }
 
-    // methods for show progress
+    // methods for show and hide progress
     private void hideRefreshing() {
         if (mSwipeRefreshLayout != null && mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);
         }
-    }
-
-    private void setProgressVisibility(boolean visible) {
-        //mProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     private void showProgressDialog() {

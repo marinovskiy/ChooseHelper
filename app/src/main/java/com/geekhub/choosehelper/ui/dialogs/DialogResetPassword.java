@@ -15,21 +15,23 @@ import com.geekhub.choosehelper.utils.firebase.FirebaseUsersManager;
 
 public class DialogResetPassword extends DialogFragment {
 
+    public static DialogResetPassword newInstance() {
+        return new DialogResetPassword();
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
         LayoutInflater inflater = getActivity().getLayoutInflater();
-
-        View view = inflater.inflate(R.layout.dialog_reset_password_layout, null);
-        EditText editText = (EditText) view.findViewById(R.id.res_password_email);
-        builder.setView(view)
+        View rootView = inflater.inflate(R.layout.dialog_reset_password_layout, null);
+        EditText etEmail = (EditText) rootView.findViewById(R.id.res_password_email);
+        builder.setView(rootView)
                 .setPositiveButton(getString(R.string.dialog_btn_send_email), (dialog, id) -> {
-                    if (editText.getText().toString().equals("")) {
+                    if (etEmail.getText().toString().equals("")) {
                         Toast.makeText(getContext(), R.string.toast_didnt_enter_email, Toast.LENGTH_SHORT).show();
                     } else {
-                        FirebaseUsersManager.resetPassword(getContext(), editText.getText().toString());
+                        FirebaseUsersManager.resetPassword(getContext(), etEmail.getText().toString());
                     }
                 })
                 .setNegativeButton(getString(R.string.dialog_btn_cancel), (dialog, id) -> {

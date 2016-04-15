@@ -22,6 +22,7 @@ import com.geekhub.choosehelper.models.network.NetworkCompare;
 import com.geekhub.choosehelper.models.network.NetworkLike;
 import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.screens.activities.DetailsActivity;
+import com.geekhub.choosehelper.screens.activities.ImageViewActivity;
 import com.geekhub.choosehelper.screens.activities.MainActivity;
 import com.geekhub.choosehelper.screens.activities.ProfileActivity;
 import com.geekhub.choosehelper.ui.adapters.ComparesAdapter;
@@ -75,11 +76,7 @@ public class FollowingsComparesFragment extends BaseFragment {
         }
     };
 
-    public FollowingsComparesFragment() {
-
-    }
-
-    public static FollowingsComparesFragment newInstance(/*ArrayList<String> authorIds*/) {
+    public static FollowingsComparesFragment newInstance() {
         return new FollowingsComparesFragment();
     }
 
@@ -143,7 +140,6 @@ public class FollowingsComparesFragment extends BaseFragment {
 
     // get information about compare from local database
     private void fetchComparesFromDb() {
-        setProgressVisibility(true);
         mCompares = DbComparesManager.getCompares();
         mCompares.addChangeListener(mComparesListener);
     }
@@ -227,8 +223,6 @@ public class FollowingsComparesFragment extends BaseFragment {
 
     // update UI method
     private void updateUi(List<Compare> compares) {
-        setProgressVisibility(false);
-
         ComparesAdapter adapter;
         if (mRecyclerView.getAdapter() == null) {
             adapter = new ComparesAdapter(compares);
@@ -239,7 +233,17 @@ public class FollowingsComparesFragment extends BaseFragment {
             adapter.notifyDataSetChanged();
         }
 
-        /** click listener for details **/
+        // click listener for author
+        adapter.setOnItemClickListenerAuthor((view, position) -> {
+            Intent userIntent = new Intent(getActivity(), ProfileActivity.class);
+            userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID,
+                    compares.get(position).getAuthor().getId());
+            userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME,
+                    compares.get(position).getAuthor().getFullName());
+            startActivity(userIntent);
+        });
+
+        // click listener for details
         adapter.setOnItemClickListener((view, position) -> {
             Intent intent = new Intent(getActivity(), DetailsActivity.class);
             intent.putExtra(DetailsActivity.INTENT_KEY_COMPARE_ID,
@@ -247,20 +251,18 @@ public class FollowingsComparesFragment extends BaseFragment {
             startActivity(intent);
         });
 
-        /** click listener for likes **/
+        // click listener for likes
         adapter.setOnLikeClickListener((mainView, clickedCheckBox, otherCheckBox,
                                         position, variantNumber) -> {
-            boolean isNeedToUnCheck = false;
+            boolean isNeedToUnCheck = true;
             if (!compares.get(position).isOpen()) { // if closed
-                isNeedToUnCheck = true;
                 Utils.showMessage(getContext(), getString(R.string.toast_cannot_like_closed));
             } else if (!Utils.hasInternet(getContext())) { // if no internet
-                isNeedToUnCheck = true;
                 Utils.showMessage(getContext(), getString(R.string.toast_no_internet));
             } else if (compares.get(position).getAuthor().getId().equals(Prefs.getUserId())) { // if user is owner
-                isNeedToUnCheck = true;
                 Utils.showMessage(getContext(), getString(R.string.toast_cannot_like_own));
             } else { // update like
+                isNeedToUnCheck = false;
                 Utils.blockViews(mainView, clickedCheckBox, otherCheckBox);
                 FirebaseLikesManager.updateLike(compares.get(position).getId(), variantNumber,
                         mainView, clickedCheckBox, otherCheckBox);
@@ -273,14 +275,23 @@ public class FollowingsComparesFragment extends BaseFragment {
             }
         });
 
-        /** click listener for author **/
-        adapter.setOnItemClickListenerAuthor((view, position) -> {
-            Intent userIntent = new Intent(getActivity(), ProfileActivity.class);
-            userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID,
-                    compares.get(position).getAuthor().getId());
-            userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME,
-                    compares.get(position).getAuthor().getFullName());
-            startActivity(userIntent);
+        // click listener for full image size
+        adapter.setOnImageClickListener((view, position, variantNumber) -> {
+            Intent intent = new Intent(getActivity(), ImageViewActivity.class);
+
+            ArrayList<String> imageUrls = new ArrayList<>();
+            imageUrls.add(compares.get(position).getVariants().get(0).getImageUrl());
+            imageUrls.add(compares.get(position).getVariants().get(1).getImageUrl());
+
+            ArrayList<String> descriptions = new ArrayList<>();
+            descriptions.add(compares.get(position).getVariants().get(0).getDescription());
+            descriptions.add(compares.get(position).getVariants().get(1).getDescription());
+
+            intent.putStringArrayListExtra(ImageViewActivity.INTENT_KEY_IMAGE_URLS, imageUrls);
+            intent.putStringArrayListExtra(ImageViewActivity.INTENT_KEY_IMAGE_DESCRIPTIONS,
+                    descriptions);
+            intent.putExtra(ImageViewActivity.INTENT_KEY_POSITION, variantNumber);
+            startActivity(intent);
         });
     }
 
@@ -289,9 +300,5 @@ public class FollowingsComparesFragment extends BaseFragment {
         if (mSwipeRefreshLayout != null && mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);
         }
-    }
-
-    private void setProgressVisibility(boolean visible) {
-        //mProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 }

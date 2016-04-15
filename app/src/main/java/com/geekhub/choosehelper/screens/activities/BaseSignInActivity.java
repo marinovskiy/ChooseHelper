@@ -301,7 +301,8 @@ public class BaseSignInActivity extends AppCompatActivity
                         authData.getProviderData().get("displayName").toString(),
                         authData.getProviderData().get("profileImageURL").toString()
                 );
-                DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser, Prefs.getUserId()));
+                DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser,
+                        Prefs.getUserId()));
                 FirebaseUsersManager.saveUserToFirebase(networkUser);
                 startMainActivity();
             } else if (loggedType == Prefs.FIREBASE_LOGIN) {
@@ -312,7 +313,8 @@ public class BaseSignInActivity extends AppCompatActivity
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         NetworkUser networkUser = dataSnapshot.getValue(NetworkUser.class);
-                        DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser, Prefs.getUserId()));
+                        DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser,
+                                Prefs.getUserId()));
                         startMainActivity();
                     }
 

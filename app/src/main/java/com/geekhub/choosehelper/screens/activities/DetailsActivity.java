@@ -73,7 +73,6 @@ public class DetailsActivity extends BaseSignInActivity {
     // firebase references and queries
     private Firebase mFirebaseCompare;
 
-    private Firebase mFirebaseLikes;
     private Query mQueryLikes;
 
     private Firebase mFirebaseComments;
@@ -81,9 +80,10 @@ public class DetailsActivity extends BaseSignInActivity {
 
     private Firebase mFirebaseCommentsAuthors;
 
-    private Firebase mFirebaseCompares;
-
     private boolean mStatus;
+
+    // is need to scroll when add new comment
+    private boolean mIsNeedScroll = false;
 
     // realm
     private String mCompareId;
@@ -95,8 +95,6 @@ public class DetailsActivity extends BaseSignInActivity {
             updateUi(mCompare);
         }
     };
-
-    private boolean mIsNeedScroll = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,9 +113,9 @@ public class DetailsActivity extends BaseSignInActivity {
                     .child(FirebaseConstants.FB_REF_COMPARES)
                     .child(mCompareId);
 
-            mFirebaseLikes = new Firebase(FirebaseConstants.FB_REF_MAIN)
-                    .child(FirebaseConstants.FB_REF_LIKES);
-            mQueryLikes = mFirebaseLikes.orderByChild(FirebaseConstants.FB_REF_COMPARE_ID)
+            mQueryLikes = new Firebase(FirebaseConstants.FB_REF_MAIN)
+                    .child(FirebaseConstants.FB_REF_LIKES)
+                    .orderByChild(FirebaseConstants.FB_REF_COMPARE_ID)
                     .equalTo(mCompareId);
 
             mFirebaseComments = new Firebase(FirebaseConstants.FB_REF_MAIN)
@@ -127,9 +125,6 @@ public class DetailsActivity extends BaseSignInActivity {
 
             mFirebaseCommentsAuthors = new Firebase(FirebaseConstants.FB_REF_MAIN)
                     .child(FirebaseConstants.FB_REF_USERS);
-
-            mFirebaseCompares = new Firebase(FirebaseConstants.FB_REF_MAIN)
-                    .child(FirebaseConstants.FB_REF_COMPARES);
         }
 
         mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -359,8 +354,8 @@ public class DetailsActivity extends BaseSignInActivity {
             });
 
             // click listener for likes
-            adapter.setOnLikeDetailsListener((clickedCheckBox, otherCheckBox,
-                                              position, variantNumber) -> {
+            adapter.setOnLikeDetailsListener((clickedCheckBox, otherCheckBox, position,
+                                              variantNumber) -> {
                 if (!compare.isOpen()) {
                     clickedCheckBox.setChecked(false);
                     int newValue = Integer.parseInt(clickedCheckBox.getText().toString()) - 1;
@@ -407,21 +402,17 @@ public class DetailsActivity extends BaseSignInActivity {
                 imageUrls.add(compare.getVariants().get(0).getImageUrl());
                 imageUrls.add(compare.getVariants().get(1).getImageUrl());
 
-                ArrayList<String> likes = new ArrayList<>();
-                likes.add(String.valueOf(compare.getVariants().get(0).getLikes()));
-                likes.add(String.valueOf(compare.getVariants().get(1).getLikes()));
-
                 ArrayList<String> descriptions = new ArrayList<>();
                 descriptions.add(compare.getVariants().get(0).getDescription());
                 descriptions.add(compare.getVariants().get(1).getDescription());
 
                 intent.putStringArrayListExtra(ImageViewActivity.INTENT_KEY_IMAGE_URLS, imageUrls);
-                intent.putStringArrayListExtra(ImageViewActivity.INTENT_KEY_LIKES, likes);
-                intent.putStringArrayListExtra(ImageViewActivity.INTENT_KEY_IMAGE_DESCRIPTIONS, descriptions);
-
+                intent.putStringArrayListExtra(ImageViewActivity.INTENT_KEY_IMAGE_DESCRIPTIONS,
+                        descriptions);
                 intent.putExtra(ImageViewActivity.INTENT_KEY_POSITION, variantNumber);
                 startActivity(intent);
             });
+
             if (mIsNeedScroll) {
                 mIsNeedScroll = false;
                 mRecyclerView.scrollToPosition(mRecyclerView.getAdapter().getItemCount());
@@ -458,7 +449,6 @@ public class DetailsActivity extends BaseSignInActivity {
         fetchCompareFromNetwork();
     }
 
-    // methods for show progress
     private void hideRefreshing() {
         if (mSwipeRefreshLayout != null && mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);
@@ -466,6 +456,6 @@ public class DetailsActivity extends BaseSignInActivity {
     }
 
     private void setProgressVisibility(boolean visible) {
-//        mCommentsProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
+        mCommentsProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 }

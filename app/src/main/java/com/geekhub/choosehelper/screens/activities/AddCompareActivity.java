@@ -35,11 +35,11 @@ public class AddCompareActivity extends BaseSignInActivity {
     @Bind(R.id.add_compare_container_preview)
     FrameLayout mPreviewContainer;
 
+    private int mMenuType = 0;
+
     private AddCompareFragment mAddCompareFragment;
 
     private NetworkCompare mNewCompare = new NetworkCompare();
-
-    private int mMenuType = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

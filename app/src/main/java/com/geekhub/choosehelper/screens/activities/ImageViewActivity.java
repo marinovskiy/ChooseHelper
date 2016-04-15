@@ -18,7 +18,6 @@ public class ImageViewActivity extends BaseSignInActivity {
 
     public static final String INTENT_KEY_IMAGE_DESCRIPTIONS = "intent_key_image_view_descriptions";
     public static final String INTENT_KEY_IMAGE_URLS = "intent_key_image_image_view_urls";
-    public static final String INTENT_KEY_LIKES = "intent_key_image_view_likes";
     public static final String INTENT_KEY_POSITION = "intent_key_image_view_position";
 
     @Bind(R.id.toolbar_view_image)
@@ -28,7 +27,6 @@ public class ImageViewActivity extends BaseSignInActivity {
     ViewPager mViewPager;
 
     private List<String> mImageUrls = new ArrayList<>();
-    private List<String> mLikes = new ArrayList<>();
     private List<String> mDescriptions = new ArrayList<>();
     private int mPosition = 0;
 
@@ -39,7 +37,6 @@ public class ImageViewActivity extends BaseSignInActivity {
         if (getIntent() != null) {
             mDescriptions = getIntent().getStringArrayListExtra(INTENT_KEY_IMAGE_DESCRIPTIONS);
             mImageUrls = getIntent().getStringArrayListExtra(INTENT_KEY_IMAGE_URLS);
-            mLikes = getIntent().getStringArrayListExtra(INTENT_KEY_LIKES);
             mPosition = getIntent().getIntExtra(INTENT_KEY_POSITION, 0);
             setupToolbar();
             setupViewPager(mViewPager);
@@ -78,8 +75,8 @@ public class ImageViewActivity extends BaseSignInActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         ImagesViewPagerAdapter adapter = new ImagesViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(ImageViewFragment.newInstance(mImageUrls.get(0), mLikes.get(0)));
-        adapter.addFragment(ImageViewFragment.newInstance(mImageUrls.get(1), mLikes.get(1)));
+        adapter.addFragment(ImageViewFragment.newInstance(mImageUrls.get(0)));
+        adapter.addFragment(ImageViewFragment.newInstance(mImageUrls.get(1)));
         viewPager.setAdapter(adapter);
     }
 }

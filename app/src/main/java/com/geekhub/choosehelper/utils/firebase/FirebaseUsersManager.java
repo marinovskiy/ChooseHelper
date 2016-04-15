@@ -32,7 +32,9 @@ public class FirebaseUsersManager {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 NetworkUser networkUser = dataSnapshot.getValue(NetworkUser.class);
-                DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser, id));
+                if (networkUser != null) {
+                    DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser, id));
+                }
             }
 
             @Override
@@ -93,11 +95,11 @@ public class FirebaseUsersManager {
             public void onSuccess() {
                 Utils.showMessage(context, context.getString(R.string.dialog_change_pass));
             }
+
             @Override
             public void onError(FirebaseError firebaseError) {
                 Utils.showMessage(context, context.getString(R.string.toast_wrong_password));
             }
         });
     }
-
 }

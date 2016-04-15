@@ -40,18 +40,18 @@ public class DialogChangePassword extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
         LayoutInflater inflater = getActivity().getLayoutInflater();
+        View rootView = inflater.inflate(R.layout.dialog_change_password_layout, null);
 
-        View view = inflater.inflate(R.layout.dialog_change_password_layout, null);
-        EditText editText = (EditText) view.findViewById(R.id.et_old_password);
-        EditText editText1 = (EditText) view.findViewById(R.id.et_new_password);
-        EditText editText2 = (EditText) view.findViewById(R.id.et_repeat_new_password);
-        builder.setView(view)
+        EditText etOldPassword = (EditText) rootView.findViewById(R.id.et_old_password);
+        EditText etNewPassword = (EditText) rootView.findViewById(R.id.et_new_password);
+        EditText etNewPasswordRepeat = (EditText) rootView.findViewById(R.id.et_repeat_new_password);
+
+        builder.setView(rootView)
                 .setPositiveButton(getString(R.string.dialog_btn_send_email), (dialog, id) -> {
-                    String et = editText.getText().toString();
-                    String et1 = editText1.getText().toString();
-                    String et2 = editText2.getText().toString();
+                    String et = etOldPassword.getText().toString();
+                    String et1 = etNewPassword.getText().toString();
+                    String et2 = etNewPasswordRepeat.getText().toString();
                     if (!et.equals(et1)) {
                         Toast.makeText(getContext(), R.string.toast_different_passwords, Toast.LENGTH_SHORT).show();
                     } else if (et1.equals("") || et2.equals("")) {

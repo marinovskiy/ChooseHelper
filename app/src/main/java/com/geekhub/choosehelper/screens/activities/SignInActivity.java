@@ -41,8 +41,9 @@ public class SignInActivity extends BaseSignInActivity {
                 }
                 break;
             case R.id.sign_in_tv_forgot_password:
-                DialogResetPassword dialogResetPassword = new DialogResetPassword();
-                dialogResetPassword.show(getSupportFragmentManager(), DialogResetPassword.class.getSimpleName());
+                DialogResetPassword dialogResetPassword = DialogResetPassword.newInstance();
+                dialogResetPassword.show(getSupportFragmentManager(),
+                        DialogResetPassword.class.getSimpleName());
                 break;
             case R.id.sign_in_facebook:
                 facebookLogin();
@@ -54,9 +55,7 @@ public class SignInActivity extends BaseSignInActivity {
                 Intent intentSignUp = new Intent(SignInActivity.this, SignUpActivity.class);
                 startActivity(intentSignUp);
                 overridePendingTransition(R.anim.slide_in_to_left, R.anim.do_nothing);
-                //finish();
                 break;
         }
     }
-
 }

@@ -7,12 +7,10 @@ import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -44,7 +42,6 @@ import java.util.List;
 import java.util.Set;
 
 import butterknife.Bind;
-import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
@@ -80,7 +77,7 @@ public class AllComparesFragment extends BaseFragment {
             }
             RealmResults<Compare> compares = query.findAll();
             int end = mNumberOfCompares < compares.size() ? mNumberOfCompares : compares.size();
-            updateUi(compares);
+            updateUi(compares.subList(0, end));
         }
     };
 
@@ -261,16 +258,12 @@ public class AllComparesFragment extends BaseFragment {
 
         // click listener for author
         adapter.setOnItemClickListenerAuthor((view, position) -> {
-            try {
-                Intent userIntent = new Intent(getActivity(), ProfileActivity.class);
-                userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID,
-                        compares.get(position).getAuthor().getId());
-                userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME,
-                        compares.get(position).getAuthor().getFullName());
-                startActivity(userIntent);
-            } catch (IndexOutOfBoundsException e) {
-                Toast.makeText(getContext(), "IndexOutOfBoundsException | pos = " + position, Toast.LENGTH_SHORT).show();
-            }
+            Intent userIntent = new Intent(getActivity(), ProfileActivity.class);
+            userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID,
+                    compares.get(position).getAuthor().getId());
+            userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME,
+                    compares.get(position).getAuthor().getFullName());
+            startActivity(userIntent);
         });
 
         // click listener for details
@@ -284,18 +277,15 @@ public class AllComparesFragment extends BaseFragment {
         // click listener for likes
         adapter.setOnLikeClickListener((mainView, clickedCheckBox, otherCheckBox,
                                         position, variantNumber) -> {
-            boolean isNeedToUnCheck = false;
+            boolean isNeedToUnCheck = true;
             if (!compares.get(position).isOpen()) { // if closed
-                isNeedToUnCheck = true;
                 Utils.showMessage(getContext(), getString(R.string.toast_cannot_like_closed));
             } else if (!Utils.hasInternet(getContext())) { // if no internet
-                isNeedToUnCheck = true;
                 Utils.showMessage(getContext(), getString(R.string.toast_no_internet));
             } else if (compares.get(position).getAuthor().getId().equals(Prefs.getUserId())) { // if user is owner
-                isNeedToUnCheck = true;
                 Utils.showMessage(getContext(), getString(R.string.toast_cannot_like_own));
             } else { // update like
-                //sIsNeedToAutoUpdate = true;
+                isNeedToUnCheck = false;
                 Utils.blockViews(mainView, clickedCheckBox, otherCheckBox);
                 FirebaseLikesManager.updateLike(compares.get(position).getId(), variantNumber,
                         mainView, clickedCheckBox, otherCheckBox);
@@ -308,26 +298,21 @@ public class AllComparesFragment extends BaseFragment {
             }
         });
 
+        // click listener for full image size
         adapter.setOnImageClickListener((view, position, variantNumber) -> {
-
             Intent intent = new Intent(getActivity(), ImageViewActivity.class);
 
             ArrayList<String> imageUrls = new ArrayList<>();
             imageUrls.add(compares.get(position).getVariants().get(0).getImageUrl());
             imageUrls.add(compares.get(position).getVariants().get(1).getImageUrl());
 
-            ArrayList<String> likes = new ArrayList<>();
-            likes.add(String.valueOf(compares.get(position).getVariants().get(0).getLikes()));
-            likes.add(String.valueOf(compares.get(position).getVariants().get(1).getLikes()));
-
             ArrayList<String> descriptions = new ArrayList<>();
             descriptions.add(compares.get(position).getVariants().get(0).getDescription());
             descriptions.add(compares.get(position).getVariants().get(1).getDescription());
 
             intent.putStringArrayListExtra(ImageViewActivity.INTENT_KEY_IMAGE_URLS, imageUrls);
-            intent.putStringArrayListExtra(ImageViewActivity.INTENT_KEY_LIKES, likes);
-            intent.putStringArrayListExtra(ImageViewActivity.INTENT_KEY_IMAGE_DESCRIPTIONS, descriptions);
-
+            intent.putStringArrayListExtra(ImageViewActivity.INTENT_KEY_IMAGE_DESCRIPTIONS,
+                    descriptions);
             intent.putExtra(ImageViewActivity.INTENT_KEY_POSITION, variantNumber);
             startActivity(intent);
         });
