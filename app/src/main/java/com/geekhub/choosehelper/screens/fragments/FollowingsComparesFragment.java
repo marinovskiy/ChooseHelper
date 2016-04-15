@@ -52,7 +52,7 @@ public class FollowingsComparesFragment extends BaseFragment {
     @Bind(R.id.swipe_to_refresh_follwings_compares)
     SwipeRefreshLayout mSwipeRefreshLayout;
 
-    @Bind(R.id.tv_no_compares_all)
+    @Bind(R.id.tv_no_compares_followings)
     TextView mTvNoCompares;
 
     // firebase references and queries
@@ -232,6 +232,9 @@ public class FollowingsComparesFragment extends BaseFragment {
         if (compares.size() == 0) {
             mRecyclerView.setVisibility(View.GONE);
             mTvNoCompares.setVisibility(View.VISIBLE);
+        } else {
+            mTvNoCompares.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
         }
 
         ComparesAdapter adapter;

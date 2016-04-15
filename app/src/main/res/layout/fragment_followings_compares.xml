@@ -11,6 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_followings_compares"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none" />
+
         <TextView
             android:id="@+id/tv_no_compares_followings"
             android:layout_width="wrap_content"
@@ -21,12 +27,6 @@
             android:textColor="@color/colorTextSecondary"
             android:textSize="18sp"
             android:visibility="gone" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view_followings_compares"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="none" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 

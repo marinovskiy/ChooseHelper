@@ -186,7 +186,8 @@ public class AllComparesFragment extends BaseFragment {
                 }
                 for (DataSnapshot compareSnapshot : dataSnapshot.getChildren()) {
                     NetworkCompare networkCompare = compareSnapshot.getValue(NetworkCompare.class);
-                    fetchDetailsFromNetwork(compares, networkCompare, compareSnapshot.getKey(), snapshotSize);
+                    fetchDetailsFromNetwork(compares, networkCompare, compareSnapshot.getKey(),
+                            snapshotSize);
                 }
             }
 
@@ -256,6 +257,9 @@ public class AllComparesFragment extends BaseFragment {
         if (compares.size() == 0) {
             mRecyclerView.setVisibility(View.GONE);
             mTvNoCompares.setVisibility(View.VISIBLE);
+        } else {
+            mTvNoCompares.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
         }
 
         ComparesAdapter adapter;

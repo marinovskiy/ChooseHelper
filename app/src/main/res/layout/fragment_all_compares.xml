@@ -21,7 +21,7 @@
                     android:id="@+id/tv_no_compares_all"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
+                    android:layout_centerHorizontal="true"
                     android:paddingTop="96dp"
                     android:text="@string/no_compares"
                     android:textColor="@color/colorTextSecondary"
