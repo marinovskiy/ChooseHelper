@@ -89,8 +89,11 @@
 
     <!--settings keys-->
     <string name="settings_numbers_of_compares">settings_numbers_of_compares</string>
-    <string name="settings_language">settings_language</string>
+    <!--<string name="settings_language">settings_language</string>-->
     <string name="settings_categories">settings_categories</string>
+    <string name="settings_notifications_liked">settings_notifications_liked</string>
+    <string name="settings_notifications_commented">settings_notifications_commented</string>
+    <string name="settings_notifications_f_new_compare">settings_notifications_fnc</string>
 
     <!--dialogs-->
     <string name="dialog_btn_send_email">Скинути</string>
@@ -142,10 +145,20 @@
         <item>50</item>
     </string-array>
 
-    <string-array name="languages">
-        <item>English</item>
-        <item>Українська</item>
-        <item>Русский</item>
+    <!--<string-array name="languages">-->
+        <!--<item>English</item>-->
+        <!--<item>Українська</item>-->
+        <!--<item>Русский</item>-->
+    <!--</string-array>-->
+
+    <string-array name="notifications">
+        <item>On</item>
+        <item>Off</item>
+    </string-array>
+
+    <string-array name="notifications_code">
+        <item>1</item>
+        <item>0</item>
     </string-array>
 
 </resources>

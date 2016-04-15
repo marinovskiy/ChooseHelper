@@ -1,15 +1,17 @@
 package com.geekhub.choosehelper.screens.fragments;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v14.preference.PreferenceFragment;
 import android.support.v7.preference.Preference;
-import android.util.Log;
 import android.view.View;
 
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.screens.activities.MainActivity;
-import com.geekhub.choosehelper.utils.LanguageUtils;
+import com.geekhub.choosehelper.utils.services.NotificationCommentedService;
+import com.geekhub.choosehelper.utils.services.NotificationLikedService;
+import com.geekhub.choosehelper.utils.services.NotificationNewCompareService;
 
 import java.util.HashSet;
 import java.util.Locale;
@@ -28,8 +30,17 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
     @BindString(R.string.settings_numbers_of_compares)
     String mSettingsNumbersOfCompares;
 
-    @BindString(R.string.settings_language)
-    String mSettingsLanguage;
+//    @BindString(R.string.settings_language)
+//    String mSettingsLanguage;
+
+    @BindString(R.string.settings_notifications_liked)
+    String mSettingsNotificationLiked;
+
+    @BindString(R.string.settings_notifications_commented)
+    String mSettingsNotificationCommented;
+
+    @BindString(R.string.settings_notifications_f_new_compare)
+    String mSettingsNotificationNewCompare;
 
     public SettingsFragment() {
     }
@@ -96,18 +107,46 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
                 categoriesString = getString(R.string.settings_no_categories);
             }
             preference.setSummary(categoriesString);
+
+            // Number of compares
         } else if (key.equals(mSettingsNumbersOfCompares)) {
             MainActivity.sIsNeedToAutoUpdate = true;
             preference.setSummary(String.format(Locale.getDefault(),
                     getString(R.string.settings_number_of_compares),
                     sharedPreferences.getString(key, "")));
-        } else if (key.equals(mSettingsLanguage)) {
+
+            // Liked
+        } else if (key.equals(mSettingsNotificationLiked)) {
             MainActivity.sIsNeedToAutoUpdate = true;
             String title = sharedPreferences.getString(key, "");
-            preference.setSummary(title);
-            Log.d("TEST", "LG: " + title);
-            LanguageUtils.changeLocale(title, getActivity().getApplication().getBaseContext());
+            preference.setSummary((Integer.parseInt(title) == 0) ? "Off" : "On");
+            if (Integer.parseInt(title) == 1) {
+                getActivity().startService(new Intent(getActivity(), NotificationLikedService.class));
+            } else {
+                getActivity().stopService(new Intent(getActivity(), NotificationLikedService.class));
+            }
 
+            // Commented
+        } else if (key.equals(mSettingsNotificationCommented)) {
+            MainActivity.sIsNeedToAutoUpdate = true;
+            String title = sharedPreferences.getString(key, "");
+            preference.setSummary((Integer.parseInt(title) == 0) ? "Off" : "On");
+            if (Integer.parseInt(title) == 1) {
+                getActivity().startService(new Intent(getActivity(), NotificationCommentedService.class));
+            } else {
+                getActivity().stopService(new Intent(getActivity(), NotificationCommentedService.class));
+            }
+
+            // New compare
+        } else if (key.equals(mSettingsNotificationNewCompare)) {
+            MainActivity.sIsNeedToAutoUpdate = true;
+            String title = sharedPreferences.getString(key, "");
+            preference.setSummary((Integer.parseInt(title) == 0) ? "Off" : "On");
+            if (Integer.parseInt(title) == 1) {
+                getActivity().startService(new Intent(getActivity(), NotificationNewCompareService.class));
+            } else {
+                getActivity().stopService(new Intent(getActivity(), NotificationNewCompareService.class));
+            }
         }
     }
 }

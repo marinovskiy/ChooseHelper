@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.geekhub.choosehelper">
 
+    <uses-sdk xmlns:tools="http://schemas.android.com/tools"
+        tools:overrideLibrary="android.support.v14.preference" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -10,9 +13,6 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
-
-    <uses-sdk xmlns:tools="http://schemas.android.com/tools"
-        tools:overrideLibrary="android.support.v14.preference" />
 
     <application
         android:name=".ChooseHelperApplication"
@@ -35,11 +35,13 @@
             android:name=".screens.activities.SignInActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
-            <!--<intent-filter>-->
-            <!--<action android:name="android.intent.action.MAIN" />-->
 
-            <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".screens.activities.BaseSignInActivity"
@@ -102,7 +104,20 @@
             android:name="io.fabric.ApiKey"
             android:value="b77f77b940ea374ce7ca53f6b55e0dcd219e2094" />
 
-        <activity android:name=".screens.activities.ImageViewActivity"></activity>
+        <activity android:name=".screens.activities.ImageViewActivity" />
+
+        <service
+            android:name=".utils.services.NotificationLikedService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".utils.services.NotificationCommentedService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".utils.services.NotificationNewCompareService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

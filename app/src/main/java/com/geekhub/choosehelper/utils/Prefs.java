@@ -17,9 +17,12 @@ public class Prefs {
     public static final int FIREBASE_LOGIN = 3;
 
     // settings
-    public static final String SETTINGS_LANGUAGE = "settings_language";
+//    public static final String SETTINGS_LANGUAGE = "settings_language";
     public static final String SETTINGS_CATEGORIES = "settings_filter_of_compares";
     public static final String SETTINGS_NUMBER_OF_COMPARES = "settings_number_of_compares";
+    public static final String SETTINGS_NOTIFICATION_LIKED = "settings_notification_liked";
+    public static final String SETTINGS_NOTIFICATION_COMMENTED = "settings_notification_commented";
+    public static final String SETTINGS_NOTIFICATION_NEW_COMPARE = "settings_notification_new_compare";
 
     private static SharedPreferences sPrefs;
 
@@ -66,8 +69,27 @@ public class Prefs {
         setStringSet(SETTINGS_CATEGORIES, stringSet);
     }
 
-    public static String getSettingsLanguage() {
-        return sPrefs.getString(SETTINGS_LANGUAGE, null);
+    public static void setSettingsNotificationLiked(String s) {
+        setString(SETTINGS_NOTIFICATION_LIKED, s);
+    }
+
+    public static String getSettingsNotificationLiked() {
+        return getString(SETTINGS_NOTIFICATION_LIKED);
+    }
+    public static void setSettingsNotificationCommented(String s) {
+        setString(SETTINGS_NOTIFICATION_COMMENTED, s);
+    }
+
+    public static String getSettingsNotificationCommented() {
+        return getString(SETTINGS_NOTIFICATION_COMMENTED);
+    }
+
+    public static void setSettingsNotificationNewCopare(String s) {
+        setString(SETTINGS_NOTIFICATION_NEW_COMPARE, s);
+    }
+
+    public static String getSettingsNotificatioNewCompare() {
+        return getString(SETTINGS_NOTIFICATION_NEW_COMPARE);
     }
 
     // standard methods

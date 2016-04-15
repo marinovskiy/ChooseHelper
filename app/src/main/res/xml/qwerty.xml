@@ -3,13 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--<android.support.v7.preference.MultiSelectListPreference-->
-        <!--android:defaultValue="@array/categories"-->
-        <!--android:entries="@array/categories"-->
-        <!--android:entryValues="@array/categories"-->
-        <!--android:key="@string/settings_categories"-->
-        <!--android:summary="No categories selected"-->
-        <!--android:title="Categories in main tab" />-->
+    <android.support.v7.preference.MultiSelectListPreference
+        android:defaultValue="@array/categories"
+        android:entries="@array/categories"
+        android:entryValues="@array/categories"
+        android:key="@string/settings_categories"
+        android:summary="No categories selected"
+        android:title="Categories in main tab" />
 
     <android.support.v7.preference.ListPreference
         android:defaultValue="5"
@@ -20,13 +20,40 @@
         android:summary="Show %s compares in all tab"
         android:title="Number of all compares" />
 
-    <android.support.v7.preference.ListPreference
-        android:defaultValue="English"
-        android:dialogTitle="Choose language of application"
-        android:entries="@array/languages"
-        android:entryValues="@array/languages"
-        android:key="@string/settings_language"
+    <!--<android.support.v7.preference.ListPreference-->
+        <!--android:defaultValue="English"-->
+        <!--android:dialogTitle="Choose language of application"-->
+        <!--android:entries="@array/languages"-->
+        <!--android:entryValues="@array/languages"-->
+        <!--android:key="@string/settings_language"-->
+        <!--android:summary="%s"-->
+        <!--android:title="Language" />-->
+
+    <ListPreference
+        android:defaultValue="On"
+        android:dialogTitle="Set state notification"
+        android:entries="@array/notifications"
+        android:entryValues="@array/notifications_code"
+        android:key="@string/settings_notifications_liked"
         android:summary="%s"
-        android:title="Language" />
+        android:title="Someone liked my compare" />
+
+    <ListPreference
+        android:defaultValue="On"
+        android:dialogTitle="Set state notification"
+        android:entries="@array/notifications"
+        android:entryValues="@array/notifications_code"
+        android:key="@string/settings_notifications_commented"
+        android:summary="%s"
+        android:title="Someone add a comment to my compare" />
+
+    <ListPreference
+        android:defaultValue="On"
+        android:dialogTitle="Set state notification"
+        android:entries="@array/notifications"
+        android:entryValues="@array/notifications_code"
+        android:key="@string/settings_notifications_f_new_compare"
+        android:summary="%s"
+        android:title="Someone in following list create new compare" />
 
 </android.support.v7.preference.PreferenceScreen>

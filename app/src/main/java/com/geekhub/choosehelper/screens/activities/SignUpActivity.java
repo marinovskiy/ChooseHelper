@@ -114,13 +114,10 @@ public class SignUpActivity extends BaseSignInActivity {
                 break;
             case R.id.tv_already_have_an_account:
                 onBackPressed();
-//                break;
-//                finish();
-//                this.overridePendingTransition(R.anim.slide_in_to_left, R.anim.do_nothing);
-//                Intent intentSignIn = new Intent(SignUpActivity.this, SignInActivity.class);
-//                startActivity(intentSignIn);
-//                overridePendingTransition(R.anim.slide_in_to_right, R.anim.do_nothing);
-//                finish();
+                Intent intentSignIn = new Intent(SignUpActivity.this, SignInActivity.class);
+                startActivity(intentSignIn);
+//                overridePendingTransition(R.anim.do_nothing, R.anim.slide_in_to_right);
+                finish();
                 break;
         }
     }
