@@ -1,7 +1,6 @@
 package com.geekhub.choosehelper.screens.fragments;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,6 +67,8 @@ public class PreviewFragment extends BaseFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        String[] categories = getActivity().getResources().getStringArray(R.array.categories);
+
         if (sAuthor.getPhotoUrl() != null) {
             ImageUtils.loadCircleImage(mIvAvatar, sAuthor.getPhotoUrl());
         } else {
@@ -89,6 +90,6 @@ public class PreviewFragment extends BaseFragment {
         mTvQuestion.setText(sNewCompare.getQuestion());
         mTvFirstVariant.setText(sNewCompare.getVariants().get(0).getDescription());
         mTvSecondVariant.setText(sNewCompare.getVariants().get(1).getDescription());
-        mTvCategory.setText(sNewCompare.getCategory());
+        mTvCategory.setText(categories[Integer.parseInt(sNewCompare.getCategory())]);
     }
 }

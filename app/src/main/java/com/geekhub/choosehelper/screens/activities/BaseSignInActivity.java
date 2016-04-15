@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -17,8 +18,10 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.firebase.client.AuthData;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.utils.ModelConverter;
@@ -300,12 +303,29 @@ public class BaseSignInActivity extends AppCompatActivity
                 );
                 DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser, Prefs.getUserId()));
                 FirebaseUsersManager.saveUserToFirebase(networkUser);
+                startMainActivity();
             } else if (loggedType == Prefs.FIREBASE_LOGIN) {
-                FirebaseUsersManager.saveUserFromFirebase(Prefs.getUserId());
+                //FirebaseUsersManager.saveUserFromFirebase(Prefs.getUserId());
+                Firebase firebase = new Firebase(FirebaseConstants.FB_REF_MAIN)
+                        .child(FirebaseConstants.FB_REF_USERS)
+                        .child(Prefs.getUserId());
+                firebase.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        NetworkUser networkUser = dataSnapshot.getValue(NetworkUser.class);
+                        DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser, Prefs.getUserId()));
+                        startMainActivity();
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+                        // TODO toast or dialog of exception
+                    }
+                });
             }
         }
         this.mAuthData = authData;
-        startMainActivity();
+        //startMainActivity();
     }
 
     protected void logout() {

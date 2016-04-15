@@ -7,10 +7,12 @@ import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -42,6 +44,7 @@ import java.util.List;
 import java.util.Set;
 
 import butterknife.Bind;
+import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
@@ -76,8 +79,7 @@ public class AllComparesFragment extends BaseFragment {
                 query.or().equalTo(DbFields.DB_CATEGORY, category);
             }
             RealmResults<Compare> compares = query.findAll();
-            int end = mNumberOfCompares < compares.size() ? mNumberOfCompares : compares.size();
-            updateUi(compares.subList(0, end));
+            updateUi(compares);
         }
     };
 
@@ -247,9 +249,10 @@ public class AllComparesFragment extends BaseFragment {
     private void updateUi(List<Compare> compares) {
         setProgressVisibility(false);
 
+        int end = mNumberOfCompares < compares.size() ? mNumberOfCompares : compares.size();
         ComparesAdapter adapter;
         if (mRecyclerView.getAdapter() == null) {
-            adapter = new ComparesAdapter(compares);
+            adapter = new ComparesAdapter(compares.subList(0, end));
             mRecyclerView.setAdapter(adapter);
 
             // click listener for author
@@ -261,7 +264,8 @@ public class AllComparesFragment extends BaseFragment {
                     userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME,
                             compares.get(position).getAuthor().getFullName());
                     startActivity(userIntent);
-                } catch (IndexOutOfBoundsException ignored) {
+                } catch (IndexOutOfBoundsException e) {
+                    Toast.makeText(getContext(), "IndexOutOfBoundsException | pos = " + position, Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -326,7 +330,7 @@ public class AllComparesFragment extends BaseFragment {
 
         } else {
             adapter = (ComparesAdapter) mRecyclerView.getAdapter();
-            adapter.updateList(compares);
+            adapter.updateList(compares.subList(0, end));
             adapter.notifyDataSetChanged();
         }
     }

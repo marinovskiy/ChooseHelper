@@ -36,6 +36,7 @@ import com.geekhub.choosehelper.utils.ModelConverter;
 import com.geekhub.choosehelper.utils.Prefs;
 import com.geekhub.choosehelper.utils.Utils;
 import com.geekhub.choosehelper.utils.db.DbComparesManager;
+import com.geekhub.choosehelper.utils.db.DbFields;
 import com.geekhub.choosehelper.utils.firebase.FirebaseConstants;
 import com.geekhub.choosehelper.utils.firebase.FirebaseLikesManager;
 
@@ -47,6 +48,8 @@ import butterknife.Bind;
 import butterknife.OnClick;
 import io.realm.RealmChangeListener;
 import io.realm.RealmList;
+import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class DetailsActivity extends BaseSignInActivity {
 
@@ -326,6 +329,9 @@ public class DetailsActivity extends BaseSignInActivity {
     // update UI method
     private void updateUi(Compare compare) {
         setProgressVisibility(false);
+
+        RealmResults<Comment> comments = compare.getComments().where().findAll();
+        comments.sort(DbFields.DB_COMPARES_DATE, Sort.ASCENDING);
 
         DetailsAdapter adapter;
         if (mRecyclerView != null && mRecyclerView.getAdapter() == null) {

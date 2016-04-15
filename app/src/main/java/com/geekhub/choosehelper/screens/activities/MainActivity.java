@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
@@ -41,7 +42,6 @@ import com.geekhub.choosehelper.utils.firebase.FirebaseConstants;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-import io.realm.Realm;
 import io.realm.RealmChangeListener;
 
 public class MainActivity extends BaseSignInActivity
@@ -68,6 +68,9 @@ public class MainActivity extends BaseSignInActivity
     @Bind(R.id.main_search_container)
     FrameLayout mSearchContainer;
 
+    @Bind(R.id.fab_add_main)
+    FloatingActionButton mFab;
+
     private View mNavHeaderView;
 
     // is need to reload compares (using after add new compare etc.)
@@ -79,10 +82,10 @@ public class MainActivity extends BaseSignInActivity
     private boolean mIsNeedToExit = false;
 
     // realm
-    private static User sCurrentUser;
+    private User mCurrentUser;
     private RealmChangeListener mUserListener = () -> {
-        if (sCurrentUser != null && sCurrentUser.isLoaded()) {
-            updateNavDrawerHeader(sCurrentUser);
+        if (mCurrentUser != null && mCurrentUser.isLoaded()) {
+            updateNavDrawerHeader(mCurrentUser);
         }
     };
 
@@ -130,7 +133,7 @@ public class MainActivity extends BaseSignInActivity
                 mDrawerLayout.closeDrawers();
                 Intent userIntent = new Intent(this, ProfileActivity.class);
                 userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID, Prefs.getUserId());
-                userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME, sCurrentUser.getFullName());
+                userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME, mCurrentUser.getFullName());
                 startActivity(userIntent);
                 return true;
             case R.id.action_nav_settings:
@@ -153,14 +156,8 @@ public class MainActivity extends BaseSignInActivity
     @Override
     protected void onPause() {
         super.onPause();
-        Realm.getDefaultInstance().removeAllChangeListeners();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (sCurrentUser != null && mUserListener != null) {
-            sCurrentUser.removeChangeListener(mUserListener);
+        if (mCurrentUser != null && mUserListener != null) {
+            mCurrentUser.removeChangeListener(mUserListener);
         }
     }
 
@@ -205,6 +202,7 @@ public class MainActivity extends BaseSignInActivity
                         mSearchContainer.setVisibility(View.GONE);
                         mTabLayout.setVisibility(View.VISIBLE);
                         mViewPager.setVisibility(View.VISIBLE);
+                        mFab.setVisibility(View.VISIBLE);
                         return true;
                     }
                 });
@@ -288,14 +286,13 @@ public class MainActivity extends BaseSignInActivity
                 mDrawerLayout.closeDrawers();
                 Intent userIntent = new Intent(this, ProfileActivity.class);
                 userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_ID, Prefs.getUserId());
-                userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME, sCurrentUser.getFullName());
+                userIntent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME, mCurrentUser.getFullName());
                 startActivity(userIntent);
             });
 
             tvFullName.setText(user.getFullName());
             tvEmail.setText(user.getEmail());
         } catch (NullPointerException | IllegalArgumentException ignored) {
-
         }
     }
 
@@ -310,8 +307,8 @@ public class MainActivity extends BaseSignInActivity
 
     // get information about user from local database
     private void fetchCurrentUserFromDb() {
-        sCurrentUser = DbUsersManager.getUserById(Prefs.getUserId());
-        sCurrentUser.addChangeListener(mUserListener);
+        mCurrentUser = DbUsersManager.getUserById(Prefs.getUserId());
+        mCurrentUser.addChangeListener(mUserListener);
     }
 
     // get information about user from network

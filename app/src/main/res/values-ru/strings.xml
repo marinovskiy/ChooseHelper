@@ -21,28 +21,29 @@
     <string name="action_nav_logout">Выйти</string>
 
     <!-- toasts -->
-    <string name="toast_empty_fields">Вы не заполнили все поля</string>
-    <string name="toast_error_try_later">Ошибка! Пожалуйста, попробуйте позднее</string>
+    <string name="toast_empty_fields">Вы заполнили не все поля</string>
+    <string name="toast_error_try_later">Ошибка! Пожалуйста, попробуйте позже</string>
     <string name="toast_gp_sign_in_error">Ошибка входа:</string>
-    <string name="toast_no_internet">Нет соединения с Интернетом</string>
-    <string name="toast_cannot_search">Не удалось выполнить поиск без Интернета</string>
+    <string name="toast_no_internet">Нет подключения к интернету</string>
+    <string name="toast_cannot_search">Невозможно выполнить поиск без подключения к интернету</string>
     <string name="toast_click_again_exit">Нажмите еще раз для выхода</string>
     <string name="toast_empty_comment">Вы не можете оставить пустой комментарий</string>
-    <string name="toast_cannot_like_own">Вы не можете сравнивать ето</string>
-    <string name="toast_cannot_like_closed">Это сравнение было закрыто. Вы не можете сравнить ето</string>
-    <string name="toast_cannot_comment_closed">Это сравнение было закрыто. Вы не можете комментировать закрытые сравнения</string>
+    <string name="toast_cannot_like_own">Вы не можете оценивать свой пост</string>
+    <string name="toast_cannot_like_closed">Вы не можете оценивать закрытые сравнения</string>
+    <string name="toast_cannot_comment_closed">Вы не можете комментировать закрытые сравнения</string>
     <string name="toast_didnt_enter_email">Вы не ввели электронную почту</string>
-    <string name="toast_different_passwords">Пароли различны</string>
+    <string name="toast_different_passwords">Пароли отличаются</string>
     <string name="toast_error_message">Ошибка</string>
+    <string name="toast_wrong_email">Email не зарегистрирован</string>
 
     <!--hints-->
     <string name="hint_email">Эл. адрес</string>
     <string name="hint_password">Пароль</string>
-    <string name="hint_enter_comment">Введите свой комментарий</string>
-    <string name="hint_new_password">Введите новый пароль</string>
-    <string name="hint_repeat_new_password">Повторите новый пароль</string>
-    <string name="search_hint_compares">Поиск сравнений...</string>
-    <string name="search_hint_user_compares">Поиск сравнений пользователя...</string>
+    <string name="hint_enter_comment">Ваш комментарий</string>
+    <string name="hint_new_password">Новый пароль</string>
+    <string name="hint_repeat_new_password">Повторить</string>
+    <string name="search_hint_compares">Поиск сравнений…</string>
+    <string name="search_hint_user_compares">Поиск сравнений пользователя…</string>
     <string name="hint_full_name">Полное имя</string>
     <string name="hint_repeat_password">Повторите пароль</string>
     <string name="hint_question">Вопрос</string>
@@ -50,29 +51,29 @@
     <string name="hint_description">Описание</string>
 
     <!--progress dialogs-->
-    <string name="pd_msg_wait_please">Подождите, пожалуйста...</string>
-    <string name="pd_msg_authenticating">Аутентификация...</string>
+    <string name="pd_msg_wait_please">Подождите, пожалуйста…</string>
+    <string name="pd_msg_authenticating">Аутентификация…</string>
 
     <!--labels-->
-    <string name="label_followings">Подписаны на</string>
+    <string name="label_followings">Подписки</string>
     <string name="label_followers">Подписчики</string>
-    <string name="label_compares">Сравнение</string>
+    <string name="label_compares">Сравнения</string>
     <string name="label_new_compare">Новое сравнение</string>
-    <string name="label_preview">Предварительный просмотр</string>
+    <string name="label_preview">Превью</string>
     <string name="label_details">Детали</string>
     <string name="label_edit_profile">Редактировать профиль</string>
     <string name="label_change_password">Изменить пароль</string>
     <string name="label_help">Справка</string>
     <string name="label_settings">Настройки</string>
     <string name="label_log_in_using">Войти с помощью</string>
-    <string name="label_create_an_account">Завести аккаунт</string>
+    <string name="label_create_an_account">Создать аккаунт</string>
     <string name="label_photo">Фото</string>
     <string name="label_already_have_an_account">Уже есть учетная запись?</string>
     <string name="label_reset_password">Сброс пароля</string>
 
     <!--button labels-->
     <string name="btn_label_login">Авторизоваться</string>
-    <string name="btn_label_follow">Следить</string>
+    <string name="btn_label_follow">Подписаться</string>
     <string name="btn_label_un_follow">Отписаться</string>
     <string name="btn_label_forgot_password">Забыли пароль?</string>
     <string name="btn_label_add">Добавить</string>
@@ -80,11 +81,11 @@
 
     <!--others labels-->
     <string name="tab_label_all">Все</string>
-    <string name="tab_label_followings">Подписчиков</string>
+    <string name="tab_label_followings">Подписки</string>
 
     <!--settings labels-->
     <string name="settings_no_categories">Категории не выбраны</string>
-    <string name="settings_number_of_compares">Выставки %s сравнений на главной</string>
+    <string name="settings_number_of_compares">ПОказывать %s сравнений на главной</string>
 
     <!--settings keys-->
     <string name="settings_numbers_of_compares">settings_numbers_of_compares</string>
@@ -94,7 +95,7 @@
     <!--dialogs-->
     <string name="dialog_btn_send_email">Сбросить</string>
     <string name="dialog_btn_cancel">Отменить</string>
-    <string name="dialog_reset_sent">Отравить...</string>
+    <string name="dialog_reset_sent">Отравить…</string>
     <string name="dialog_photo_title">Выберите изображение для варианта</string>
     <string name="dialog_photo_avatar">Выберите изображение для аватара</string>
 
@@ -103,8 +104,8 @@
     <string name="img_description_icon_more">Больше</string>
 
     <!--compare statuses-->
-    <string name="status_open">Открито</string>
-    <string name="status_closed">Закрито</string>
+    <string name="status_open">Открыто</string>
+    <string name="status_closed">Закрыто</string>
 
     <!--Arrays-->
     <string-array name="photo_variants">

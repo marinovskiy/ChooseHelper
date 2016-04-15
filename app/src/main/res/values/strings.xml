@@ -34,6 +34,7 @@
     <string name="toast_didnt_enter_email">You didn\'t enter email</string>
     <string name="toast_different_passwords">Passwords are different</string>
     <string name="toast_error_message">Error</string>
+    <string name="toast_wrong_email">Wrong email</string>
 
     <!--hints-->
     <string name="hint_email">Email</string>

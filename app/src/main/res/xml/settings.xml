@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <MultiSelectListPreference
-        android:defaultValue="@array/categories"
+        android:defaultValue="@array/categories_codes"
         android:entries="@array/categories"
         android:entryValues="@array/categories_codes"
         android:key="@string/settings_categories"

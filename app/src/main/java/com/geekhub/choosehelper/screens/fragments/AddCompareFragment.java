@@ -185,7 +185,7 @@ public class AddCompareFragment extends BaseFragment {
 
         // new compares information
         String question = mAddCompareEtQuestion.getText().toString();
-        String category = mCategoriesSpinner.getSelectedItem().toString();
+        String category = String.valueOf(mCategoriesSpinner.getSelectedItemPosition());
         String firstVariant = mAddCompareEtVariantOne.getText().toString();
         String secondVariant = mAddCompareEtVariantTwo.getText().toString();
 

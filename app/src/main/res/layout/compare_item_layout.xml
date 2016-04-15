@@ -73,15 +73,6 @@
 
             </LinearLayout>
 
-            <ImageView
-                android:id="@+id/rv_img_more"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerInParent="true"
-                android:background="@drawable/icon_more_selector"
-                android:contentDescription="@string/img_description_icon_more" />
-
         </RelativeLayout>
 
         <TextView

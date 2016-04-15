@@ -58,30 +58,34 @@
 
     </FrameLayout>
 
-    <LinearLayout
+    <android.support.percent.PercentRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:background="@drawable/comment_add_shadow_layout"
+        android:orientation="horizontal">
 
-        <android.support.percent.PercentRelativeLayout
-            android:layout_width="match_parent"
+        <EditText
+            android:id="@+id/details_et_comment_text"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/comment_add_shadow_layout">
+            app:layout_widthPercent="85%"
+            android:background="@android:color/transparent"
+            android:hint="@string/hint_enter_comment"
+            android:paddingBottom="12dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="12dp" />
 
-            <EditText
-                android:id="@+id/details_et_comment_text"
-                android:layout_height="wrap_content"
-                android:hint="@string/hint_enter_comment"
-                app:layout_widthPercent="75%" />
+        <ImageView
+            android:id="@+id/details_btn_add_comment"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:src="@drawable/icon_send" />
 
-            <Button
-                android:id="@+id/details_btn_add_comment"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:text="@string/btn_label_add"
-                app:layout_widthPercent="25%" />
-
-        </android.support.percent.PercentRelativeLayout>
-    </LinearLayout>
+    </android.support.percent.PercentRelativeLayout>
 
 </LinearLayout>

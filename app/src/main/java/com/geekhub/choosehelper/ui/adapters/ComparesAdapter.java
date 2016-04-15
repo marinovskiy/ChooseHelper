@@ -29,7 +29,6 @@ public class ComparesAdapter extends RecyclerView.Adapter<ComparesAdapter.ViewHo
     private List<Compare> mCompares;
 
     private OnItemClickListener mOnItemClickListenerAuthor;
-    private OnItemClickListener mOnItemClickListenerPopup;
     private OnItemClickListener mOnItemClickListener;
     private OnImageClickListener mOnImageClickListener;
     private OnLikeListListener mOnLikeListListener;
@@ -75,9 +74,6 @@ public class ComparesAdapter extends RecyclerView.Adapter<ComparesAdapter.ViewHo
         @Bind(R.id.compare_tv_date)
         TextView mTvDate;
 
-        @Bind(R.id.rv_img_more)
-        ImageView mImgMore;
-
         @Bind(R.id.compare_tv_question)
         TextView mTvQuestion;
 
@@ -109,7 +105,6 @@ public class ComparesAdapter extends RecyclerView.Adapter<ComparesAdapter.ViewHo
             super(itemView);
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
-            mImgMore.setOnClickListener(this);
             mLlAuthor.setOnClickListener(this);
             mIvFirst.setOnClickListener(this);
             mIvSecond.setOnClickListener(this);
@@ -124,10 +119,6 @@ public class ComparesAdapter extends RecyclerView.Adapter<ComparesAdapter.ViewHo
                 if (mOnItemClickListener != null) {
                     mOnItemClickListener.onItemClick(v, getAdapterPosition());
                 }
-            } else if (id == mImgMore.getId()) {
-                if (mOnItemClickListenerPopup != null) {
-                    mOnItemClickListenerPopup.onItemClick(v, getAdapterPosition());
-                }
             } else if (id == mIvFirst.getId()) {
                 if (mOnImageClickListener != null) {
                     mOnImageClickListener.onImageClick(v, getAdapterPosition(), 0);
@@ -136,7 +127,7 @@ public class ComparesAdapter extends RecyclerView.Adapter<ComparesAdapter.ViewHo
                 if (mOnImageClickListener != null) {
                     mOnImageClickListener.onImageClick(v, getAdapterPosition(), 1);
                 }
-            }else if (id == mChLikeFirst.getId()) {
+            } else if (id == mChLikeFirst.getId()) {
                 if (mOnLikeListListener != null) {
                     updateLikeView(mChLikeFirst, mChLikeSecond);
                     mOnLikeListListener.onLike(mCardView, mChLikeFirst, mChLikeSecond, getAdapterPosition(), 0);
@@ -191,7 +182,11 @@ public class ComparesAdapter extends RecyclerView.Adapter<ComparesAdapter.ViewHo
             }
 
             mTvDate.setText(DateUtils.convertDateTime(compare.getDate()));
-            mTvCategory.setText(compare.getCategory());
+
+            String[] categories = mTvCategory.getContext()
+                    .getResources()
+                    .getStringArray(R.array.categories);
+            mTvCategory.setText(categories[Integer.parseInt(compare.getCategory())]);
 
             if (compare.isOpen())
                 mTvStatus.setText(mTvStatus.getContext().getString(R.string.status_open));
@@ -213,11 +208,6 @@ public class ComparesAdapter extends RecyclerView.Adapter<ComparesAdapter.ViewHo
             int newValue = Integer.parseInt(clickedCheckBox.getText().toString()) - 1;
             clickedCheckBox.setText(String.valueOf(newValue));
         }
-    }
-
-    // click listener for popup menu
-    public void setOnItemClickListenerPopup(OnItemClickListener onItemClickListenerPopup) {
-        mOnItemClickListenerPopup = onItemClickListenerPopup;
     }
 
     // click listener for details

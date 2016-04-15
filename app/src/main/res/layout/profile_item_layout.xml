@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/card_foreground"
     android:orientation="horizontal"
     android:padding="16dp">
 
@@ -10,6 +11,9 @@
         android:id="@+id/profile_rv_tv_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/icon_people"
+        android:drawablePadding="6dp"
+        android:gravity="center"
         android:textColor="@color/colorTextPrimary"
         android:textSize="@dimen/medium_text_size"
         tools:text="104" />

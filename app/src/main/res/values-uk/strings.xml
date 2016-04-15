@@ -21,7 +21,7 @@
     <string name="action_nav_logout">Вийти</string>
 
     <!-- toasts -->
-    <string name="toast_empty_fields">Ви не заповнили всі поля</string>
+    <string name="toast_empty_fields">Ви заповнили не всі поля</string>
     <string name="toast_error_try_later">Помилка! Спробуйте пізніше</string>
     <string name="toast_gp_sign_in_error">Помилка авторизації: </string>
     <string name="toast_no_internet">Відсутній Інтернет зв\'язок</string>
@@ -34,6 +34,7 @@
     <string name="toast_didnt_enter_email">Ви не ввели Email</string>
     <string name="toast_different_passwords">Паролі відрізняються</string>
     <string name="toast_error_message">Помилка</string>
+    <string name="toast_wrong_email">Email не зареєстрований</string>
 
     <!--hints-->
     <string name="hint_email">Email</string>
@@ -41,7 +42,7 @@
     <string name="hint_enter_comment">Введіть коментар</string>
     <string name="hint_new_password">Введіть новий пароль</string>
     <string name="hint_repeat_new_password">Повторіть новий пароль</string>
-    <string name="search_hint_compares">Пошук...</string>
+    <string name="search_hint_compares">Пошук…</string>
     <string name="search_hint_user_compares">Пошук порівнянь корисутвача</string>
     <string name="hint_full_name">Повне ім\'я</string>
     <string name="hint_repeat_password">Повторіть пароль</string>
@@ -51,7 +52,7 @@
 
     <!--progress dialogs-->
     <string name="pd_msg_wait_please">Зачекайте будь ласка</string>
-    <string name="pd_msg_authenticating">Аутентифікація...</string>
+    <string name="pd_msg_authenticating">Аутентифікація…</string>
 
     <!--labels-->
     <string name="label_followings">Підписані на</string>
@@ -94,7 +95,7 @@
     <!--dialogs-->
     <string name="dialog_btn_send_email">Скинути</string>
     <string name="dialog_btn_cancel">Відмінити</string>
-    <string name="dialog_reset_sent">Відправити...</string>
+    <string name="dialog_reset_sent">Відправити…</string>
     <string name="dialog_photo_title">Обрати картинку для варіанту</string>
     <string name="dialog_photo_avatar">Обрати аватар</string>
 

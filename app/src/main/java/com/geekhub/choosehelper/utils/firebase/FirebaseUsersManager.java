@@ -81,7 +81,7 @@ public class FirebaseUsersManager {
 
             @Override
             public void onError(FirebaseError firebaseError) {
-                Utils.showMessage(context, context.getString(R.string.toast_error_try_later));
+                Utils.showMessage(context, context.getString(R.string.toast_wrong_email));
             }
         });
     }

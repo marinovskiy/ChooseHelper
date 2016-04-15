@@ -39,6 +39,7 @@ import java.util.List;
 import butterknife.Bind;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 public class FollowingsComparesFragment extends BaseFragment {
@@ -65,17 +66,12 @@ public class FollowingsComparesFragment extends BaseFragment {
                     .equalTo(DbFields.DB_ID, Prefs.getUserId())
                     .findFirst();
             List<Following> followings = mCurrentUser.getFollowings();
-            List<Compare> compares = new ArrayList<>();
-            List<String> followingIds = new ArrayList<>();
+            RealmQuery<Compare> query = mCompares.where().equalTo(DbFields.DB_COMPARE_AUTHOR_ID, "");
             for (Following following : followings) {
-                followingIds.add(following.getUserId());
+                query.or().equalTo(DbFields.DB_COMPARE_AUTHOR_ID, following.getUserId());
             }
-            for (Compare compare : mCompares) {
-                if (followingIds.contains(compare.getAuthor().getId())) {
-                    compares.add(compare);
-                }
-            }
-            updateUi(Realm.getDefaultInstance().copyFromRealm(compares));
+            RealmResults<Compare> compares = query.findAll();
+            updateUi(compares);
         }
     };
 

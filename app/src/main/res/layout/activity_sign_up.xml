@@ -18,6 +18,8 @@
             android:id="@+id/ll_sign_up_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:descendantFocusability="beforeDescendants"
+            android:focusableInTouchMode="true"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
@@ -188,7 +190,9 @@
                 android:textAllCaps="false"
                 android:textColor="#03A9F4"
                 android:textSize="16sp" />
+
         </LinearLayout>
+
     </ScrollView>
 
 </RelativeLayout>

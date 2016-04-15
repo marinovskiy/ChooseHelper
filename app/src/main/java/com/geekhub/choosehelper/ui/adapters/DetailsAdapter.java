@@ -231,7 +231,10 @@ public class DetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
 
             // category and comments count
-            mTvCategory.setText(compare.getCategory());
+            String[] categories = mTvCategory.getContext()
+                    .getResources()
+                    .getStringArray(R.array.categories);
+            mTvCategory.setText(categories[Integer.parseInt(compare.getCategory())]);
             mTvCommentsCount.setText(String.valueOf(compare.getComments().size()));
         }
 

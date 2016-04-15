@@ -64,8 +64,10 @@
             android:layout_height="match_parent">
 
             <android.support.v4.widget.NestedScrollView
+                android:id="@+id/nested_scroll_profile"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:overScrollMode="never"
                 android:scrollbars="none">
 
                 <LinearLayout
@@ -93,8 +95,11 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="40dp"
                                 android:layout_gravity="center_horizontal"
+                                android:layout_marginBottom="12dp"
                                 android:layout_marginTop="16dp"
                                 android:background="@drawable/button_follow_selector"
+                                android:paddingLeft="16dp"
+                                android:paddingRight="16dp"
                                 android:text="@string/btn_label_follow"
                                 android:textColor="@color/colorTextButton"
                                 android:textSize="14sp"
@@ -104,7 +109,7 @@
                                 android:id="@+id/recycler_view_profile"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="16dp"
+                                android:overScrollMode="never"
                                 android:scrollbars="vertical" />
 
                         </LinearLayout>
@@ -115,6 +120,7 @@
                         android:id="@+id/recycler_view_profile_compares"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:overScrollMode="never"
                         android:scrollbars="vertical" />
 
                 </LinearLayout>

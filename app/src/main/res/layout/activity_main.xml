@@ -25,8 +25,8 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
                 app:elevation="4dp"
-                app:title="@string/label_compares"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:title="@string/label_compares"
                 app:titleTextColor="@color/colorTextToolbar" />
 
             <android.support.design.widget.TabLayout
@@ -51,7 +51,8 @@
             <android.support.v4.view.ViewPager
                 android:id="@+id/view_pager_main"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:overScrollMode="never" />
 
             <FrameLayout
                 android:id="@+id/main_search_container"

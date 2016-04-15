@@ -2,11 +2,15 @@ package com.geekhub.choosehelper.screens.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -50,12 +54,14 @@ import com.geekhub.choosehelper.utils.db.DbUsersManager;
 import com.geekhub.choosehelper.utils.firebase.FirebaseConstants;
 import com.geekhub.choosehelper.utils.firebase.FirebaseLikesManager;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.realm.RealmChangeListener;
 import io.realm.RealmList;
@@ -65,6 +71,9 @@ public class ProfileActivity extends BaseSignInActivity {
 
     public static final String INTENT_KEY_USER_ID = "intent_key_user_id";
     public static final String INTENT_KEY_USER_NAME = "intent_key_user_name";
+
+    private static final int RC_GALLERY = 1;
+    private static final int RC_CAMERA = 2;
 
     @Bind(R.id.swipe_to_refresh_profile)
     SwipeRefreshLayout mSwipeRefreshLayout;
@@ -93,6 +102,9 @@ public class ProfileActivity extends BaseSignInActivity {
     @Bind(R.id.profile_search_container)
     FrameLayout mSearchContainer;
 
+    @Bind(R.id.nested_scroll_profile)
+    NestedScrollView mNestedScrollView;
+
     private ProgressDialog mProgressDialog;
 
     // firebase references and queries
@@ -103,6 +115,10 @@ public class ProfileActivity extends BaseSignInActivity {
     private Query mQueryIsFollow;
     private Query mQueryCompares;
     private Firebase mFirebaseLikes;
+
+    private boolean mIsNeedToUpdate = false;
+
+    private String mFilePath;
 
     // other
     private List<UserInfo> mUserInfoList = new ArrayList<>();
@@ -126,6 +142,7 @@ public class ProfileActivity extends BaseSignInActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        ButterKnife.bind(this);
 
         // get user id and name from intent
         mUserId = getIntent().getStringExtra(INTENT_KEY_USER_ID);
@@ -204,15 +221,89 @@ public class ProfileActivity extends BaseSignInActivity {
         });
     }
 
-    @OnClick(R.id.profile_btn_follow)
-    public void onClick() {
-        if (Utils.hasInternet(this)) {
-            mProfileBtnFollow.setClickable(false);
-            showProgressDialog();
-            updateFollow();
-            MainActivity.sIsNeedToAutoUpdate = true;
-        } else {
-            Utils.showMessage(this, getString(R.string.toast_no_internet));
+    @OnClick({R.id.profile_iv_avatar, R.id.profile_btn_follow})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.profile_iv_avatar:
+                Utils.showPhotoPickerDialog(ProfileActivity.this, (dialog, which) -> {
+                    switch (which) {
+                        case 0:
+                            Intent galleryIntent = new Intent();
+                            galleryIntent.setType("image/*");
+                            galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+                            startActivityForResult(Intent.createChooser(galleryIntent,
+                                    getString(R.string.dialog_photo_avatar)), RC_GALLERY);
+                            break;
+                        case 1:
+                            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+                                startActivityForResult(cameraIntent, RC_CAMERA);
+                            }
+                            break;
+                    }
+                });
+                break;
+            case R.id.profile_btn_follow:
+                if (Utils.hasInternet(this)) {
+                    mProfileBtnFollow.setClickable(false);
+                    showProgressDialog();
+                    updateFollow();
+                    MainActivity.sIsNeedToAutoUpdate = true;
+                } else {
+                    Utils.showMessage(this, getString(R.string.toast_no_internet));
+                }
+                break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            Uri avatarUri;
+            switch (requestCode) {
+                case RC_GALLERY:
+                    avatarUri = data.getData();
+                    try {
+                        mFilePath = ImageUtils.getFilePath(getApplicationContext(), avatarUri);
+                        ImageUtils.loadCircleImage(mIvUserAvatar, mFilePath);
+                        new Firebase(FirebaseConstants.FB_REF_MAIN).child(FirebaseConstants.FB_REF_USERS)
+                                .child(Prefs.getUserId())
+                                .child(FirebaseConstants.FB_REF_PHOTO_URL).setValue(ImageUtils.getUrlAndStartUpload(mFilePath, this));
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                        //TODO toast exception
+                    }
+                    break;
+                case RC_CAMERA:
+                    avatarUri = ImageUtils.getPhotoUri(getApplicationContext(),
+                            (Bitmap) data.getExtras().get("data"));
+                    try {
+                        mFilePath = ImageUtils.getFilePath(getApplicationContext(), avatarUri);
+                        ImageUtils.loadCircleImage(mIvUserAvatar, mFilePath);
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                        //TODO toast exception
+                    }
+                    break;
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mIsNeedToUpdate) {
+            mIsNeedToUpdate = false;
+            fetchProfileFromNetwork();
+        }
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!mIsNeedToUpdate) {
+            mIsNeedToUpdate = true;
         }
     }
 
@@ -458,7 +549,7 @@ public class ProfileActivity extends BaseSignInActivity {
                             getFollowingsIds(user.getFollowings()));
                     startActivity(intent);
                 } else if (position == 2) {
-                    mRecyclerViewCompares.scrollToPosition(0);
+                    mNestedScrollView.scrollTo(0, mRecyclerViewProfile.getHeight());
                 }
             });
         } else {

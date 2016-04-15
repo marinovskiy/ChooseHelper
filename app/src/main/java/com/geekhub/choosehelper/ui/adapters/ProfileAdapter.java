@@ -1,5 +1,7 @@
 package com.geekhub.choosehelper.ui.adapters;
 
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,6 +69,11 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
         }
 
         private void bindItem(UserInfo userInfo) {
+            if (userInfo.getTitle().equals(mTvCount.getContext().getString(R.string.label_compares))) {
+                Drawable drawable = ContextCompat.getDrawable(mTvCount.getContext(), R.drawable.icon_forum);
+                drawable.setBounds(0, 0, 50, 50);
+                mTvCount.setCompoundDrawables(drawable, null, null, null);
+            }
             mTvCount.setText(String.valueOf(userInfo.getCount()));
             mTvTitle.setText(userInfo.getTitle());
         }

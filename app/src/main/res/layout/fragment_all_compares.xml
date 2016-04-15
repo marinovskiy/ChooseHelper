@@ -21,7 +21,6 @@
                     android:id="@+id/recycler_view_all_compares"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/colorBackgroundPrimary"
                     android:scrollbars="none" />
 
             </RelativeLayout>
