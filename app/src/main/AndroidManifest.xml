@@ -35,13 +35,6 @@
             android:name=".screens.activities.SignInActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".screens.activities.BaseSignInActivity"
@@ -65,6 +58,7 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".screens.activities.DetailsActivity"
+            android:parentActivityName=".screens.activities.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
@@ -117,7 +111,8 @@
         <service
             android:name=".utils.services.NotificationNewCompareService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+        <service android:name=".services.NotificationComparesService" />
     </application>
 
 </manifest>

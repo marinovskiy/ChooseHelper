@@ -19,14 +19,16 @@ import com.geekhub.choosehelper.ui.listeners.OnLikeListListener;
 import com.geekhub.choosehelper.utils.DateUtils;
 import com.geekhub.choosehelper.utils.ImageUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.realm.Realm;
 
 public class ComparesAdapter extends RecyclerView.Adapter<ComparesAdapter.ViewHolder> {
 
-    private List<Compare> mCompares;
+    private List<Compare> mCompares = new ArrayList<>();
 
     private OnItemClickListener mOnItemClickListenerAuthor;
     private OnItemClickListener mOnItemClickListener;
@@ -34,11 +36,11 @@ public class ComparesAdapter extends RecyclerView.Adapter<ComparesAdapter.ViewHo
     private OnLikeListListener mOnLikeListListener;
 
     public ComparesAdapter(List<Compare> compares) {
-        this.mCompares = compares;
+        mCompares = Realm.getDefaultInstance().copyFromRealm(compares);
     }
 
     public void updateList(List<Compare> compares) {
-        this.mCompares = compares;
+        mCompares = Realm.getDefaultInstance().copyFromRealm(compares);
     }
 
     @Override

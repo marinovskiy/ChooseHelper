@@ -29,12 +29,12 @@ public class ImageViewFragment extends BaseFragment {
     private int mLikes;
     private int mLikedVariant;
 
-    public static ImageViewFragment newInstance(String imageUrl, String likes, int likedVariant) {
+    public static ImageViewFragment newInstance(String imageUrl, String likes) {
         ImageViewFragment imageViewFragment = new ImageViewFragment();
         Bundle args = new Bundle();
         args.putString(IMAGE_VIEW_BUNDLE_KEY_IMAGE_URL, imageUrl);
         args.putInt(IMAGE_VIEW_BUNDLE_KEY_LIKES, Integer.parseInt(likes));
-        args.putInt(IMAGE_VIEW_BUNDLE_KEY_LIKED_VARIANT, likedVariant);
+        //args.putInt(IMAGE_VIEW_BUNDLE_KEY_LIKED_VARIANT, likedVariant);
         imageViewFragment.setArguments(args);
         return imageViewFragment;
     }
@@ -45,7 +45,7 @@ public class ImageViewFragment extends BaseFragment {
         if (getArguments() != null) {
             mImageUrl = getArguments().getString(IMAGE_VIEW_BUNDLE_KEY_IMAGE_URL);
             mLikes = getArguments().getInt(IMAGE_VIEW_BUNDLE_KEY_LIKES);
-            mLikedVariant = getArguments().getInt(IMAGE_VIEW_BUNDLE_KEY_LIKED_VARIANT);
+            //mLikedVariant = getArguments().getInt(IMAGE_VIEW_BUNDLE_KEY_LIKED_VARIANT);
         }
     }
 

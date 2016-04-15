@@ -86,4 +86,18 @@ public class FirebaseUsersManager {
         });
     }
 
+    public static void changePassword(Context context, String email, String oldPassword, String newPassword) {
+        Firebase ref = new Firebase(FirebaseConstants.FB_REF_MAIN);
+        ref.changePassword(email, oldPassword, newPassword, new Firebase.ResultHandler() {
+            @Override
+            public void onSuccess() {
+                Utils.showMessage(context, context.getString(R.string.dialog_change_pass));
+            }
+            @Override
+            public void onError(FirebaseError firebaseError) {
+                Utils.showMessage(context, context.getString(R.string.toast_wrong_password));
+            }
+        });
+    }
+
 }

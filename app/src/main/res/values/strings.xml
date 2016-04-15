@@ -8,7 +8,7 @@
     <!--actions-->
     <string name="action_settings">Settings</string>
     <string name="action_search">Search</string>
-    <string name="action_edit_profile">Edit profile</string>
+    <string name="action_change_password">Change password</string>
     <string name="action_forward">Forward</string>
     <string name="action_done">Done</string>
 
@@ -35,6 +35,7 @@
     <string name="toast_different_passwords">Passwords are different</string>
     <string name="toast_error_message">Error</string>
     <string name="toast_wrong_email">Wrong email</string>
+    <string name="toast_wrong_password">Wrong password</string>
 
     <!--hints-->
     <string name="hint_email">Email</string>
@@ -49,6 +50,7 @@
     <string name="hint_question">Question</string>
     <string name="hint_variants">Variants</string>
     <string name="hint_description">Description</string>
+    <string name="hint_old_password">Old password</string>
 
     <!--progress dialogs-->
     <string name="pd_msg_wait_please">Wait please…</string>
@@ -89,13 +91,14 @@
 
     <!--settings keys-->
     <string name="settings_numbers_of_compares">settings_numbers_of_compares</string>
-    <!--<string name="settings_language">settings_language</string>-->
+    <string name="settings_language">settings_language</string>
     <string name="settings_categories">settings_categories</string>
     <string name="settings_notifications_liked">settings_notifications_liked</string>
     <string name="settings_notifications_commented">settings_notifications_commented</string>
     <string name="settings_notifications_f_new_compare">settings_notifications_fnc</string>
 
     <!--dialogs-->
+    <string name="dialog_change_pass">Password has been changed</string>
     <string name="dialog_btn_send_email">Reset</string>
     <string name="dialog_btn_cancel">Cancel</string>
     <string name="dialog_reset_sent">Sent…</string>
@@ -109,6 +112,8 @@
     <!--compare statuses-->
     <string name="status_open">Open</string>
     <string name="status_closed">Closed</string>
+    <string name="off">Off</string>
+    <string name="on">On</string>
 
     <!--Arrays-->
     <string-array name="photo_variants">
@@ -145,11 +150,11 @@
         <item>50</item>
     </string-array>
 
-    <!--<string-array name="languages">-->
-        <!--<item>English</item>-->
-        <!--<item>Українська</item>-->
-        <!--<item>Русский</item>-->
-    <!--</string-array>-->
+    <string-array name="languages">
+        <item>English</item>
+        <item>Українська</item>
+        <item>Русский</item>
+    </string-array>
 
     <string-array name="notifications">
         <item>On</item>

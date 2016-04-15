@@ -9,8 +9,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -29,7 +27,6 @@ import com.geekhub.choosehelper.models.network.NetworkComment;
 import com.geekhub.choosehelper.models.network.NetworkCompare;
 import com.geekhub.choosehelper.models.network.NetworkLike;
 import com.geekhub.choosehelper.models.network.NetworkUser;
-import com.geekhub.choosehelper.screens.fragments.AllComparesFragment;
 import com.geekhub.choosehelper.ui.adapters.DetailsAdapter;
 import com.geekhub.choosehelper.ui.dividers.CommentsDivider;
 import com.geekhub.choosehelper.utils.ModelConverter;
@@ -330,12 +327,11 @@ public class DetailsActivity extends BaseSignInActivity {
     private void updateUi(Compare compare) {
         setProgressVisibility(false);
 
-        RealmResults<Comment> comments = compare.getComments().where().findAll();
-        comments.sort(DbFields.DB_COMPARES_DATE, Sort.ASCENDING);
+        if (mRecyclerView != null) {
+            RealmResults<Comment> comments = compare.getComments().where().findAll();
+            comments.sort(DbFields.DB_COMPARES_DATE, Sort.ASCENDING);
 
-        DetailsAdapter adapter;
-        if (mRecyclerView != null && mRecyclerView.getAdapter() == null) {
-            adapter = new DetailsAdapter(compare);
+            DetailsAdapter adapter = new DetailsAdapter(compare);
             mRecyclerView.setAdapter(adapter);
 
             // click listener for compare's author
@@ -426,10 +422,6 @@ public class DetailsActivity extends BaseSignInActivity {
                 intent.putExtra(ImageViewActivity.INTENT_KEY_POSITION, variantNumber);
                 startActivity(intent);
             });
-        } else if (mRecyclerView != null) {
-            adapter = (DetailsAdapter) mRecyclerView.getAdapter();
-            adapter.updateCompare(compare);
-            adapter.notifyDataSetChanged();
             if (mIsNeedScroll) {
                 mIsNeedScroll = false;
                 mRecyclerView.scrollToPosition(mRecyclerView.getAdapter().getItemCount());

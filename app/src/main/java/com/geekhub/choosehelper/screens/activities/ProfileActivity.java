@@ -16,6 +16,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -44,6 +45,7 @@ import com.geekhub.choosehelper.screens.fragments.SearchComparesFragment;
 import com.geekhub.choosehelper.screens.fragments.SearchUserComparesFragment;
 import com.geekhub.choosehelper.ui.adapters.ComparesAdapter;
 import com.geekhub.choosehelper.ui.adapters.ProfileAdapter;
+import com.geekhub.choosehelper.ui.dialogs.DialogChangePassword;
 import com.geekhub.choosehelper.ui.dividers.ProfileDivider;
 import com.geekhub.choosehelper.utils.ImageUtils;
 import com.geekhub.choosehelper.utils.ModelConverter;
@@ -119,6 +121,8 @@ public class ProfileActivity extends BaseSignInActivity {
     private boolean mIsNeedToUpdate = false;
 
     private String mFilePath;
+
+    private MenuItem mMenuItemChangePass;
 
     // other
     private List<UserInfo> mUserInfoList = new ArrayList<>();
@@ -225,23 +229,25 @@ public class ProfileActivity extends BaseSignInActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.profile_iv_avatar:
-                Utils.showPhotoPickerDialog(ProfileActivity.this, (dialog, which) -> {
-                    switch (which) {
-                        case 0:
-                            Intent galleryIntent = new Intent();
-                            galleryIntent.setType("image/*");
-                            galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-                            startActivityForResult(Intent.createChooser(galleryIntent,
-                                    getString(R.string.dialog_photo_avatar)), RC_GALLERY);
-                            break;
-                        case 1:
-                            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-                                startActivityForResult(cameraIntent, RC_CAMERA);
-                            }
-                            break;
-                    }
-                });
+                if (Prefs.getLoggedType() == Prefs.FIREBASE_LOGIN && mUserId.equals(Prefs.getUserId())) {
+                    Utils.showPhotoPickerDialog(ProfileActivity.this, (dialog, which) -> {
+                        switch (which) {
+                            case 0:
+                                Intent galleryIntent = new Intent();
+                                galleryIntent.setType("image/*");
+                                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+                                startActivityForResult(Intent.createChooser(galleryIntent,
+                                        getString(R.string.dialog_photo_avatar)), RC_GALLERY);
+                                break;
+                            case 1:
+                                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+                                    startActivityForResult(cameraIntent, RC_CAMERA);
+                                }
+                                break;
+                        }
+                    });
+                }
                 break;
             case R.id.profile_btn_follow:
                 if (Utils.hasInternet(this)) {
@@ -318,8 +324,10 @@ public class ProfileActivity extends BaseSignInActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        if (mUserId.equals(Prefs.getUserId())) {
+        if (mUserId.equals(Prefs.getUserId()) && (Prefs.getLoggedType() == Prefs.FIREBASE_LOGIN)) {
             inflater.inflate(R.menu.menu_profile_owner, menu);
+            mMenuItemChangePass = menu.findItem(R.id.action_change_pass);
+            mMenuItemChangePass.setVisible(true);
         } else {
             inflater.inflate(R.menu.menu_profile, menu);
         }
@@ -344,6 +352,9 @@ public class ProfileActivity extends BaseSignInActivity {
                         mIvUserAvatar.setVisibility(View.VISIBLE);
                         if (mIsNeedToExpand) {
                             mAppBarLayout.setExpanded(true);
+                        }
+                        if (mMenuItemChangePass != null) {
+                            mMenuItemChangePass.setVisible(true);
                         }
                         mSwipeRefreshLayout.setVisibility(View.VISIBLE);
                         return true;
@@ -372,8 +383,15 @@ public class ProfileActivity extends BaseSignInActivity {
             case android.R.id.home:
                 onBackPressed();
                 return true;
+            case R.id.action_change_pass:
+                DialogChangePassword dialog = DialogChangePassword.newInstance(mUser.getEmail());
+                dialog.show(getSupportFragmentManager(), DialogChangePassword.class.getSimpleName());
+                return true;
             case R.id.action_search:
                 if (Utils.hasInternet(getApplicationContext())) {
+                    if (mMenuItemChangePass != null) {
+                        mMenuItemChangePass.setVisible(false);
+                    }
                     mIvUserAvatar.setVisibility(View.GONE);
                     mAppBarLayout.setExpanded(false);
                     if ((mAppBarLayout.getHeight() - mAppBarLayout.getBottom()) == 0) {
@@ -533,30 +551,30 @@ public class ProfileActivity extends BaseSignInActivity {
         if (mRecyclerViewProfile.getAdapter() == null) {
             adapter = new ProfileAdapter(mUserInfoList);
             mRecyclerViewProfile.setAdapter(adapter);
-            adapter.setOnItemClickListener((view, position) -> {
-                Intent intent = new Intent(this, FollowersActivity.class);
-                intent.putExtra(INTENT_KEY_USER_ID, mUserId);
-                if (position == 0) { // followers
-                    intent.putExtra(FollowersActivity.INTENT_KEY_FOLLOWERS_TITLE,
-                            getString(R.string.label_followers));
-                    intent.putStringArrayListExtra(FollowersActivity.INTENT_KEY_FOLLOWERS_LIST,
-                            getFollowersIds(user.getFollowers()));
-                    startActivity(intent);
-                } else if (position == 1) { // followings
-                    intent.putExtra(FollowersActivity.INTENT_KEY_FOLLOWERS_TITLE,
-                            getString(R.string.label_followings));
-                    intent.putStringArrayListExtra(FollowersActivity.INTENT_KEY_FOLLOWERS_LIST,
-                            getFollowingsIds(user.getFollowings()));
-                    startActivity(intent);
-                } else if (position == 2) {
-                    mNestedScrollView.scrollTo(0, mRecyclerViewProfile.getHeight());
-                }
-            });
         } else {
             adapter = (ProfileAdapter) mRecyclerViewProfile.getAdapter();
             adapter.updateList(mUserInfoList);
             adapter.notifyDataSetChanged();
         }
+        adapter.setOnItemClickListener((view, position) -> {
+            Intent intent = new Intent(this, FollowersActivity.class);
+            intent.putExtra(INTENT_KEY_USER_ID, mUserId);
+            if (position == 0) { // followers
+                intent.putExtra(FollowersActivity.INTENT_KEY_FOLLOWERS_TITLE,
+                        getString(R.string.label_followers));
+                intent.putStringArrayListExtra(FollowersActivity.INTENT_KEY_FOLLOWERS_LIST,
+                        getFollowersIds(user.getFollowers()));
+                startActivity(intent);
+            } else if (position == 1) { // followings
+                intent.putExtra(FollowersActivity.INTENT_KEY_FOLLOWERS_TITLE,
+                        getString(R.string.label_followings));
+                intent.putStringArrayListExtra(FollowersActivity.INTENT_KEY_FOLLOWERS_LIST,
+                        getFollowingsIds(user.getFollowings()));
+                startActivity(intent);
+            } else if (position == 2) {
+                mNestedScrollView.scrollTo(0, mRecyclerViewProfile.getHeight());
+            }
+        });
 
         updateComparesList(user.getCompares().where().findAllSorted(DbFields.DB_COMPARES_DATE,
                 Sort.DESCENDING));

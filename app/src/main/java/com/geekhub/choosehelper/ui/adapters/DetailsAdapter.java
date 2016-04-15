@@ -22,10 +22,17 @@ import com.geekhub.choosehelper.ui.listeners.OnSwitchChangeListener;
 import com.geekhub.choosehelper.utils.DateUtils;
 import com.geekhub.choosehelper.utils.ImageUtils;
 import com.geekhub.choosehelper.utils.Prefs;
+import com.geekhub.choosehelper.utils.db.DbFields;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class DetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

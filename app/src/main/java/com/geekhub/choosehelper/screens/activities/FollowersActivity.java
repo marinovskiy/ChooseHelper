@@ -170,18 +170,18 @@ public class FollowersActivity extends BaseSignInActivity {
         if (mRecyclerView.getAdapter() == null) {
             adapter = new UsersAdapter(users);
             mRecyclerView.setAdapter(adapter);
-            adapter.setOnItemClickListener((view, position) -> {
-                Intent intent = new Intent(this, ProfileActivity.class);
-                intent.putExtra(ProfileActivity.INTENT_KEY_USER_ID, users.get(position).getId());
-                intent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME,
-                        users.get(position).getFullName());
-                startActivity(intent);
-            });
         } else {
             adapter = (UsersAdapter) mRecyclerView.getAdapter();
             adapter.updateList(users);
             adapter.notifyDataSetChanged();
         }
+        adapter.setOnItemClickListener((view, position) -> {
+            Intent intent = new Intent(this, ProfileActivity.class);
+            intent.putExtra(ProfileActivity.INTENT_KEY_USER_ID, users.get(position).getId());
+            intent.putExtra(ProfileActivity.INTENT_KEY_USER_NAME,
+                    users.get(position).getFullName());
+            startActivity(intent);
+        });
     }
 
     // methods for show progress

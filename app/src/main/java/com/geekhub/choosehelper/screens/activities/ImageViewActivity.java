@@ -78,8 +78,8 @@ public class ImageViewActivity extends BaseSignInActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         ImagesViewPagerAdapter adapter = new ImagesViewPagerAdapter(getSupportFragmentManager());
-        //adapter.addFragment(ImageViewFragment.newInstance(mImageUrls.get(0), mLikes.get(0)));
-        //adapter.addFragment(ImageViewFragment.newInstance(mImageUrls.get(1), mLikes.get(1)));
+        adapter.addFragment(ImageViewFragment.newInstance(mImageUrls.get(0), mLikes.get(0)));
+        adapter.addFragment(ImageViewFragment.newInstance(mImageUrls.get(1), mLikes.get(1)));
         viewPager.setAdapter(adapter);
     }
 }

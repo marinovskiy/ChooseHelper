@@ -29,8 +29,10 @@ public class SettingsActivity extends AppCompatActivity {
     private void setupToolbar() {
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
-            mToolbar.setNavigationIcon(ContextCompat.getDrawable(getApplicationContext(),
-                    R.drawable.icon_back));
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            /*mToolbar.setNavigationIcon(ContextCompat.getDrawable(getApplicationContext(),
+                    R.drawable.icon_back));*/
             mToolbar.setNavigationOnClickListener(v -> onBackPressed());
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

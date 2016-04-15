@@ -2,9 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_edit_profile"
-        android:icon="@drawable/icon_edit"
-        android:title="@string/action_edit_profile"
+        android:id="@+id/action_change_pass"
+        android:icon="@drawable/icon_change_pass"
+        android:title="@string/action_change_password"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_search"

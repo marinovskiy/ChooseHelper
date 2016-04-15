@@ -8,7 +8,7 @@
     <!--actions-->
     <string name="action_settings">Налаштування</string>
     <string name="action_search">Пошук</string>
-    <string name="action_edit_profile">Редагувати</string>
+    <string name="action_change_password">Змінити пароль</string>
     <string name="action_forward">Далі</string>
     <string name="action_done">Готово</string>
 
@@ -35,6 +35,7 @@
     <string name="toast_different_passwords">Паролі відрізняються</string>
     <string name="toast_error_message">Помилка</string>
     <string name="toast_wrong_email">Email не зареєстрований</string>
+    <string name="toast_wrong_password">Невірний пароль</string>
 
     <!--hints-->
     <string name="hint_email">Email</string>
@@ -49,6 +50,7 @@
     <string name="hint_question">Запитання</string>
     <string name="hint_variants">Варіанти</string>
     <string name="hint_description">Опис</string>
+    <string name="hint_old_password">Старий пароль</string>
 
     <!--progress dialogs-->
     <string name="pd_msg_wait_please">Зачекайте будь ласка</string>
@@ -72,7 +74,7 @@
     <string name="label_reset_password">Скинути пароль</string>
 
     <!--button labels-->
-    <string name="btn_label_login">Авторизація</string>
+    <string name="btn_label_login">Увійти</string>
     <string name="btn_label_follow">Підписатися</string>
     <string name="btn_label_un_follow">Відписатися</string>
     <string name="btn_label_forgot_password">Забули пароль?</string>
@@ -85,17 +87,18 @@
 
     <!--settings labels-->
     <string name="settings_no_categories">Жодної категорії не обрано</string>
-    <string name="settings_number_of_compares">ПОказати %s порівнянь на головній</string>
-
-    <!--settings keys-->
-    <string name="settings_numbers_of_compares">settings_numbers_of_compares</string>
-    <!--<string name="settings_language">settings_language</string>-->
-    <string name="settings_categories">settings_categories</string>
+    <string name="settings_number_of_compares">Показати %s порівнянь на головній</string>
     <string name="settings_notifications_liked">settings_notifications_liked</string>
     <string name="settings_notifications_commented">settings_notifications_commented</string>
     <string name="settings_notifications_f_new_compare">settings_notifications_fnc</string>
 
+    <!--settings keys-->
+    <string name="settings_numbers_of_compares">settings_numbers_of_compares</string>
+    <string name="settings_language">settings_language</string>
+    <string name="settings_categories">settings_categories</string>
+
     <!--dialogs-->
+    <string name="dialog_change_pass">Пароль змінений</string>
     <string name="dialog_btn_send_email">Скинути</string>
     <string name="dialog_btn_cancel">Відмінити</string>
     <string name="dialog_reset_sent">Відправити…</string>
@@ -109,6 +112,8 @@
     <!--compare statuses-->
     <string name="status_open">Відкрите</string>
     <string name="status_closed">Завершене</string>
+    <string name="off">Вимкнено</string>
+    <string name="on">Увімкнено</string>
 
     <!--Arrays-->
     <string-array name="photo_variants">
@@ -145,11 +150,11 @@
         <item>50</item>
     </string-array>
 
-    <!--<string-array name="languages">-->
-        <!--<item>English</item>-->
-        <!--<item>Українська</item>-->
-        <!--<item>Русский</item>-->
-    <!--</string-array>-->
+    <string-array name="languages">
+        <item>English</item>
+        <item>Українська</item>
+        <item>Русский</item>
+    </string-array>
 
     <string-array name="notifications">
         <item>On</item>

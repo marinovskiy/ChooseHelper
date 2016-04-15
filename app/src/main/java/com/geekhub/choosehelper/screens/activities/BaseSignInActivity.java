@@ -305,7 +305,6 @@ public class BaseSignInActivity extends AppCompatActivity
                 FirebaseUsersManager.saveUserToFirebase(networkUser);
                 startMainActivity();
             } else if (loggedType == Prefs.FIREBASE_LOGIN) {
-                //FirebaseUsersManager.saveUserFromFirebase(Prefs.getUserId());
                 Firebase firebase = new Firebase(FirebaseConstants.FB_REF_MAIN)
                         .child(FirebaseConstants.FB_REF_USERS)
                         .child(Prefs.getUserId());

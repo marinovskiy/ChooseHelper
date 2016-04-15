@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -14,6 +15,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -32,6 +34,7 @@ import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.screens.fragments.AllComparesFragment;
 import com.geekhub.choosehelper.screens.fragments.FollowingsComparesFragment;
 import com.geekhub.choosehelper.screens.fragments.SearchComparesFragment;
+import com.geekhub.choosehelper.services.NotificationComparesService;
 import com.geekhub.choosehelper.ui.adapters.ComparesViewPagerAdapter;
 import com.geekhub.choosehelper.utils.ImageUtils;
 import com.geekhub.choosehelper.utils.ModelConverter;
@@ -202,7 +205,7 @@ public class MainActivity extends BaseSignInActivity
                         mSearchContainer.setVisibility(View.GONE);
                         mTabLayout.setVisibility(View.VISIBLE);
                         mViewPager.setVisibility(View.VISIBLE);
-                        mFab.setVisibility(View.VISIBLE);
+                        showFab();
                         return true;
                     }
                 });
@@ -228,6 +231,7 @@ public class MainActivity extends BaseSignInActivity
         switch (item.getItemId()) {
             case R.id.action_search:
                 if (Utils.hasInternet(getApplicationContext())) {
+                    hideFab();
                     mTabLayout.setVisibility(View.GONE);
                     mViewPager.setVisibility(View.GONE);
                     mSearchContainer.setVisibility(View.VISIBLE);
@@ -329,4 +333,22 @@ public class MainActivity extends BaseSignInActivity
             }
         });
     }
+
+    private void hideFab() {
+        CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) mFab.getLayoutParams();
+        p.setAnchorId(View.NO_ID);
+        mFab.setLayoutParams(p);
+        mFab.setVisibility(View.GONE);
+    }
+
+    private void showFab() {
+        CoordinatorLayout.LayoutParams p = new CoordinatorLayout.LayoutParams(CoordinatorLayout.LayoutParams.WRAP_CONTENT,
+                CoordinatorLayout.LayoutParams.WRAP_CONTENT);
+        p.anchorGravity = Gravity.BOTTOM | Gravity.END;
+        p.setAnchorId(R.id.view_pager_main);
+        //p.setMargins(...);
+        mFab.setLayoutParams(p);
+        mFab.setVisibility(View.VISIBLE);
+    }
+
 }

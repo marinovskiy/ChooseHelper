@@ -9,6 +9,8 @@ import android.view.View;
 
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.screens.activities.MainActivity;
+import com.geekhub.choosehelper.services.NotificationComparesService;
+import com.geekhub.choosehelper.utils.db.DbComparesManager;
 import com.geekhub.choosehelper.utils.services.NotificationCommentedService;
 import com.geekhub.choosehelper.utils.services.NotificationLikedService;
 import com.geekhub.choosehelper.utils.services.NotificationNewCompareService;
@@ -29,9 +31,6 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 
     @BindString(R.string.settings_numbers_of_compares)
     String mSettingsNumbersOfCompares;
-
-//    @BindString(R.string.settings_language)
-//    String mSettingsLanguage;
 
     @BindString(R.string.settings_notifications_liked)
     String mSettingsNotificationLiked;
@@ -89,63 +88,55 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Preference preference = findPreference(key);
-        if (key.equals(mSettingsCategories)) {
+        if (key.equals(mSettingsCategories)) { // categories
             MainActivity.sIsNeedToAutoUpdate = true;
+            DbComparesManager.clearCompares();
             Set<String> categoriesSet = sharedPreferences.getStringSet(key, new HashSet<>());
-            String categoriesString = "";
+            String[] categoriesArray = getActivity().getResources().getStringArray(R.array.categories);
+            String catSummary = "";
             if (categoriesSet.size() != 0) {
                 int i = 0;
                 for (String s : categoriesSet) {
                     if (i == (categoriesSet.size() - 1)) {
-                        categoriesString = categoriesString + s;
+                        catSummary = catSummary + categoriesArray[Integer.parseInt(s)];
                     } else {
-                        categoriesString = categoriesString + s + ", ";
+                        catSummary = catSummary + categoriesArray[Integer.parseInt(s)] + ", ";
                     }
                     i++;
                 }
             } else {
-                categoriesString = getString(R.string.settings_no_categories);
+                catSummary = getString(R.string.settings_no_categories);
             }
-            preference.setSummary(categoriesString);
-
-            // Number of compares
-        } else if (key.equals(mSettingsNumbersOfCompares)) {
+            preference.setSummary(catSummary);
+        } else if (key.equals(mSettingsNumbersOfCompares)) { // number of compares
             MainActivity.sIsNeedToAutoUpdate = true;
+            DbComparesManager.clearCompares();
             preference.setSummary(String.format(Locale.getDefault(),
                     getString(R.string.settings_number_of_compares),
                     sharedPreferences.getString(key, "")));
-
-            // Liked
-        } else if (key.equals(mSettingsNotificationLiked)) {
-            MainActivity.sIsNeedToAutoUpdate = true;
+        } else if (key.equals(mSettingsNotificationLiked)) { // liked user compare
             String title = sharedPreferences.getString(key, "");
-            preference.setSummary((Integer.parseInt(title) == 0) ? "Off" : "On");
+            preference.setSummary((Integer.parseInt(title) == 0) ? getString(R.string.off) : getString(R.string.on));
             if (Integer.parseInt(title) == 1) {
                 getActivity().startService(new Intent(getActivity(), NotificationLikedService.class));
             } else {
                 getActivity().stopService(new Intent(getActivity(), NotificationLikedService.class));
             }
-
-            // Commented
-        } else if (key.equals(mSettingsNotificationCommented)) {
-            MainActivity.sIsNeedToAutoUpdate = true;
+        } else if (key.equals(mSettingsNotificationCommented)) { // new comment in user compare
             String title = sharedPreferences.getString(key, "");
-            preference.setSummary((Integer.parseInt(title) == 0) ? "Off" : "On");
+            preference.setSummary((Integer.parseInt(title) == 0) ? getString(R.string.off) : getString(R.string.on));
             if (Integer.parseInt(title) == 1) {
                 getActivity().startService(new Intent(getActivity(), NotificationCommentedService.class));
             } else {
                 getActivity().stopService(new Intent(getActivity(), NotificationCommentedService.class));
             }
-
-            // New compare
-        } else if (key.equals(mSettingsNotificationNewCompare)) {
-            MainActivity.sIsNeedToAutoUpdate = true;
+        } else if (key.equals(mSettingsNotificationNewCompare)) { // new following compare
             String title = sharedPreferences.getString(key, "");
-            preference.setSummary((Integer.parseInt(title) == 0) ? "Off" : "On");
+            preference.setSummary((Integer.parseInt(title) == 0) ? getString(R.string.off) : getString(R.string.on));
             if (Integer.parseInt(title) == 1) {
-                getActivity().startService(new Intent(getActivity(), NotificationNewCompareService.class));
+                getActivity().startService(new Intent(getActivity(), NotificationComparesService.class));
             } else {
-                getActivity().stopService(new Intent(getActivity(), NotificationNewCompareService.class));
+                //getActivity().stopService(new Intent(getActivity(), NotificationComparesService.class));
             }
         }
     }
