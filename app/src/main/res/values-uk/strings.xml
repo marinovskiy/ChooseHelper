@@ -1,0 +1,150 @@
+<resources>
+    <!--app name-->
+    <string name="app_name">Choose Helper</string>
+
+    <!--facebook-->
+    <string name="facebook_app_id">1109390425777638</string>
+
+    <!--actions-->
+    <string name="action_settings">Налаштування</string>
+    <string name="action_search">Пошук</string>
+    <string name="action_edit_profile">Редагувати</string>
+    <string name="action_forward">Далі</string>
+    <string name="action_done">Готово</string>
+
+    <!--navigation drawer-->
+    <string name="navigation_drawer_open">Відкрити навігацію</string>
+    <string name="navigation_drawer_close">Закрити навігацію</string>
+    <string name="action_nav_profile">Профіль</string>
+    <string name="action_nav_settings">Налаштування</string>
+    <string name="action_nav_help">Довідка</string>
+    <string name="action_nav_logout">Вийти</string>
+
+    <!-- toasts -->
+    <string name="toast_empty_fields">Ви не заповнили всі поля</string>
+    <string name="toast_error_try_later">Помилка! Спробуйте пізніше</string>
+    <string name="toast_gp_sign_in_error">Помилка авторизації: </string>
+    <string name="toast_no_internet">Відсутній Інтернет зв\'язок</string>
+    <string name="toast_cannot_search">Неможливий пошук без Інтернету</string>
+    <string name="toast_click_again_exit">Натисніть ще раз щоб вийти</string>
+    <string name="toast_empty_comment">Коментар пустий</string>
+    <string name="toast_cannot_like_own">Не можна лайкнути. Ви є власником</string>
+    <string name="toast_cannot_like_closed">Порівняння має статус "завершено". Ви не можете лайкнути</string>
+    <string name="toast_cannot_comment_closed">Порівняння має статус "завершено". Ви не можете додати коментар</string>
+    <string name="toast_didnt_enter_email">Ви не ввели Email</string>
+    <string name="toast_different_passwords">Паролі відрізняються</string>
+    <string name="toast_error_message">Помилка</string>
+
+    <!--hints-->
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Пароль</string>
+    <string name="hint_enter_comment">Введіть коментар</string>
+    <string name="hint_new_password">Введіть новий пароль</string>
+    <string name="hint_repeat_new_password">Повторіть новий пароль</string>
+    <string name="search_hint_compares">Пошук...</string>
+    <string name="search_hint_user_compares">Пошук порівнянь корисутвача</string>
+    <string name="hint_full_name">Повне ім\'я</string>
+    <string name="hint_repeat_password">Повторіть пароль</string>
+    <string name="hint_question">Запитання</string>
+    <string name="hint_variants">Варіанти</string>
+    <string name="hint_description">Опис</string>
+
+    <!--progress dialogs-->
+    <string name="pd_msg_wait_please">Зачекайте будь ласка</string>
+    <string name="pd_msg_authenticating">Аутентифікація...</string>
+
+    <!--labels-->
+    <string name="label_followings">Підписані на</string>
+    <string name="label_followers">Підписники</string>
+    <string name="label_compares">Порівняння</string>
+    <string name="label_new_compare">Нове порівняння</string>
+    <string name="label_preview">Огляд</string>
+    <string name="label_details">Деталі</string>
+    <string name="label_edit_profile">Редагувати профіль</string>
+    <string name="label_change_password">Змінити пароль</string>
+    <string name="label_help">Довідка</string>
+    <string name="label_settings">Налаштування</string>
+    <string name="label_log_in_using">Авторизація через соц. мережі</string>
+    <string name="label_create_an_account">Створити аккаунт</string>
+    <string name="label_photo">Фото</string>
+    <string name="label_already_have_an_account">ВЖе маєте аккаунт?</string>
+    <string name="label_reset_password">Скинути пароль</string>
+
+    <!--button labels-->
+    <string name="btn_label_login">Авторизація</string>
+    <string name="btn_label_follow">Підписатися</string>
+    <string name="btn_label_un_follow">Відписатися</string>
+    <string name="btn_label_forgot_password">Забули пароль?</string>
+    <string name="btn_label_add">Додати</string>
+    <string name="btn_label_sign_up">Зареєструватися</string>
+
+    <!--others labels-->
+    <string name="tab_label_all">Всі</string>
+    <string name="tab_label_followings">Підписників</string>
+
+    <!--settings labels-->
+    <string name="settings_no_categories">Жодної категорії не обрано</string>
+    <string name="settings_number_of_compares">ПОказати %s порівнянь на головній</string>
+
+    <!--settings keys-->
+    <string name="settings_numbers_of_compares">settings_numbers_of_compares</string>
+    <string name="settings_language">settings_language</string>
+    <string name="settings_categories">settings_categories</string>
+
+    <!--dialogs-->
+    <string name="dialog_btn_send_email">Скинути</string>
+    <string name="dialog_btn_cancel">Відмінити</string>
+    <string name="dialog_reset_sent">Відправити...</string>
+    <string name="dialog_photo_title">Обрати картинку для варіанту</string>
+    <string name="dialog_photo_avatar">Обрати аватар</string>
+
+    <!--image descriptions-->
+    <string name="img_description_avatar">Аватар</string>
+    <string name="img_description_icon_more">Більше</string>
+
+    <!--compare statuses-->
+    <string name="status_open">Відкрите</string>
+    <string name="status_closed">Завершене</string>
+
+    <!--Arrays-->
+    <string-array name="photo_variants">
+        <item>З галереї</item>
+        <item>Скористатися камерою</item>
+    </string-array>
+
+    <string-array name="categories">
+        <item>Розваги</item>
+        <item>Транспорт</item>
+        <item>Одяг</item>
+        <item>Їжа</item>
+        <item>Місця</item>
+        <item>Відео</item>
+        <item>Інше</item>
+    </string-array>
+
+    <string-array name="categories_codes">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
+
+    <string-array name="numbers_of_compares">
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>25</item>
+        <item>50</item>
+    </string-array>
+
+    <string-array name="languages">
+        <item>English</item>
+        <item>Українська</item>
+        <item>Русский</item>
+    </string-array>
+
+</resources>

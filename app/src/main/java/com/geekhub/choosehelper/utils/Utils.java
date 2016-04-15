@@ -2,19 +2,14 @@ package com.geekhub.choosehelper.utils;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.PopupMenu;
-import android.view.View;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
 import com.geekhub.choosehelper.R;
-import com.geekhub.choosehelper.screens.activities.DetailsActivity;
-import com.geekhub.choosehelper.utils.firebase.FirebaseComparesManager;
 
 public class Utils {
 

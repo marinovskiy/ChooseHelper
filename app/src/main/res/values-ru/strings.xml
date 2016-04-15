@@ -1,0 +1,150 @@
+<resources>
+    <!--app name-->
+    <string name="app_name">Choose Helper</string>
+
+    <!--facebook-->
+    <string name="facebook_app_id">1109390425777638</string>
+
+    <!--actions-->
+    <string name="action_settings">Настройки</string>
+    <string name="action_search">Поиск</string>
+    <string name="action_edit_profile">Редактировать профиль</string>
+    <string name="action_forward">Вперед</string>
+    <string name="action_done">Готово</string>
+
+    <!--navigation drawer-->
+    <string name="navigation_drawer_open">Открыть панель навигации</string>
+    <string name="navigation_drawer_close">Закрыть панель навигации</string>
+    <string name="action_nav_profile">Профиль</string>
+    <string name="action_nav_settings">Настройки</string>
+    <string name="action_nav_help">Справка</string>
+    <string name="action_nav_logout">Выйти</string>
+
+    <!-- toasts -->
+    <string name="toast_empty_fields">Вы не заполнили все поля</string>
+    <string name="toast_error_try_later">Ошибка! Пожалуйста, попробуйте позднее</string>
+    <string name="toast_gp_sign_in_error">Ошибка входа:</string>
+    <string name="toast_no_internet">Нет соединения с Интернетом</string>
+    <string name="toast_cannot_search">Не удалось выполнить поиск без Интернета</string>
+    <string name="toast_click_again_exit">Нажмите еще раз для выхода</string>
+    <string name="toast_empty_comment">Вы не можете оставить пустой комментарий</string>
+    <string name="toast_cannot_like_own">Вы не можете сравнивать ето</string>
+    <string name="toast_cannot_like_closed">Это сравнение было закрыто. Вы не можете сравнить ето</string>
+    <string name="toast_cannot_comment_closed">Это сравнение было закрыто. Вы не можете комментировать закрытые сравнения</string>
+    <string name="toast_didnt_enter_email">Вы не ввели электронную почту</string>
+    <string name="toast_different_passwords">Пароли различны</string>
+    <string name="toast_error_message">Ошибка</string>
+
+    <!--hints-->
+    <string name="hint_email">Эл. адрес</string>
+    <string name="hint_password">Пароль</string>
+    <string name="hint_enter_comment">Введите свой комментарий</string>
+    <string name="hint_new_password">Введите новый пароль</string>
+    <string name="hint_repeat_new_password">Повторите новый пароль</string>
+    <string name="search_hint_compares">Поиск сравнений...</string>
+    <string name="search_hint_user_compares">Поиск сравнений пользователя...</string>
+    <string name="hint_full_name">Полное имя</string>
+    <string name="hint_repeat_password">Повторите пароль</string>
+    <string name="hint_question">Вопрос</string>
+    <string name="hint_variants">Варианты</string>
+    <string name="hint_description">Описание</string>
+
+    <!--progress dialogs-->
+    <string name="pd_msg_wait_please">Подождите, пожалуйста...</string>
+    <string name="pd_msg_authenticating">Аутентификация...</string>
+
+    <!--labels-->
+    <string name="label_followings">Подписаны на</string>
+    <string name="label_followers">Подписчики</string>
+    <string name="label_compares">Сравнение</string>
+    <string name="label_new_compare">Новое сравнение</string>
+    <string name="label_preview">Предварительный просмотр</string>
+    <string name="label_details">Детали</string>
+    <string name="label_edit_profile">Редактировать профиль</string>
+    <string name="label_change_password">Изменить пароль</string>
+    <string name="label_help">Справка</string>
+    <string name="label_settings">Настройки</string>
+    <string name="label_log_in_using">Войти с помощью</string>
+    <string name="label_create_an_account">Завести аккаунт</string>
+    <string name="label_photo">Фото</string>
+    <string name="label_already_have_an_account">Уже есть учетная запись?</string>
+    <string name="label_reset_password">Сброс пароля</string>
+
+    <!--button labels-->
+    <string name="btn_label_login">Авторизоваться</string>
+    <string name="btn_label_follow">Следить</string>
+    <string name="btn_label_un_follow">Отписаться</string>
+    <string name="btn_label_forgot_password">Забыли пароль?</string>
+    <string name="btn_label_add">Добавить</string>
+    <string name="btn_label_sign_up">Зарегистрироваться</string>
+
+    <!--others labels-->
+    <string name="tab_label_all">Все</string>
+    <string name="tab_label_followings">Подписчиков</string>
+
+    <!--settings labels-->
+    <string name="settings_no_categories">Категории не выбраны</string>
+    <string name="settings_number_of_compares">Выставки %s сравнений на главной</string>
+
+    <!--settings keys-->
+    <string name="settings_numbers_of_compares">settings_numbers_of_compares</string>
+    <string name="settings_language">settings_language</string>
+    <string name="settings_categories">settings_categories</string>
+
+    <!--dialogs-->
+    <string name="dialog_btn_send_email">Сбросить</string>
+    <string name="dialog_btn_cancel">Отменить</string>
+    <string name="dialog_reset_sent">Отравить...</string>
+    <string name="dialog_photo_title">Выберите изображение для варианта</string>
+    <string name="dialog_photo_avatar">Выберите изображение для аватара</string>
+
+    <!--image descriptions-->
+    <string name="img_description_avatar">Аватар</string>
+    <string name="img_description_icon_more">Больше</string>
+
+    <!--compare statuses-->
+    <string name="status_open">Открито</string>
+    <string name="status_closed">Закрито</string>
+
+    <!--Arrays-->
+    <string-array name="photo_variants">
+        <item>Выбрать из галереи</item>
+        <item>Сделать фото</item>
+    </string-array>
+
+    <string-array name="categories">
+        <item>Развлечения</item>
+        <item>Транспорт</item>
+        <item>Одежда</item>
+        <item>Еда</item>
+        <item>Места</item>
+        <item>Кино</item>
+        <item>Другое</item>
+    </string-array>
+
+    <string-array name="categories_codes">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
+
+    <string-array name="numbers_of_compares">
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>25</item>
+        <item>50</item>
+    </string-array>
+
+    <string-array name="languages">
+        <item>English</item>
+        <item>Українська</item>
+        <item>Русский</item>
+    </string-array>
+
+</resources>

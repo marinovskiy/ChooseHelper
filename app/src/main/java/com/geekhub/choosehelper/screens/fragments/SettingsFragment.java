@@ -4,10 +4,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v14.preference.PreferenceFragment;
 import android.support.v7.preference.Preference;
+import android.util.Log;
 import android.view.View;
 
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.screens.activities.MainActivity;
+import com.geekhub.choosehelper.utils.LanguageUtils;
 
 import java.util.HashSet;
 import java.util.Locale;
@@ -100,7 +102,12 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
                     getString(R.string.settings_number_of_compares),
                     sharedPreferences.getString(key, "")));
         } else if (key.equals(mSettingsLanguage)) {
-            preference.setSummary(sharedPreferences.getString(key, ""));
+            MainActivity.sIsNeedToAutoUpdate = true;
+            String title = sharedPreferences.getString(key, "");
+            preference.setSummary(title);
+            Log.d("TEST", "LG: " + title);
+            LanguageUtils.changeLocale(title, getActivity().getApplication().getBaseContext());
+
         }
     }
 }

@@ -59,8 +59,7 @@ public class HelpActivity extends BaseSignInActivity {
             Tip t = new Tip();
             t.setTitle("Tip");
             t.setDescription("Description of the tip.");
-            t.setImage(R.drawable.icon_camera_big);
-
+            t.setImage(R.drawable.icon_camera_big_normal);
             list.add(t);
         }
         return list;

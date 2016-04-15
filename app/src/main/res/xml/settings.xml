@@ -6,7 +6,7 @@
     <MultiSelectListPreference
         android:defaultValue="@array/categories"
         android:entries="@array/categories"
-        android:entryValues="@array/categories"
+        android:entryValues="@array/categories_codes"
         android:key="@string/settings_categories"
         android:summary="No categories selected"
         android:title="Categories in main tab" />

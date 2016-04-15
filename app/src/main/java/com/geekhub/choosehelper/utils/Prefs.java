@@ -66,6 +66,10 @@ public class Prefs {
         setStringSet(SETTINGS_CATEGORIES, stringSet);
     }
 
+    public static String getSettingsLanguage() {
+        return sPrefs.getString(SETTINGS_LANGUAGE, null);
+    }
+
     // standard methods
     private static String getString(String key) {
         return sPrefs.getString(key, null);
