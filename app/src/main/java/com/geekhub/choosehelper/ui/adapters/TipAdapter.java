@@ -22,20 +22,15 @@ public class TipAdapter extends RecyclerView.Adapter<TipAdapter.ViewHolder> {
     private List<Tip> mTips;
     private Context mContext;
 
-    private static boolean isReversLayout;
-
     public TipAdapter(List<Tip> tips, Context context) {
         this.mTips = tips;
         this.mContext = context;
-        isReversLayout = false;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        isReversLayout = !isReversLayout;
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(
-                ((!isReversLayout) ? R.layout.tip_item_revers_layout : R.layout.tip_item_layout),
-                parent, false));
+        return new ViewHolder(LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.tip_item_layout, parent, false));
     }
 
     @Override

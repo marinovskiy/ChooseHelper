@@ -3,9 +3,21 @@
     <!--text-->
     <dimen name="medium_text_size">16sp</dimen>
 
+    <!-- Shadow height -->
+    <dimen name="small">4dp</dimen>
+    <dimen name="normal">6dp</dimen>
+
     <!--images-->
     <dimen name="small_avatar_size">45dp</dimen>
+    <dimen name="small_image_sign_up">70dp</dimen>
     <dimen name="small_image_size">100dp</dimen>
+    <dimen name="up_small_image_size">110dp</dimen>
+    <dimen name="image_size">120dp</dimen>
+    <dimen name="image_add_comment">32dp</dimen>
+    <dimen name="normal_avatar_size">55dp</dimen>
+    <dimen name="avatar_drawer_height">150dp</dimen>
+    <dimen name="avatar_toolbar_height">180dp</dimen>
+    <dimen name="drawable_padding_small">6dp</dimen>
 
     <!--card view-->
     <dimen name="card_margin_horizontal">-3dp</dimen>
@@ -51,5 +63,33 @@
     <dimen name="profile_friend_photo_size">110dp</dimen>
     <dimen name="profile_tv_padding">2dp</dimen>
     <dimen name="profile_tv_margin_left">25dp</dimen>
+    <dimen name="profile_followers_margin">8dp</dimen>
+    <dimen name="profile_edit_image_height">75dp</dimen>
+
+    <!-- Other size -->
+    <dimen name="spinner_min_width">20dp</dimen>
+    <dimen name="padding_2">2dp</dimen>
+    <dimen name="padding_4">4dp</dimen>
+    <dimen name="padding_8">8dp</dimen>
+    <dimen name="padding_12">12dp</dimen>
+    <dimen name="margin_6">6dp</dimen>
+    <dimen name="margin_10">10dp</dimen>
+    <dimen name="margin_12">12dp</dimen>
+    <dimen name="margin_18">18dp</dimen>
+    <dimen name="margin_20">20dp</dimen>
+    <dimen name="margin_22">22dp</dimen>
+    <dimen name="margin_24">24dp</dimen>
+    <dimen name="margin_36">36dp</dimen>
+
+    <!--<dimen name="max_length_small">16</dimen>-->
+    <!--<dimen name="max_length_normal">24</dimen>-->
+    <!--<dimen name="max_length_pre_max">36</dimen>-->
+    <!--<dimen name="max_length_max">40</dimen>-->
+
+    <dimen name="sign_in_view_size">57dp</dimen>
+    <dimen name="expanded_title_margin_end">64dp</dimen>
+    <dimen name="expanded_title_margin_start">48dp</dimen>
+
+    <dimen name="help_picture_size">250dp</dimen>
 
 </resources>

@@ -28,6 +28,9 @@ public class HelpActivity extends BaseSignInActivity {
     @Bind(R.id.help_rv)
     RecyclerView mRvTips;
 
+    private final int[] images = {R.drawable.logo, R.drawable.img_compare, R.drawable.img_create_compare,
+            R.drawable.img_search, R.drawable.img_settings, R.drawable.logo};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,12 +58,15 @@ public class HelpActivity extends BaseSignInActivity {
 
     private List<Tip> initTip() {
         List<Tip> list = new ArrayList<>();
-        for (int i = 5; i > 0; i--) {
+        for (String title : getBaseContext().getResources().getStringArray(R.array.help_titles)) {
             Tip t = new Tip();
-            t.setTitle("Tip");
-            t.setDescription("Description of the tip.");
-            t.setImage(R.drawable.icon_camera_big_normal);
+            t.setTitle(title);
             list.add(t);
+        }
+        int i = 0;
+        for (String desc : getBaseContext().getResources().getStringArray(R.array.help_text)) {
+            list.get(i).setDescription(desc);
+            list.get(i).setImage(images[i++]);
         }
         return list;
     }

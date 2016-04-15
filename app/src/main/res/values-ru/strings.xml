@@ -146,19 +146,45 @@
     </string-array>
 
     <!--<string-array name="languages">-->
-        <!--<item>English</item>-->
-        <!--<item>Українська</item>-->
-        <!--<item>Русский</item>-->
+    <!--<item>English</item>-->
+    <!--<item>Українська</item>-->
+    <!--<item>Русский</item>-->
     <!--</string-array>-->
 
     <string-array name="notifications">
-        <item>On</item>
-        <item>Off</item>
+        <item>Вкл</item>
+        <item>Выкл</item>
     </string-array>
 
     <string-array name="notifications_code">
         <item>1</item>
         <item>0</item>
     </string-array>
+
+
+    <!-- HELP -->
+
+    <string-array name="help_titles">
+        <item>Что приложение делаеть?</item>
+        <item>Что такое сравнение?</item>
+        <item>Создание сравнить</item>
+        <item>Поиск</item>
+        <item>Используйте фильтры</item>
+        <item>Подписчики</item>
+    </string-array>
+
+    <string-array name="help_text">
+        <item>Choose Helper может помочь вам сделать сложный выбор. Просто
+            создайте сравнение и посмотрите, что другие пользователи думать об этом</item>
+        <item>Сравните это объект, который описывает выбор, который вы не можете
+            сделать. Сравнение имеет вопрос и варианты между которыми нужно зделать выбор.</item>
+        <item>Просто нажмите круглую плюс-кнопку для создания сравнения. Введите вопрос фото,
+            описание вариантов и нажмите кнопку добавления.</item>
+        <item>Вы можете использывать поиск по названию вариантов, как вы видите на экране ниже.</item>
+        <item>Откройте настройки и выберите категории сравнений. Также вы можете
+            выбрать количество отображаемых сравнений на основном экране.</item>
+        <item>Подпишитесь на пользователя сравнения которого интересны вам.</item>
+    </string-array>
+
 
 </resources>

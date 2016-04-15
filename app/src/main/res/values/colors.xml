@@ -19,6 +19,9 @@
     <color name="colorTextPrimary">#000000</color>
     <color name="colorTextSecondary">#727272</color>
     <color name="colorTextLink">#05C5CF</color>
+    <color name="colorDetailsData">#616161</color>
+    <color name="colorSignUpText">#aeaeae</color>
+    <color name="colorSignUpTextView">#03A9F4</color>
 
     <!--SIGN IN ACTIVITY-->
 
@@ -30,5 +33,8 @@
 
     <color name="colorEditText">#9F9F9F</color>
     <color name="colorEditTextFocus">#000000</color>
+
+    <!-- Hints -->
+    <color name="colorHint">#BDBDBD</color>
 
 </resources>

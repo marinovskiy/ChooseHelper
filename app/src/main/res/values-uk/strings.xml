@@ -68,7 +68,7 @@
     <string name="label_log_in_using">Авторизація через соц. мережі</string>
     <string name="label_create_an_account">Створити аккаунт</string>
     <string name="label_photo">Фото</string>
-    <string name="label_already_have_an_account">ВЖе маєте аккаунт?</string>
+    <string name="label_already_have_an_account">Вже маєте аккаунт?</string>
     <string name="label_reset_password">Скинути пароль</string>
 
     <!--button labels-->
@@ -152,13 +152,39 @@
     <!--</string-array>-->
 
     <string-array name="notifications">
-        <item>On</item>
-        <item>Off</item>
+        <item>Увімк</item>
+        <item>Вимк</item>
     </string-array>
 
     <string-array name="notifications_code">
         <item>1</item>
         <item>0</item>
+    </string-array>
+
+
+    <!-- HELP -->
+
+    <string-array name="help_titles">
+        <item>Що додаток робить?</item>
+        <item>Що таке порівняння?</item>
+        <item>Створення поріаняння</item>
+        <item>Пошук</item>
+        <item>Використовуйте фільтри</item>
+        <item>Підписники</item>
+    </string-array>
+
+    <string-array name="help_text">
+        <item>Choose Helper може допомогти вам зробити складний вибір. Просто
+        створіть порівняння та дізнайтеся, що про це думають інші.</item>
+        <item>Порівняння це об\'єкт, який описує вибір, який ви не можете зробити.
+        Порівняння містить питання та опис варіантів, між якими ви обипаєте.</item>
+        <item>Для створення порівняння просто натисніть кругу кнопку. Введіть
+        запитання, фото та короткий опис варінтів та опублікуйте порівняння.</item>
+        <item>Ви можете здійснювати пошук по заголовкам варіантів порівняння,
+         як показано на картинці нижче.</item>
+        <item>Відкрийте налаштування та оберіть категорії порінянь, які вас цікавлять.
+        Також можна обрати кількість копівнянь, що відображатимуться у головному вікні.</item>
+        <item>Слідкуйте за користувачами, порівяння яких цікаві для вас.</item>
     </string-array>
 
 </resources>

@@ -5,7 +5,7 @@
     android:id="@+id/drawer_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@android:color/white"
     tools:context=".screens.activities.MainActivity">
 
     <android.support.design.widget.CoordinatorLayout
@@ -24,7 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
-                app:elevation="4dp"
+                app:elevation="@dimen/small"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:title="@string/label_compares"
                 app:titleTextColor="@color/colorTextToolbar" />
@@ -38,7 +38,7 @@
                 android:fillViewport="false"
                 app:tabIndicatorColor="@android:color/white"
                 app:tabSelectedTextColor="@android:color/white"
-                app:tabTextColor="#EEEEEE" />
+                app:tabTextColor="@android:color/white" />
 
         </android.support.design.widget.AppBarLayout>
 
@@ -63,7 +63,7 @@
             <View
                 android:id="@+id/toolbar_shadow_main"
                 android:layout_width="match_parent"
-                android:layout_height="6dp"
+                android:layout_height="@dimen/normal"
                 android:background="@drawable/toolbar_shadow" />
 
         </FrameLayout>

@@ -9,7 +9,7 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_profile"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
+        android:layout_height="@dimen/avatar_drawer_height"
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:layout_scrollFlags="snap">
@@ -19,8 +19,8 @@
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginEnd="64dp"
-            app:expandedTitleMarginStart="48dp"
+            app:expandedTitleMarginEnd="@dimen/expanded_title_margin_end"
+            app:expandedTitleMarginStart="@dimen/expanded_title_margin_start"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView
@@ -36,7 +36,7 @@
                 android:id="@+id/toolbar_profile"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:elevation="4dp"
+                app:elevation="@dimen/small"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:title=""
@@ -95,14 +95,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="40dp"
                                 android:layout_gravity="center_horizontal"
-                                android:layout_marginBottom="12dp"
-                                android:layout_marginTop="16dp"
+                                android:layout_marginBottom="@dimen/margin_12"
+                                android:layout_marginTop="@dimen/activity_horizontal_margin"
                                 android:background="@drawable/button_follow_selector"
-                                android:paddingLeft="16dp"
-                                android:paddingRight="16dp"
+                                android:paddingLeft="@dimen/activity_horizontal_margin"
+                                android:paddingRight="@dimen/activity_horizontal_margin"
                                 android:text="@string/btn_label_follow"
                                 android:textColor="@color/colorTextButton"
-                                android:textSize="14sp"
+                                android:textSize="@dimen/text_size_pre_normal"
                                 android:visibility="gone" />
 
                             <android.support.v7.widget.RecyclerView
@@ -132,7 +132,7 @@
         <View
             android:id="@+id/toolbar_shadow_profile"
             android:layout_width="match_parent"
-            android:layout_height="6dp"
+            android:layout_height="@dimen/normal"
             android:background="@drawable/toolbar_shadow" />
 
     </FrameLayout>

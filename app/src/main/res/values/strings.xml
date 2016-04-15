@@ -146,9 +146,9 @@
     </string-array>
 
     <!--<string-array name="languages">-->
-        <!--<item>English</item>-->
-        <!--<item>Українська</item>-->
-        <!--<item>Русский</item>-->
+    <!--<item>English</item>-->
+    <!--<item>Українська</item>-->
+    <!--<item>Русский</item>-->
     <!--</string-array>-->
 
     <string-array name="notifications">
@@ -159,6 +159,32 @@
     <string-array name="notifications_code">
         <item>1</item>
         <item>0</item>
+    </string-array>
+
+
+    <!-- HELP -->
+
+    <string-array name="help_titles">
+        <item>What app do?</item>
+        <item>What is compare?</item>
+        <item>Create compare</item>
+        <item>Search</item>
+        <item>Use filters</item>
+        <item>Following/ Followers</item>
+    </string-array>
+
+    <string-array name="help_text">
+        <item>Choose Helper can help you to make difficult chose. Just
+        create compare and look what another users think about it.</item>
+        <item>Compare is entity that describe chose what you can not do. It
+        has a question and variants between you can not choose.</item>
+        <item>Just click circle plus-button to create compare. Input question
+        photo, describe variants and click add-button.</item>
+        <item>You can search compare by variants title as you can see
+        in screen below.</item>
+        <item>Open settings and choose categories of compare to look that you
+        like. Also you can choose a count of displaying compare in main screen.</item>
+        <item>Following by user whose compares are interesting you.</item>
     </string-array>
 
 </resources>

@@ -46,7 +46,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:orientation="vertical"
-                    android:paddingLeft="8dp">
+                    android:paddingLeft="@dimen/padding_8">
 
                     <TextView
                         android:id="@+id/compare_tv_author"
@@ -56,8 +56,7 @@
                         android:maxEms="14"
                         android:maxLines="1"
                         android:textColor="@color/colorTextLink"
-                        android:textSize="@dimen/medium_text_size"
-                        tools:text="Александр Мариновский" />
+                        android:textSize="@dimen/medium_text_size"/>
 
                     <TextView
                         android:id="@+id/compare_tv_date"
@@ -66,8 +65,7 @@
                         android:lines="1"
                         android:maxLength="16"
                         android:textColor="@color/colorTextSecondary"
-                        android:textSize="@dimen/medium_text_size"
-                        tools:text="17th Jan 2016" />
+                        android:textSize="@dimen/medium_text_size" />
 
                 </LinearLayout>
 
@@ -85,8 +83,7 @@
             android:maxLines="1"
             android:paddingTop="@dimen/card_content_small_padding"
             android:textColor="@color/colorTextPrimary"
-            android:textSize="@dimen/medium_text_size"
-            tools:text="Какая пицерия лучше?" />
+            android:textSize="@dimen/medium_text_size" />
 
         <LinearLayout
             android:id="@+id/compare_ll_variants"
@@ -133,8 +130,7 @@
                     android:gravity="center"
                     android:padding="@dimen/card_content_large_padding"
                     android:textColor="@color/colorTextPrimary"
-                    android:textSize="@dimen/medium_text_size"
-                    tools:text="14" />
+                    android:textSize="@dimen/medium_text_size"/>
 
             </LinearLayout>
 
