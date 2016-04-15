@@ -3,21 +3,21 @@
     <item
         android:id="@+id/action_nav_profile"
         android:icon="@drawable/icon_profile"
-        android:title="Profile" />
+        android:title="@string/action_nav_profile" />
 
     <item
         android:id="@+id/action_nav_settings"
         android:icon="@drawable/icon_settings"
-        android:title="Settings" />
+        android:title="@string/action_nav_settings" />
 
     <item
         android:id="@+id/action_nav_help"
         android:icon="@drawable/icon_help"
-        android:title="Help" />
+        android:title="@string/action_nav_help" />
 
     <item
         android:id="@+id/action_nav_logout"
         android:icon="@drawable/icon_logout"
-        android:title="Logout" />
+        android:title="@string/action_nav_logout" />
 
 </menu>

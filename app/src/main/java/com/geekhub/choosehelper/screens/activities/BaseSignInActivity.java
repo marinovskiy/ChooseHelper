@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -161,8 +162,7 @@ public class BaseSignInActivity extends AppCompatActivity
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Utils.showMessage(this,
-                getString(R.string.toast_gp_sign_in_error) + connectionResult.getErrorMessage());
+        Toast.makeText(this, R.string.toast_gp_sign_in_error, Toast.LENGTH_SHORT).show();
     }
 
     private void getGoogleOAuthTokenAndLogin(final String emailAddress) {
@@ -181,8 +181,8 @@ public class BaseSignInActivity extends AppCompatActivity
                     token = GoogleAuthUtil.getToken(BaseSignInActivity.this, emailAddress, scope);
                 } catch (IOException transientEx) {
                     /* network or server error */
-                    Utils.showMessage(getApplicationContext(),
-                            getString(R.string.toast_gp_sign_in_error) + transientEx);
+                    Toast.makeText(getApplicationContext(), R.string.toast_gp_sign_in_error,
+                            Toast.LENGTH_SHORT).show();
                     errorMessage = "Network error: " + transientEx.getMessage();
                 } catch (GoogleAuthException authEx) {
                     /* The call is not ever expected to succeed assuming you have already verified that
@@ -200,7 +200,7 @@ public class BaseSignInActivity extends AppCompatActivity
                             new AuthResultHandler(LOGIN_TYPE_GOOGLE));
                 } else if (errorMessage != null) {
                     hideProgressDialog();
-                    Utils.showMessage(getApplicationContext(), errorMessage);
+                    Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -248,7 +248,8 @@ public class BaseSignInActivity extends AppCompatActivity
      **/
     protected void loginEmailPassword(String email, String password) {
         if (email.equals("") || password.equals("")) {
-            Utils.showMessage(this, getString(R.string.toast_empty_fields));
+            Toast.makeText(getApplicationContext(), R.string.toast_empty_fields,
+                    Toast.LENGTH_SHORT).show();
         } else {
             showProgressDialog();
             mFirebase.authWithPassword(email, password, new AuthResultHandler(LOGIN_TYPE_PASSWORD));
@@ -282,7 +283,8 @@ public class BaseSignInActivity extends AppCompatActivity
         @Override
         public void onAuthenticationError(FirebaseError firebaseError) {
             hideProgressDialog();
-            Utils.showMessage(getApplicationContext(), firebaseError.toString());
+            Toast.makeText(getApplicationContext(), firebaseError.toString(),
+                    Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -4,6 +4,6 @@
     <item
         android:id="@+id/action_done"
         android:icon="@drawable/icon_done"
-        android:title="Done"
+        android:title="@string/action_done"
         app:showAsAction="always" />
 </menu>

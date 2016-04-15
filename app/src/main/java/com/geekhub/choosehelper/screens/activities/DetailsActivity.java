@@ -146,7 +146,8 @@ public class DetailsActivity extends BaseSignInActivity {
                 fetchCompareFromNetwork();
             } else {
                 mSwipeRefreshLayout.setRefreshing(false);
-                Utils.showMessage(this, getString(R.string.toast_no_internet));
+                Toast.makeText(getApplicationContext(), R.string.toast_no_internet,
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -155,11 +156,13 @@ public class DetailsActivity extends BaseSignInActivity {
     public void onClick() {
         String commentText = mDetailsEtCommentText.getText().toString();
         if (!mCompare.isOpen()) {
-            Utils.showMessage(this, getString(R.string.toast_cannot_comment_closed));
+            Toast.makeText(getApplicationContext(), R.string.toast_cannot_comment_closed,
+                    Toast.LENGTH_SHORT).show();
         } else if (!commentText.equals("")) {
             addComment(commentText);
         } else {
-            Utils.showMessage(this, getString(R.string.toast_cannot_comment_closed));
+            Toast.makeText(getApplicationContext(), R.string.toast_empty_comment,
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -243,8 +246,9 @@ public class DetailsActivity extends BaseSignInActivity {
                                     @Override
                                     public void onCancelled(FirebaseError firebaseError) {
                                         hideRefreshing();
-                                        Utils.showMessage(getApplicationContext(),
-                                                getString(R.string.toast_error_try_later));
+                                        Toast.makeText(getApplicationContext(),
+                                                R.string.toast_error_try_later,
+                                                Toast.LENGTH_SHORT).show();
                                     }
                                 });
                             }
@@ -252,8 +256,9 @@ public class DetailsActivity extends BaseSignInActivity {
                             @Override
                             public void onCancelled(FirebaseError firebaseError) {
                                 hideRefreshing();
-                                Utils.showMessage(getApplicationContext(),
-                                        getString(R.string.toast_error_try_later));
+                                Toast.makeText(getApplicationContext(),
+                                        R.string.toast_error_try_later,
+                                        Toast.LENGTH_SHORT).show();
                             }
                         });
             }
@@ -261,8 +266,9 @@ public class DetailsActivity extends BaseSignInActivity {
             @Override
             public void onCancelled(FirebaseError firebaseError) {
                 hideRefreshing();
-                Utils.showMessage(getApplicationContext(),
-                        getString(R.string.toast_error_try_later));
+                Toast.makeText(getApplicationContext(),
+                        R.string.toast_error_try_later,
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -310,8 +316,9 @@ public class DetailsActivity extends BaseSignInActivity {
             @Override
             public void onCancelled(FirebaseError firebaseError) {
                 hideRefreshing();
-                Utils.showMessage(getApplicationContext(),
-                        getString(R.string.toast_error_try_later));
+                Toast.makeText(getApplicationContext(),
+                        R.string.toast_error_try_later,
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -356,20 +363,20 @@ public class DetailsActivity extends BaseSignInActivity {
                     clickedCheckBox.setChecked(false);
                     int newValue = Integer.parseInt(clickedCheckBox.getText().toString()) - 1;
                     clickedCheckBox.setText(String.valueOf(newValue));
-                    Utils.showMessage(getApplicationContext(),
-                            getString(R.string.toast_cannot_like_closed));
+                    Toast.makeText(getApplicationContext(), R.string.toast_cannot_like_closed,
+                            Toast.LENGTH_SHORT).show();
                 } else if (!Utils.hasInternet(getApplicationContext())) {
                     clickedCheckBox.setChecked(false);
                     int newValue = Integer.parseInt(clickedCheckBox.getText().toString()) - 1;
                     clickedCheckBox.setText(String.valueOf(newValue));
-                    Utils.showMessage(getApplicationContext(),
-                            getString(R.string.toast_no_internet));
+                    Toast.makeText(getApplicationContext(), R.string.toast_no_internet,
+                            Toast.LENGTH_SHORT).show();
                 } else if (compare.getAuthor().getId().equals(Prefs.getUserId())) {
                     clickedCheckBox.setChecked(false);
                     int newValue = Integer.parseInt(clickedCheckBox.getText().toString()) - 1;
                     clickedCheckBox.setText(String.valueOf(newValue));
-                    Utils.showMessage(getApplicationContext(),
-                            getString(R.string.toast_cannot_like_own));
+                    Toast.makeText(getApplicationContext(), R.string.toast_cannot_like_own,
+                            Toast.LENGTH_SHORT).show();
                 } else {
                     Utils.blockViews(clickedCheckBox, otherCheckBox);
                     MainActivity.sIsNeedToAutoUpdate = true;

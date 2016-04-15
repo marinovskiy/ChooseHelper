@@ -91,12 +91,13 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
                     i++;
                 }
             } else {
-                categoriesString = "No categories selected";
+                categoriesString = getString(R.string.settings_no_categories);
             }
             preference.setSummary(categoriesString);
         } else if (key.equals(mSettingsNumbersOfCompares)) {
             MainActivity.sIsNeedToAutoUpdate = true;
-            preference.setSummary(String.format(Locale.getDefault(), "Show %s compares in main",
+            preference.setSummary(String.format(Locale.getDefault(),
+                    getString(R.string.settings_number_of_compares),
                     sharedPreferences.getString(key, "")));
         } else if (key.equals(mSettingsLanguage)) {
             preference.setSummary(sharedPreferences.getString(key, ""));

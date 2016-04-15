@@ -4,12 +4,12 @@
     <item
         android:id="@+id/action_edit_profile"
         android:icon="@drawable/icon_edit"
-        android:title="Edit profile"
+        android:title="@string/action_edit_profile"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_search"
         android:icon="@drawable/icon_search"
-        android:title="Search"
+        android:title="@string/action_search"
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
 </menu>

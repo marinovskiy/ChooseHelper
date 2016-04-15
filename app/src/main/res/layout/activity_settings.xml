@@ -14,7 +14,7 @@
         android:background="@color/colorPrimary"
         app:elevation="4dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:title="Settings"
+        app:title="@string/label_settings"
         app:titleTextColor="@color/colorTextToolbar" />
 
     <FrameLayout

@@ -13,7 +13,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
         app:elevation="4dp"
-        app:title="Details"
+        app:title="@string/label_details"
         app:titleTextColor="@color/colorTextToolbar" />
 
     <FrameLayout
@@ -71,14 +71,14 @@
             <EditText
                 android:id="@+id/details_et_comment_text"
                 android:layout_height="wrap_content"
-                android:hint="Enter your comment"
+                android:hint="@string/hint_enter_comment"
                 app:layout_widthPercent="75%" />
 
             <Button
                 android:id="@+id/details_btn_add_comment"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:text="Add"
+                android:text="@string/btn_label_add"
                 app:layout_widthPercent="25%" />
 
         </android.support.percent.PercentRelativeLayout>

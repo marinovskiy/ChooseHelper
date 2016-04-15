@@ -14,7 +14,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
         app:elevation="4dp"
-        app:title="Add compare"
+        app:title="@string/label_new_compare"
         app:titleTextColor="@color/colorTextToolbar" />
 
     <FrameLayout
@@ -25,129 +25,6 @@
             android:id="@+id/add_compare_container_preview"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
-        <!--<ScrollView-->
-            <!--android:id="@+id/add_compare_container_sv"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent">-->
-
-            <!--<LinearLayout-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:orientation="vertical">-->
-
-                <!--<android.support.design.widget.TextInputLayout-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_marginLeft="8dp"-->
-                    <!--android:layout_marginRight="8dp"-->
-                    <!--android:layout_marginTop="12dp"-->
-                    <!--android:textColorHint="#BDBDBD"-->
-                    <!--android:textSize="@dimen/medium_text_size">-->
-
-                    <!--<EditText-->
-                        <!--android:id="@+id/add_compare_et_question"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:hint="Question" />-->
-
-                <!--</android.support.design.widget.TextInputLayout>-->
-
-                <!--<TextView-->
-                    <!--android:id="@+id/add_compare_tv_label_variants"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="center_horizontal"-->
-                    <!--android:layout_marginTop="18dp"-->
-                    <!--android:text="Variants"-->
-                    <!--android:textColor="@color/colorTextPrimary"-->
-                    <!--android:textSize="18sp" />-->
-
-                <!--<LinearLayout-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_marginTop="12dp"-->
-                    <!--android:orientation="horizontal">-->
-
-                    <!--<LinearLayout-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:orientation="vertical">-->
-
-                        <!--<ImageView-->
-                            <!--android:id="@+id/add_compare_first_img"-->
-                            <!--android:layout_width="120dp"-->
-                            <!--android:layout_height="120dp"-->
-                            <!--android:layout_gravity="center_horizontal"-->
-                            <!--android:src="@drawable/standard_photo" />-->
-
-                        <!--<android.support.design.widget.TextInputLayout-->
-                            <!--android:layout_width="match_parent"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--android:layout_marginLeft="8dp"-->
-                            <!--android:layout_marginRight="8dp"-->
-                            <!--android:layout_marginTop="10dp"-->
-                            <!--android:textColorHint="#BDBDBD"-->
-                            <!--android:textSize="@dimen/medium_text_size">-->
-
-                            <!--<EditText-->
-                                <!--android:id="@+id/add_compare_et_first_variant"-->
-                                <!--android:layout_width="match_parent"-->
-                                <!--android:layout_height="wrap_content"-->
-                                <!--android:hint="Description" />-->
-
-                        <!--</android.support.design.widget.TextInputLayout>-->
-
-                    <!--</LinearLayout>-->
-
-                    <!--<LinearLayout-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:orientation="vertical">-->
-
-                        <!--<ImageView-->
-                            <!--android:id="@+id/add_compare_second_img"-->
-                            <!--android:layout_width="120dp"-->
-                            <!--android:layout_height="120dp"-->
-                            <!--android:layout_gravity="center_horizontal"-->
-                            <!--android:src="@drawable/standard_photo" />-->
-
-                        <!--<android.support.design.widget.TextInputLayout-->
-                            <!--android:layout_width="match_parent"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--android:layout_marginLeft="8dp"-->
-                            <!--android:layout_marginRight="8dp"-->
-                            <!--android:layout_marginTop="10dp"-->
-                            <!--android:textColorHint="#BDBDBD"-->
-                            <!--android:textSize="@dimen/medium_text_size">-->
-
-                            <!--<EditText-->
-                                <!--android:id="@+id/add_compare_et_second_variant"-->
-                                <!--android:layout_width="match_parent"-->
-                                <!--android:layout_height="wrap_content"-->
-                                <!--android:hint="Description" />-->
-
-                        <!--</android.support.design.widget.TextInputLayout>-->
-
-                    <!--</LinearLayout>-->
-
-                <!--</LinearLayout>-->
-
-                <!--<android.support.v7.widget.AppCompatSpinner-->
-                    <!--android:id="@+id/add_compare_category_spinner"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="center_horizontal"-->
-                    <!--android:layout_marginTop="14dp"-->
-                    <!--android:entries="@array/categories"-->
-                    <!--android:minWidth="20dp"-->
-                    <!--android:spinnerMode="dialog" />-->
-
-            <!--</LinearLayout>-->
-
-        <!--</ScrollView>-->
 
         <View
             android:id="@+id/toolbar_shadow_add_compare"

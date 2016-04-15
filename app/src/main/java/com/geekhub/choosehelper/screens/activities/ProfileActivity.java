@@ -432,11 +432,11 @@ public class ProfileActivity extends BaseSignInActivity {
 
         mUserInfoList.clear();
         mUserInfoList.add(new UserInfo(user.getFollowers() != null ? user.getFollowers().size() : 0,
-                getString(R.string.followers)));
+                getString(R.string.label_followers)));
         mUserInfoList.add(new UserInfo(user.getFollowings() != null ? user.getFollowings().size() : 0,
-                getString(R.string.followings)));
+                getString(R.string.label_followings)));
         mUserInfoList.add(new UserInfo(user.getCompares() != null ? user.getCompares().size() : 0,
-                getString(R.string.compares)));
+                getString(R.string.label_compares)));
 
         ProfileAdapter adapter;
         if (mRecyclerViewProfile.getAdapter() == null) {
@@ -447,13 +447,13 @@ public class ProfileActivity extends BaseSignInActivity {
                 intent.putExtra(INTENT_KEY_USER_ID, mUserId);
                 if (position == 0) { // followers
                     intent.putExtra(FollowersActivity.INTENT_KEY_FOLLOWERS_TITLE,
-                            getString(R.string.followers));
+                            getString(R.string.label_followers));
                     intent.putStringArrayListExtra(FollowersActivity.INTENT_KEY_FOLLOWERS_LIST,
                             getFollowersIds(user.getFollowers()));
                     startActivity(intent);
                 } else if (position == 1) { // followings
                     intent.putExtra(FollowersActivity.INTENT_KEY_FOLLOWERS_TITLE,
-                            getString(R.string.followings));
+                            getString(R.string.label_followings));
                     intent.putStringArrayListExtra(FollowersActivity.INTENT_KEY_FOLLOWERS_LIST,
                             getFollowingsIds(user.getFollowings()));
                     startActivity(intent);
@@ -555,7 +555,7 @@ public class ProfileActivity extends BaseSignInActivity {
                 @Override
                 public void onDataChange(DataSnapshot isFollowSnapshot) {
                     if (isFollowSnapshot.hasChildren()) {
-                        mProfileBtnFollow.setText(R.string.btn_label_unfollow);
+                        mProfileBtnFollow.setText(R.string.btn_label_un_follow);
                     }
                 }
 
@@ -567,7 +567,7 @@ public class ProfileActivity extends BaseSignInActivity {
             List<Following> authUserFollowings = DbUsersManager.getCurrentUser().getFollowings();
             for (Following authUserFollowing : authUserFollowings) {
                 if (authUserFollowing.getUserId().equals(mUserId)) {
-                    mProfileBtnFollow.setText(R.string.btn_label_unfollow);
+                    mProfileBtnFollow.setText(R.string.btn_label_un_follow);
                     break;
                 }
             }
@@ -614,7 +614,7 @@ public class ProfileActivity extends BaseSignInActivity {
                 mFirebaseFollowers.push().setValue(networkFollower, (firebaseError, firebase) -> {
                     // unFreeze button and change text
                     if (firebaseError == null) {
-                        mProfileBtnFollow.setText(R.string.btn_label_unfollow);
+                        mProfileBtnFollow.setText(R.string.btn_label_un_follow);
                     } else {
                         Utils.showMessage(getApplicationContext(),
                                 getString(R.string.toast_error_message));
@@ -703,7 +703,7 @@ public class ProfileActivity extends BaseSignInActivity {
     private void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage(getString(R.string.pd_wait_please));
+            mProgressDialog.setMessage(getString(R.string.pd_msg_wait_please));
             mProgressDialog.setCancelable(false);
         }
         mProgressDialog.show();
