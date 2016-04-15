@@ -8,6 +8,6 @@
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@drawable/logo_small" />
+            android:src="@drawable/logo_big" />
     </item>
 </layer-list>
