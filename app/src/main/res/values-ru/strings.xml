@@ -191,5 +191,9 @@
             Также можно выбрать количество сравнений, которые будут отображаться в главном окне.</item>
         <item>Следите за другими пользователями, сравнения которые интересны для вас.</item>
     </string-array>
+    <string name="no_compares">Нет сравнений</string>
+    <string name="no_followers"></string>
+    <string name="no_image">Картинка для этого варианта отсутствует</string>
+    <string name="no_followings">Нет подписок</string>
 
 </resources>

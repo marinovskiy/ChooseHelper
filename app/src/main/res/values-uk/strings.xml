@@ -191,5 +191,9 @@
         Також можна обрати кількість копівнянь, що відображатимуться у головному вікні.</item>
         <item>Слідкуйте за користувачами, порівяння яких цікаві для вас.</item>
     </string-array>
+    <string name="no_compares">Немає порівнянь</string>
+    <string name="no_followers">Немає підписчиків</string>
+    <string name="no_followings">Немає підписок</string>
+    <string name="no_image">Картинка для цього варіанту відсутня</string>
 
 </resources>
