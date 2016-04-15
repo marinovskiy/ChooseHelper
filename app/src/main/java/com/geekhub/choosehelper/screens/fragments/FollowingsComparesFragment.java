@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -50,6 +51,9 @@ public class FollowingsComparesFragment extends BaseFragment {
 
     @Bind(R.id.swipe_to_refresh_follwings_compares)
     SwipeRefreshLayout mSwipeRefreshLayout;
+
+    @Bind(R.id.tv_no_compares_all)
+    TextView mTvNoCompares;
 
     // firebase references and queries
     private Firebase mFirebaseCompares;
@@ -102,17 +106,19 @@ public class FollowingsComparesFragment extends BaseFragment {
         fetchComparesFromDb();
         if (Utils.hasInternet(getContext())) {
             fetchComparesFromNetwork();
-        }// TODO show empty view no followings yet
+        }
 
         // swipe refresh layout
         mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
-                android.R.color.holo_red_light); // TODO create colors array
+                android.R.color.holo_red_light);
 
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
             mSwipeRefreshLayout.setRefreshing(true);
             if (Utils.hasInternet(getContext())) {
+                mTvNoCompares.setVisibility(View.GONE);
+                mRecyclerView.setVisibility(View.VISIBLE);
                 fetchComparesFromNetwork();
             } else {
                 Utils.showMessage(getContext(), getString(R.string.toast_no_internet));
@@ -223,6 +229,11 @@ public class FollowingsComparesFragment extends BaseFragment {
 
     // update UI method
     private void updateUi(List<Compare> compares) {
+        if (compares.size() == 0) {
+            mRecyclerView.setVisibility(View.GONE);
+            mTvNoCompares.setVisibility(View.VISIBLE);
+        }
+
         ComparesAdapter adapter;
         if (mRecyclerView.getAdapter() == null) {
             adapter = new ComparesAdapter(compares);

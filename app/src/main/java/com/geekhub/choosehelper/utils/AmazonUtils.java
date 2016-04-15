@@ -58,17 +58,14 @@ public class AmazonUtils {
         observer.setTransferListener(new TransferListener() {
             @Override
             public void onStateChanged(int id, TransferState state) {
-                //TODO toast or pd
             }
 
             @Override
             public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-                //TODO toast or pd
             }
 
             @Override
             public void onError(int id, Exception ex) {
-                //TODO toast exception
             }
         });
     }

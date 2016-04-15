@@ -9,6 +9,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -91,7 +92,7 @@ public class DetailsActivity extends BaseSignInActivity {
 
     private RealmChangeListener mComparesListener = () -> {
         if (mCompare != null && mCompare.isLoaded()) {
-            mStatus = mCompare.isOpen();
+//            mStatus = mCompare.isOpen();
             updateUi(mCompare);
         }
     };
@@ -108,6 +109,7 @@ public class DetailsActivity extends BaseSignInActivity {
 
         if (getIntent() != null) {
             mCompareId = getIntent().getStringExtra(INTENT_KEY_COMPARE_ID);
+            Log.i("servicetags", "onCreate: mCompareId = " + mCompareId );
 
             mFirebaseCompare = new Firebase(FirebaseConstants.FB_REF_MAIN)
                     .child(FirebaseConstants.FB_REF_COMPARES)
@@ -321,6 +323,8 @@ public class DetailsActivity extends BaseSignInActivity {
     // update UI method
     private void updateUi(Compare compare) {
         setProgressVisibility(false);
+
+        mStatus = mCompare.isOpen();
 
         if (mRecyclerView != null) {
             RealmResults<Comment> comments = compare.getComments().where().findAll();

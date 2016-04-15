@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.firebase.client.Firebase;
@@ -147,7 +148,8 @@ public class SignUpActivity extends BaseSignInActivity {
                         ImageUtils.loadCircleImage(mIvAvatarLoad, mFilePath);
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
-                        //TODO toast exception
+                        Toast.makeText(getApplicationContext(), R.string.toast_error_try_later,
+                                Toast.LENGTH_SHORT).show();
                     }
                     break;
                 case RC_CAMERA:
@@ -160,7 +162,8 @@ public class SignUpActivity extends BaseSignInActivity {
                         ImageUtils.loadCircleImage(mIvAvatarLoad, mFilePath);
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
-                        //TODO toast exception
+                        Toast.makeText(getApplicationContext(), R.string.toast_error_try_later,
+                                Toast.LENGTH_SHORT).show();
                     }
                     break;
             }

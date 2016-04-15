@@ -43,9 +43,6 @@ public class SearchUserComparesFragment extends BaseFragment {
     @Bind(R.id.recycler_view_search_fragment)
     RecyclerView mRecyclerView;
 
-    @Bind(R.id.progress_bar_search_compares)
-    ProgressBar mProgressBar;
-
     // firebase references and queries
     private Firebase mFirebaseLikes;
     private Query mQueryUserCompares;
@@ -94,8 +91,6 @@ public class SearchUserComparesFragment extends BaseFragment {
 
     // get information about compares from firebase
     public void searchCompares(String query) {
-        setProgressVisibility(true);
-
         mQueryUserCompares.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -115,7 +110,6 @@ public class SearchUserComparesFragment extends BaseFragment {
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-                setProgressVisibility(false);
                 Utils.showMessage(getContext(), getString(R.string.toast_error_message));
             }
         });
@@ -159,7 +153,6 @@ public class SearchUserComparesFragment extends BaseFragment {
 
                             @Override
                             public void onCancelled(FirebaseError firebaseError) {
-                                setProgressVisibility(false);
                                 Utils.showMessage(getContext(),
                                         getString(R.string.toast_error_message));
                             }
@@ -175,8 +168,6 @@ public class SearchUserComparesFragment extends BaseFragment {
 
     // update UI method
     private void updateUi(List<Compare> compares) {
-        setProgressVisibility(false);
-
         ComparesAdapter adapter;
         if (mRecyclerView.getAdapter() == null) {
             adapter = new ComparesAdapter(compares);
@@ -248,9 +239,5 @@ public class SearchUserComparesFragment extends BaseFragment {
             intent.putExtra(ImageViewActivity.INTENT_KEY_POSITION, variantNumber);
             startActivity(intent);
         });
-    }
-
-    private void setProgressVisibility(boolean visible) {
-        mProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 }

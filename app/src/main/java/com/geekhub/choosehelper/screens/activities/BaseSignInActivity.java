@@ -320,13 +320,13 @@ public class BaseSignInActivity extends AppCompatActivity
 
                     @Override
                     public void onCancelled(FirebaseError firebaseError) {
-                        // TODO toast or dialog of exception
+                        Toast.makeText(getApplicationContext(), R.string.toast_error_try_later,
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
             }
         }
         this.mAuthData = authData;
-        //startMainActivity();
     }
 
     protected void logout() {

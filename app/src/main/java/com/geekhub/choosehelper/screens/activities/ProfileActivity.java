@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -279,7 +280,8 @@ public class ProfileActivity extends BaseSignInActivity {
                                 .setValue(ImageUtils.getUrlAndStartUpload(mFilePath, this));
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
-                        //TODO toast exception
+                        Toast.makeText(getApplicationContext(), R.string.toast_error_try_later,
+                                Toast.LENGTH_SHORT).show();
                     }
                     break;
                 case RC_CAMERA:
@@ -290,7 +292,8 @@ public class ProfileActivity extends BaseSignInActivity {
                         ImageUtils.loadCircleImage(mIvUserAvatar, mFilePath);
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
-                        //TODO toast exception
+                        Toast.makeText(getApplicationContext(), R.string.toast_error_try_later,
+                                Toast.LENGTH_SHORT).show();
                     }
                     break;
             }

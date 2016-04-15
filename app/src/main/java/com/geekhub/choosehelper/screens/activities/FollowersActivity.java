@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -47,8 +48,13 @@ public class FollowersActivity extends BaseSignInActivity {
     @Bind(R.id.swipe_to_refresh_followers)
     SwipeRefreshLayout mSwipeRefreshLayout;
 
+    @Bind(R.id.tv_no_followers)
+    TextView mTextViewEmpty;
+
     // firebase
     Firebase mFirebaseUsers;
+
+    private String mToolbarTitle;
 
     // realm
     private List<String> mUserIds = new ArrayList<>();
@@ -70,9 +76,9 @@ public class FollowersActivity extends BaseSignInActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         if (getIntent() != null) {
-            String toolbarTitle = getIntent().getStringExtra(INTENT_KEY_FOLLOWERS_TITLE);
+            mToolbarTitle = getIntent().getStringExtra(INTENT_KEY_FOLLOWERS_TITLE);
             if (getSupportActionBar() != null) {
-                getSupportActionBar().setTitle(toolbarTitle);
+                getSupportActionBar().setTitle(mToolbarTitle);
             }
             mUserIds = getIntent().getStringArrayListExtra(INTENT_KEY_FOLLOWERS_LIST);
         }
@@ -86,7 +92,11 @@ public class FollowersActivity extends BaseSignInActivity {
                 fetchUsersFromNetwork();
             }
         } else {
-            // TODO show empty view no followers/followings
+            mRecyclerView.setVisibility(View.GONE);
+            mTextViewEmpty.setVisibility(View.VISIBLE);
+            if (mToolbarTitle.equals(getString(R.string.label_followings))) {
+                mTextViewEmpty.setText(R.string.no_followings);
+            }
         }
 
         mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -97,6 +107,8 @@ public class FollowersActivity extends BaseSignInActivity {
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
             mSwipeRefreshLayout.setRefreshing(true);
             if (Utils.hasInternet(getApplicationContext())) {
+                mTextViewEmpty.setVisibility(View.GONE);
+                mRecyclerView.setVisibility(View.VISIBLE);
                 fetchUsersFromNetwork();
             } else {
                 mSwipeRefreshLayout.setRefreshing(false);
@@ -152,7 +164,8 @@ public class FollowersActivity extends BaseSignInActivity {
                         if (!users.isEmpty()) {
                             updateUi(users);
                         } else {
-                            // TODO show empty view
+                            mRecyclerView.setVisibility(View.GONE);
+                            mTextViewEmpty.setVisibility(View.VISIBLE);
                         }
                     }
 

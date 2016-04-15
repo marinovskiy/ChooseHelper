@@ -114,6 +114,10 @@
     <string name="status_closed">Closed</string>
     <string name="off">Off</string>
     <string name="on">On</string>
+    <string name="no_image">No image for this variant</string>
+    <string name="no_followers">No followers</string>
+    <string name="no_followings">No followings</string>
+    <string name="no_compares">No compares</string>
 
     <!--Arrays-->
     <string-array name="photo_variants">
@@ -164,6 +168,30 @@
     <string-array name="notifications_code">
         <item>1</item>
         <item>0</item>
+    </string-array>
+
+    <!-- HELP -->
+
+    <string-array name="help_titles">
+        <item>What app do?</item>
+        <item>What is a compare?</item>
+        <item>Create compare</item>
+        <item>Search</item>
+        <item>Use filters</item>
+        <item>Followers</item>
+    </string-array>
+
+    <string-array name="help_text">
+        <item>Choose Helper can help you make chose with two variants. Just create compare
+        and look what other users think about it.</item>
+        <item>Compare display a choose that you can not do. Compare has a question and variants
+            description. Also you can add a photo.</item>
+        <item>To create compare click circle plus-button and provide required data such as
+        question, variants title and photo as you wish.</item>
+        <item>You can search compare by variants title as on screen below.</item>
+        <item>Open application settings and chose categories of compares you interested in.
+       Also you can pick compares count that will be display on main screen.</item>
+        <item>Following users if their compares are interesting for you.</item>
     </string-array>
 
 </resources>

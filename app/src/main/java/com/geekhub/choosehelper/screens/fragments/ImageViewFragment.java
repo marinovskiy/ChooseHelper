@@ -4,8 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.utils.ImageUtils;
@@ -18,6 +18,9 @@ public class ImageViewFragment extends BaseFragment {
 
     @Bind(R.id.view_image_iv_image)
     ImageView mImageView;
+
+    @Bind(R.id.view_image_tv_none)
+    TextView mTextView;
 
     private String mImageUrl;
 
@@ -46,6 +49,11 @@ public class ImageViewFragment extends BaseFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ImageUtils.loadImage(mImageView, mImageUrl);
+        if (mImageUrl != null) {
+            ImageUtils.loadImage(mImageView, mImageUrl);
+        } else {
+            mImageView.setVisibility(View.GONE);
+            mTextView.setVisibility(View.VISIBLE);
+        }
     }
 }

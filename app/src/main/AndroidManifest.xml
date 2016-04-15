@@ -34,8 +34,7 @@
         <activity
             android:name=".screens.activities.SignInActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme">
-        </activity>
+            android:theme="@style/AppTheme"></activity>
         <activity
             android:name=".screens.activities.BaseSignInActivity"
             android:theme="@style/AppTheme" />
@@ -101,17 +100,8 @@
         <activity android:name=".screens.activities.ImageViewActivity" />
 
         <service
-            android:name=".utils.services.NotificationLikedService"
-            android:enabled="true"
-            android:exported="true" />
-        <service
-            android:name=".utils.services.NotificationCommentedService"
-            android:enabled="true"
-            android:exported="true" />
-        <service
-            android:name=".utils.services.NotificationNewCompareService"
-            android:enabled="true"
-            android:exported="true" />
+            android:name=".services.NotificationService"
+            android:enabled="true" />
         <service android:name=".services.NotificationComparesService" />
     </application>
 
