@@ -92,7 +92,7 @@ public class AddCompareFragment extends BaseFragment {
                             galleryIntent.setType("image/*");
                             galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
                             startActivityForResult(Intent.createChooser(galleryIntent,
-                                    getString(R.string.compare_dialog_photo_title)),
+                                    getString(R.string.dialog_photo_title)),
                                     RC_GALLERY_FIRST);
                             break;
                         case 1:
@@ -113,7 +113,7 @@ public class AddCompareFragment extends BaseFragment {
                             galleryIntent.setType("image/*");
                             galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
                             startActivityForResult(Intent.createChooser(galleryIntent,
-                                    getString(R.string.compare_dialog_photo_title)),
+                                    getString(R.string.dialog_photo_title)),
                                     RC_GALLERY_SECOND);
                             break;
                         case 1:

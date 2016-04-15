@@ -319,8 +319,11 @@ public class MainActivity extends BaseSignInActivity
         mFirebaseUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                NetworkUser networkUser = dataSnapshot.getValue(NetworkUser.class);
-                DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser, Prefs.getUserId()));
+                if (dataSnapshot != null) {
+                    NetworkUser networkUser = dataSnapshot.getValue(NetworkUser.class);
+                    DbUsersManager.saveUser(ModelConverter.convertToUser(networkUser,
+                            Prefs.getUserId()));
+                }
             }
 
             @Override

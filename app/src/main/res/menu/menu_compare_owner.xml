@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/action_change_status"
-        android:title="Close compare" />
-    <item
-        android:id="@+id/action_details_compare"
-        android:title="Details" />
-</menu>

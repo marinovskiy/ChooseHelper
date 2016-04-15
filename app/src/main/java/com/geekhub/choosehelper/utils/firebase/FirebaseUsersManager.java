@@ -1,15 +1,18 @@
 package com.geekhub.choosehelper.utils.firebase;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.network.NetworkFollowing;
 import com.geekhub.choosehelper.models.network.NetworkUser;
 import com.geekhub.choosehelper.utils.ModelConverter;
 import com.geekhub.choosehelper.utils.Prefs;
+import com.geekhub.choosehelper.utils.Utils;
 import com.geekhub.choosehelper.utils.db.DbUsersManager;
 
 import java.util.HashMap;
@@ -64,6 +67,21 @@ public class FirebaseUsersManager {
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
+    }
+
+    public static void resetPassword(Context context, String email) {
+        Firebase firebase = new Firebase(FirebaseConstants.FB_REF_MAIN);
+        firebase.resetPassword(email, new Firebase.ResultHandler() {
+            @Override
+            public void onSuccess() {
+                Utils.showMessage(context, context.getString(R.string.dialog_reset_sent));
+            }
+
+            @Override
+            public void onError(FirebaseError firebaseError) {
+                Utils.showMessage(context, context.getString(R.string.toast_error_try_later));
             }
         });
     }

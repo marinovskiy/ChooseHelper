@@ -194,9 +194,9 @@ public class ComparesAdapter extends RecyclerView.Adapter<ComparesAdapter.ViewHo
             mTvCategory.setText(compare.getCategory());
 
             if (compare.isOpen())
-                mTvStatus.setText("Open");
+                mTvStatus.setText(mTvStatus.getContext().getString(R.string.status_open));
             else
-                mTvStatus.setText("Closed");
+                mTvStatus.setText(mTvStatus.getContext().getString(R.string.status_closed));
         }
     }
 

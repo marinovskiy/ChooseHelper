@@ -14,7 +14,6 @@ import com.geekhub.choosehelper.R;
 import com.geekhub.choosehelper.models.network.NetworkCompare;
 import com.geekhub.choosehelper.models.network.NetworkVariant;
 import com.geekhub.choosehelper.screens.fragments.AddCompareFragment;
-import com.geekhub.choosehelper.screens.fragments.AllComparesFragment;
 import com.geekhub.choosehelper.screens.fragments.PreviewFragment;
 import com.geekhub.choosehelper.utils.ImageUtils;
 import com.geekhub.choosehelper.utils.db.DbUsersManager;
@@ -62,7 +61,7 @@ public class AddCompareActivity extends BaseSignInActivity {
     public void onBackPressed() {
         super.onBackPressed();
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(R.string.title_new_compare);
+            getSupportActionBar().setTitle(R.string.label_new_compare);
         }
         mToolbar.setNavigationIcon(ContextCompat.getDrawable(getApplicationContext(),
                 R.drawable.icon_cancel));
@@ -146,7 +145,7 @@ public class AddCompareActivity extends BaseSignInActivity {
         mMenuType = 1;
         invalidateOptionsMenu();
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(R.string.title_preview);
+            getSupportActionBar().setTitle(R.string.label_preview);
         }
         mToolbar.setNavigationIcon(ContextCompat.getDrawable(getApplicationContext(),
                 R.drawable.icon_back));
@@ -158,18 +157,4 @@ public class AddCompareActivity extends BaseSignInActivity {
                 .addToBackStack(PreviewFragment.class.getSimpleName())
                 .commit();
     }
-
-    // get url from filepath and upload image to amazon
-    /*private String getUrlAndStartUpload(String filePath) {
-        File file = new File(filePath);
-        TransferObserver transferObserver = AmazonUtils
-                .getTransferUtility(getApplicationContext())
-                .upload(AmazonUtils.BUCKET_NAME + AmazonUtils.FOLDER_IMAGES + "/"
-                        + Prefs.getUserId(),
-                        file.getName(),
-                        file);
-        AmazonUtils.uploadImage(transferObserver);
-        return AmazonUtils.BASE_URL + AmazonUtils.FOLDER_IMAGES + "/"
-                + Prefs.getUserId() + "/" + file.getName();
-    }*/
 }

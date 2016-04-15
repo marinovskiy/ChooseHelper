@@ -117,7 +117,7 @@
                 android:drawablePadding="2dp"
                 android:gravity="center"
                 android:paddingTop="4dp"
-                android:text="Chas poistu"
+                tools:text="Chas poistu"
                 android:textColor="#000000"
                 android:textSize="16sp" />
 
@@ -157,7 +157,7 @@
                 android:drawablePadding="2dp"
                 android:gravity="center"
                 android:paddingTop="4dp"
-                android:text="Felichita"
+                tools:text="Felichita"
                 android:textColor="#000000"
                 android:textSize="16sp" />
 

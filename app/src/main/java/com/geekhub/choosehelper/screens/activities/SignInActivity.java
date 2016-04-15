@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.geekhub.choosehelper.R;
+import com.geekhub.choosehelper.ui.dialogs.DialogResetPassword;
 import com.geekhub.choosehelper.utils.Utils;
 
 import butterknife.Bind;
@@ -34,13 +35,14 @@ public class SignInActivity extends BaseSignInActivity {
                 String password = mEtSignInPassword.getText().toString();
 
                 if (email.equals("") || password.equals("")) {
-                    Utils.showMessage(getApplicationContext(), "You did not fill all fields");
+                    Utils.showMessage(getApplicationContext(), getString(R.string.toast_empty_fields));
                 } else {
                     loginEmailPassword(email, password);
                 }
                 break;
             case R.id.sign_in_tv_forgot_password:
-                //TODO forgot password
+                DialogResetPassword dialogResetPassword = new DialogResetPassword();
+                dialogResetPassword.show(getSupportFragmentManager(), DialogResetPassword.class.getSimpleName());
                 break;
             case R.id.sign_in_facebook:
                 facebookLogin();

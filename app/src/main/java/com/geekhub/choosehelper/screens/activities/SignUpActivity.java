@@ -88,7 +88,7 @@ public class SignUpActivity extends BaseSignInActivity {
                             galleryIntent.setType("image/*");
                             galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
                             startActivityForResult(Intent.createChooser(galleryIntent,
-                                    "Select picture for avatar"), RC_GALLERY);
+                                    getString(R.string.dialog_photo_avatar)), RC_GALLERY);
                             break;
                         case 1:
                             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -107,7 +107,7 @@ public class SignUpActivity extends BaseSignInActivity {
                 if (mFullName.equals("") || mEmail.equals("") || mPassword.equals("") || mRepeatPassword.equals("")) {
                     Utils.showMessage(getApplicationContext(), getString(R.string.toast_empty_fields));
                 } else if (!mPassword.equals(mRepeatPassword)) {
-                    Utils.showMessage(getApplicationContext(), "Passwords are different");
+                    Utils.showMessage(getApplicationContext(), getString(R.string.toast_different_passwords));
                 } else {
                     signUp();
                 }

@@ -59,7 +59,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal|bottom"
                     android:layout_marginBottom="15dp"
-                    android:text="Photo"
+                    android:text="@string/label_photo"
                     android:textColor="#aeaeae" />
 
                 <ImageView
@@ -82,7 +82,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/sign_up_et_selector"
-                    android:hint="Full name"
+                    android:hint="@string/hint_full_name"
                     android:inputType="textPersonName"
                     android:paddingBottom="16dp"
                     android:paddingLeft="10dp"
@@ -107,7 +107,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/sign_up_et_selector"
-                    android:hint="Email"
+                    android:hint="@string/hint_email"
                     android:inputType="textEmailAddress"
                     android:paddingBottom="16dp"
                     android:paddingLeft="10dp"
@@ -132,7 +132,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/sign_up_et_selector"
-                    android:hint="Password"
+                    android:hint="@string/hint_password"
                     android:inputType="textPassword"
                     android:paddingBottom="16dp"
                     android:paddingLeft="10dp"
@@ -157,7 +157,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/sign_up_et_selector"
-                    android:hint="Repeat password"
+                    android:hint="@string/hint_repeat_password"
                     android:inputType="textPassword"
                     android:paddingBottom="16dp"
                     android:paddingLeft="10dp"
@@ -176,7 +176,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:background="@drawable/button_sign_selector"
-                android:text="Sign up" />
+                android:text="@string/btn_label_sign_up" />
 
             <TextView
                 android:id="@+id/tv_already_have_an_account"
@@ -184,7 +184,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Already have an Account?"
+                android:text="@string/label_already_have_an_account"
                 android:textAllCaps="false"
                 android:textColor="#03A9F4"
                 android:textSize="16sp" />

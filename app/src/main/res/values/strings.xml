@@ -1,91 +1,116 @@
 <resources>
+    <!--app name-->
     <string name="app_name">Choose Helper</string>
-    <string name="action_settings">Settings</string>
 
-    <!-- Api -->
+    <!--facebook-->
     <string name="facebook_app_id">1109390425777638</string>
 
-    <!--Navigation Drawers-->
+    <!--actions-->
+    <string name="action_settings">Settings</string>
+    <string name="action_search">Search</string>
+    <string name="action_edit_profile">Edit profile</string>
+    <string name="action_forward">Forward</string>
+    <string name="action_done">Done</string>
+
+    <!--navigation drawer-->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_nav_profile">Profile</string>
+    <string name="action_nav_settings">Settings</string>
+    <string name="action_nav_help">Help</string>
+    <string name="action_nav_logout">Logout</string>
 
-    <!-- Toasts -->
-    <string name="toast_sign_in_error">Error. Maybe wrong pass or login</string>
-    <string name="toast_sign_out_already">You are sign out already</string>
-    <string name="toast_sign_up_error">Error. Try to register later</string>
+    <!-- toasts -->
     <string name="toast_empty_fields">You did not fill all fields</string>
+    <string name="toast_error_try_later">Error! Please, try later</string>
+    <string name="toast_gp_sign_in_error">Sign in error: </string>
+    <string name="toast_no_internet">No internet connection</string>
+    <string name="toast_cannot_search">Cannot search without internet</string>
+    <string name="toast_click_again_exit">Click again for exit</string>
+    <string name="toast_empty_comment">You can\'t post an empty comment</string>
+    <string name="toast_cannot_like_own">You can\'t like your own compares</string>
+    <string name="toast_cannot_like_closed">This compare has been closed. You cannot like closed compare</string>
+    <string name="toast_cannot_comment_closed">This compare has been closed. You cannot comment closed compare</string>
+    <string name="toast_didnt_enter_email">You didn\'t enter email</string>
+    <string name="toast_different_passwords">Passwords are different</string>
+    <string name="toast_error_message">Error</string>
 
-    <!--Progress Dialogs-->
+    <!--hints-->
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_enter_comment">Enter your comment</string>
+    <string name="hint_new_password">Enter new password</string>
+    <string name="hint_repeat_new_password">Repeat new password</string>
+    <string name="search_hint_compares">Search compares…</string>
+    <string name="search_hint_user_compares">Search user compares…</string>
+    <string name="hint_full_name">Full name</string>
+    <string name="hint_repeat_password">Repeat password</string>
+    <string name="hint_question">Question</string>
+    <string name="hint_variants">Variants</string>
+    <string name="hint_description">Description</string>
+
+    <!--progress dialogs-->
     <string name="pd_msg_wait_please">Wait please…</string>
     <string name="pd_msg_authenticating">Authenticating…</string>
+
+    <!--labels-->
+    <string name="label_followings">Followings</string>
+    <string name="label_followers">Followers</string>
+    <string name="label_compares">Compares</string>
+    <string name="label_new_compare">New compare</string>
+    <string name="label_preview">Preview</string>
+    <string name="label_details">Details</string>
+    <string name="label_edit_profile">Edit profile</string>
+    <string name="label_change_password">Change password</string>
+    <string name="label_help">Help</string>
+    <string name="label_settings">Settings</string>
+    <string name="label_log_in_using">Log In Using</string>
+    <string name="label_create_an_account">Create an Account</string>
+    <string name="label_photo">Photo</string>
+    <string name="label_already_have_an_account">Already have an Account?</string>
+    <string name="label_reset_password">Reset password</string>
+
+    <!--button labels-->
+    <string name="btn_label_login">Login</string>
+    <string name="btn_label_follow">Follow</string>
+    <string name="btn_label_un_follow">UnFollow</string>
+    <string name="btn_label_forgot_password">Forgot password?</string>
+    <string name="btn_label_add">Add</string>
+    <string name="btn_label_sign_up">Sign up</string>
+
+    <!--others labels-->
+    <string name="tab_label_all">All</string>
+    <string name="tab_label_followings">Followings</string>
+
+    <!--settings labels-->
+    <string name="settings_no_categories">No categories selected</string>
+    <string name="settings_number_of_compares">Show %s compares in main</string>
+
+    <!--settings keys-->
+    <string name="settings_numbers_of_compares">settings_numbers_of_compares</string>
+    <string name="settings_language">settings_language</string>
+    <string name="settings_categories">settings_categories</string>
+
+    <!--dialogs-->
+    <string name="dialog_btn_send_email">Reset</string>
+    <string name="dialog_btn_cancel">Cancel</string>
+    <string name="dialog_reset_sent">Sent…</string>
+    <string name="dialog_photo_title">Select picture for variant</string>
+    <string name="dialog_photo_avatar">Select picture for avatar</string>
+
+    <!--image descriptions-->
+    <string name="img_description_avatar">Avatar</string>
+    <string name="img_description_icon_more">Icon more</string>
+
+    <!--compare statuses-->
+    <string name="status_open">Open</string>
+    <string name="status_closed">Closed</string>
 
     <!--Arrays-->
     <string-array name="photo_variants">
         <item>Get from gallery</item>
         <item>Make a photo</item>
     </string-array>
-
-    <!--labels-->
-    <string name="label_login">Login</string>
-    <string name="label_sign_in_email_pass">Sign in with your email and password</string>
-    <string name="label_sign_up">SIGN UP</string>
-    <string name="label_skip"><![CDATA[Skip >>]]></string>
-    <string name="label_login_google_plus">Login with Google +</string>
-    <string name="label_login_facebook">Login with Facebook</string>
-
-    <!--hints-->
-    <string name="hint_email">Email</string>
-    <string name="hint_password">Password</string>
-    <string name="hint_search">Search</string>
-
-    <!--Profile-->
-    <string name="profile_toolbar_title">Profile</string>
-
-    <string name="compare_dialog_photo_title">Select picture for variant</string>
-    <string name="qwe">You did not fill all fields</string>
-    <string name="toast_no_internet">No internet connection</string>
-
-    <string name="img_description_avatar">Avatar</string>
-    <string name="img_description_icon_more">Icon more</string>
-
-    <string name="btn_label_follow">Follow</string>
-    <string name="btn_label_unfollow">UnFollow</string>
-    <string name="followings">Followings</string>
-    <string name="followers">Followers</string>
-    <string name="compares">Compares</string>
-    <string name="btn_label_new_compares_are_available">New compares are available! Click for show</string>
-
-    <!-- Alert dialogs in settings -->
-    <string name="ad_title_compares_count">Compares count</string>
-    <string name="ad_title_language">Language</string>
-    <string name="ad_title_categories">Categories</string>
-    <string name="ad_btn_cancel">Cancel</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="toast_error_message">Oops! Error. Please, try later</string>
-    <string name="toast_cannot_like_closed">This compare has been closed. You cannot like closed compare</string>
-    <string name="toast_cannot_like_own">You cannot like your own compares</string>
-    <string name="search_hint_compares">Search compares…</string>
-    <string name="toast_cannot_search">Cannot search without internet</string>
-    <string name="tab_label_all">All</string>
-    <string name="tab_label_followings">Followings</string>
-
-    <!--settings-->
-    <string name="settings_numbers_of_compares">settings_numbers_of_compares</string>
-    <string name="settings_language">settings_language</string>
-    <string name="settings_categories">settings_categories</string>
-    <string name="title_new_compare">New compare</string>
-    <string name="title_preview">Preview</string>
-    <string name="toast_gp_sign_in_error">"Sign in error: "</string>
-    <string name="toast_empty_comment">You can\'t post an empty comment</string>
-    <string name="toast_cannot_comment_closed">This compare has been closed. You cannot comment closed compare</string>
-    <string name="toast_error_try_later">Error! Please, try later</string>
-    <string name="status_open">Open</string>
-    <string name="status_closed">Closed</string>
-    <string name="toast_click_again_exit">Click again for exit</string>
-    <string name="pd_wait_please">Wait please...</string>
-    <string name="search_hint_user_compares">Search user compares...</string>
 
     <string-array name="categories">
         <item>Entertainment</item>
@@ -111,7 +136,5 @@
         <item>Ukrainian</item>
         <item>Russian</item>
     </string-array>
-
-    <string-array name="empty_array" />
 
 </resources>
