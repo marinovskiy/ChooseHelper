@@ -28,19 +28,19 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="@dimen/margin_24"
                     android:text="@string/app_name"
                     android:textAllCaps="false"
-                    android:textColor="#FFFFFF"
-                    android:textSize="26sp" />
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_size_large" />
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="22dp"
-                    android:textColorHint="#BDBDBD">
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:layout_marginTop="@dimen/margin_22"
+                    android:textColorHint="@color/colorHint">
 
                     <EditText
                         android:id="@+id/sign_in_et_email"
@@ -49,23 +49,23 @@
                         android:background="@drawable/sign_in_et_selector"
                         android:hint="@string/hint_email"
                         android:inputType="textEmailAddress"
-                        android:paddingBottom="16dp"
-                        android:paddingLeft="10dp"
-                        android:paddingTop="12dp"
-                        android:textColor="#FFFFFF"
-                        android:textColorHint="#BDBDBD"
+                        android:paddingBottom="@dimen/activity_vertical_margin"
+                        android:paddingLeft="@dimen/margin_10"
+                        android:paddingTop="@dimen/padding_12"
+                        android:textColor="@android:color/white"
+                        android:textColorHint="@color/colorHint"
                         android:textCursorDrawable="@null"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/text_size_pre_normal" />
 
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="18dp"
-                    android:textColorHint="#BDBDBD">
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:layout_marginTop="@dimen/margin_18"
+                    android:textColorHint="@color/colorHint">
 
                     <EditText
                         android:id="@+id/sign_in_et_password"
@@ -74,13 +74,13 @@
                         android:background="@drawable/sign_in_et_selector"
                         android:hint="@string/hint_password"
                         android:inputType="textPassword"
-                        android:paddingBottom="16dp"
-                        android:paddingLeft="10dp"
-                        android:paddingTop="12dp"
-                        android:textColor="#FFFFFF"
-                        android:textColorHint="#BDBDBD"
+                        android:paddingBottom="@dimen/activity_horizontal_margin"
+                        android:paddingLeft="@dimen/margin_10"
+                        android:paddingTop="@dimen/padding_12"
+                        android:textColor="@android:color/white"
+                        android:textColorHint="@color/colorHint"
                         android:textCursorDrawable="@null"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/text_size_pre_normal" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -89,7 +89,7 @@
                     style="@style/AppTheme.Button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="@dimen/margin_24"
                     android:background="@drawable/button_sign_selector"
                     android:text="@string/btn_label_login" />
 
@@ -98,14 +98,14 @@
                     style="?borderlessButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="@dimen/margin_12"
+                    android:layout_marginTop="@dimen/margin_12"
                     android:layout_weight="0.07"
-                    android:padding="10dp"
+                    android:padding="@dimen/margin_10"
                     android:text="@string/btn_label_forgot_password"
                     android:textAllCaps="false"
-                    android:textColor="#03A9F4"
-                    android:textSize="16sp" />
+                    android:textColor="@color/colorSignInUp"
+                    android:textSize="@dimen/text_size_pre_normal" />
 
             </LinearLayout>
 
@@ -120,12 +120,12 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="@dimen/padding_8"
+                    android:layout_marginTop="@dimen/activity_horizontal_margin"
                     android:text="@string/label_log_in_using"
                     android:textAllCaps="false"
-                    android:textColor="#03A9F4"
-                    android:textSize="16sp" />
+                    android:textColor="@color/colorSignInUp"
+                    android:textSize="@dimen/text_size_pre_normal" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -139,19 +139,19 @@
                         android:layout_gravity="center">
 
                         <View
-                            android:layout_width="57dp"
-                            android:layout_height="57dp"
-                            android:layout_marginLeft="8dp"
-                            android:layout_marginRight="4dp"
-                            android:layout_marginTop="2dp"
+                            android:layout_width="@dimen/sign_in_view_size"
+                            android:layout_height="@dimen/sign_in_view_size"
+                            android:layout_marginLeft="@dimen/padding_8"
+                            android:layout_marginRight="@dimen/padding_4"
+                            android:layout_marginTop="@dimen/padding_2"
                             android:background="@drawable/shadow_circle" />
 
                         <ImageView
                             android:id="@+id/sign_in_facebook"
-                            android:layout_width="55dp"
-                            android:layout_height="55dp"
-                            android:layout_marginLeft="8dp"
-                            android:layout_marginRight="8dp"
+                            android:layout_width="@dimen/normal_avatar_size"
+                            android:layout_height="@dimen/normal_avatar_size"
+                            android:layout_marginLeft="@dimen/padding_8"
+                            android:layout_marginRight="@dimen/padding_8"
                             android:src="@drawable/social_button_facebook_selector" />
 
                     </FrameLayout>
@@ -162,19 +162,19 @@
                         android:layout_gravity="center">
 
                         <View
-                            android:layout_width="57dp"
-                            android:layout_height="57dp"
-                            android:layout_marginLeft="8dp"
-                            android:layout_marginRight="4dp"
-                            android:layout_marginTop="2dp"
+                            android:layout_width="@dimen/sign_in_view_size"
+                            android:layout_height="@dimen/sign_in_view_size"
+                            android:layout_marginLeft="@dimen/padding_8"
+                            android:layout_marginRight="@dimen/padding_4"
+                            android:layout_marginTop="@dimen/padding_2"
                             android:background="@drawable/shadow_circle" />
 
                         <ImageView
                             android:id="@+id/sign_in_google"
-                            android:layout_width="55dp"
-                            android:layout_height="55dp"
-                            android:layout_marginLeft="8dp"
-                            android:layout_marginRight="8dp"
+                            android:layout_width="@dimen/normal_avatar_size"
+                            android:layout_height="@dimen/normal_avatar_size"
+                            android:layout_marginLeft="@dimen/padding_8"
+                            android:layout_marginRight="@dimen/padding_8"
                             android:src="@drawable/social_button_google_selector" />
 
                     </FrameLayout>
@@ -192,8 +192,8 @@
                 android:layout_centerHorizontal="true"
                 android:text="@string/label_create_an_account"
                 android:textAllCaps="false"
-                android:textColor="#03A9F4"
-                android:textSize="16sp" />
+                android:textColor="@color/colorSignInUp"
+                android:textSize="@dimen/text_size_pre_normal" />
 
         </RelativeLayout>
 

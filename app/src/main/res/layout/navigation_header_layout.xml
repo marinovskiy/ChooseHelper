@@ -6,22 +6,22 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="@dimen/avatar_drawer_height"
         android:scaleType="centerCrop"
         android:src="@drawable/nav_drawer_header_img" />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_height="@dimen/avatar_drawer_height"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:orientation="vertical">
 
         <ImageView
             android:id="@+id/nav_header_avatar"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:layout_marginTop="16dp"
+            android:layout_width="@dimen/normal_avatar_size"
+            android:layout_height="@dimen/normal_avatar_size"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
             android:src="@drawable/icon_no_avatar" />
 
         <TextView
@@ -29,8 +29,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="36dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginBottom="@dimen/margin_36"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/colorTextNavHeader"
@@ -43,8 +43,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="12dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginBottom="@dimen/margin_12"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/colorTextNavHeader"

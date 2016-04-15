@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        app:elevation="4dp"
+        app:elevation="@dimen/small"
         app:title=""
         app:titleTextColor="@color/colorTextToolbar" />
 
@@ -34,7 +34,7 @@
             <View
                 android:id="@+id/toolbar_shadow_followers"
                 android:layout_width="match_parent"
-                android:layout_height="6dp"
+                android:layout_height="@dimen/normal"
                 android:background="@drawable/toolbar_shadow" />
 
         </FrameLayout>

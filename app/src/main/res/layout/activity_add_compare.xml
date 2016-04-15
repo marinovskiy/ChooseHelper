@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
-        app:elevation="4dp"
+        app:elevation="@dimen/small"
         app:title="@string/label_new_compare"
         app:titleTextColor="@color/colorTextToolbar" />
 
@@ -29,7 +29,7 @@
         <View
             android:id="@+id/toolbar_shadow_add_compare"
             android:layout_width="match_parent"
-            android:layout_height="5dp"
+            android:layout_height="@dimen/normal"
             android:background="@drawable/toolbar_shadow" />
 
     </FrameLayout>

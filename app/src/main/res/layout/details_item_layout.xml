@@ -19,7 +19,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="@dimen/padding_8"
         android:orientation="vertical">
 
         <TextView
@@ -29,8 +29,7 @@
             android:lines="1"
             android:maxLength="24"
             android:textColor="@color/colorTextLink"
-            android:textSize="16sp"
-            tools:text="Johny Depp" />
+            android:textSize="@dimen/text_size_pre_normal" />
 
         <TextView
             android:id="@+id/details_comments_tv_comment"
@@ -38,17 +37,15 @@
             android:layout_height="wrap_content"
             android:paddingTop="2dp"
             android:textColor="@android:color/black"
-            android:textSize="16sp"
-            tools:text="I think better variant is ... I think better variant is ..." />
+            android:textSize="@dimen/text_size_pre_normal"/>
 
         <TextView
             android:id="@+id/details_comments_tv_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="2dp"
-            android:textColor="#616161"
-            android:textSize="15sp"
-            tools:text="17th May" />
+            android:textColor="@color/colorDetailsData"
+            android:textSize="@dimen/text_size_pre_normal" />
 
     </LinearLayout>
 
